@@ -1,0 +1,78 @@
+[versions]
+
+#default
+androidxCore = "1.9.0"
+androidxAppCompat = "1.6.1"
+androidMaterial = "1.8.0"
+androidxFragmentKtx = "1.5.6"
+
+#ui related
+androidxConstraint = "2.1.4"
+
+# ** third-party libraries ** #
+room = "2.5.1"
+daggerTwo = "2.45"
+moshi = "1.14.0"
+
+#testing
+junit = "4.13.2"
+junitExt = "1.1.5"
+espresso = "3.5.1"
+retrofit = "2.9.0"
+
+
+# ** plugins ** #
+androidGradlePlugin = "7.4.0"
+kotlin = "1.8.0"
+kotlinDsl = "4.0.10"
+
+[libraries]
+#default dependencies
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
+android-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragmentKtx" }
+#ui-related
+androidx-constraint = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraint" }
+
+# ** other libraries ** #
+
+# room
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+
+# retrofit
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
+moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
+
+#dagger 2
+dagger = { group = "com.google.dagger", name = "dagger", version.ref = "daggerTwo" }
+dagger-android-support = { group = "com.google.dagger", name = "dagger-android-support", version.ref = "daggerTwo" }
+dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "daggerTwo" }
+dagger-android-processor = { group = "com.google.dagger", name = "dagger-android-processor", version.ref = "daggerTwo" }
+
+#testing
+junit = { group = "junit", name = "junit", version.ref = "junit" } #testImplementation(libs...)
+junit-ext = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" } #androidTestImplementation(libs...)
+espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" } #androidTestImplementation(libs...)
+
+
+[bundles]
+dagger-impl = ["dagger", "dagger-android-support"]
+dagger-kapt = ["dagger-compiler", "dagger-android-processor"]
+retrofit = ["retrofit", "retrofit-moshi", "moshi"]
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlinDsl" }
+
+kotlin-kapt = { id = "kotlin-kapt" }
+
+
+
+
