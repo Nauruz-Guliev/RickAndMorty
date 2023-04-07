@@ -16,7 +16,7 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -25,13 +25,15 @@ android {
         }
     }
     val compileJavaVersion = rootProject.extra["CompileJavaVersion"] as JavaVersion
-
     compileOptions {
         sourceCompatibility = compileJavaVersion
         sourceCompatibility = compileJavaVersion
     }
     kotlinOptions {
         jvmTarget = rootProject.extra["JavaVersion"] as String
+    }
+    buildFeatures {
+        viewBinding = true
     }
 }
 
@@ -44,4 +46,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso)
+
+    implementation(project(":core:ui"))
+    implementation(project(":core:data"))
+    implementation(project(":common"))
+
+
 }
