@@ -2,9 +2,9 @@ package ru.example.gnt.characters.data.mapper
 
 import ru.example.gnt.characters.domain.model.CharactersUiModel
 import ru.example.gnt.common.base.BaseMapper
+import ru.example.gnt.common.data.Characters
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
-import ru.example.gnt.common.local.models.Characters
 
 internal object CharactersUiMapper : BaseMapper<Characters, CharactersUiModel> {
 
@@ -16,7 +16,7 @@ internal object CharactersUiMapper : BaseMapper<Characters, CharactersUiModel> {
                 pages = model.info.pages,
                 prev = model.info.prev
             ),
-            singles = model.singles.map { character ->
+            singles = model.results.map { character ->
                 CharactersUiModel.Single(
                     created = character.created,
                     episode = character.episode,
@@ -51,19 +51,19 @@ internal object CharactersUiMapper : BaseMapper<Characters, CharactersUiModel> {
                 pages = model.info.pages,
                 prev = model.info.prev
             ),
-            singles = model.singles.map { character ->
-                Characters.Single(
+            results = model.singles.map { character ->
+                Characters.Result(
                     created = character.created,
                     episode = character.episode,
                     gender = character.gender.n,
                     id = character.id,
                     image = character.image,
-                    location = Characters.Single.Location(
+                    location = Characters.Result.Location(
                         name = character.location.name,
                         url = character.location.url
                     ),
                     name = character.name,
-                    origin = Characters.Single.Origin(
+                    origin = Characters.Result.Origin(
                         name = character.origin.name,
                         url = character.origin.url
                     ),

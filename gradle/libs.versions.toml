@@ -9,6 +9,9 @@ androidxAppCompat = "1.6.1"
 androidMaterial = "1.8.0"
 androidxFragmentKtx = "1.5.6"
 
+#ktx
+androidxLifecycleKtx = "2.4.0"
+
 #ui related
 androidxConstraint = "2.1.4"
 
@@ -35,6 +38,10 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
 android-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
 androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragmentKtx" }
+
+androidx-lifecycle-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxLifecycleKtx"}
+androidx-lifecycle-runtime = {group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref="androidxLifecycleKtx"}
+
 #ui-related
 androidx-constraint = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraint" }
 
@@ -66,6 +73,7 @@ espresso = { group = "androidx.test.espresso", name = "espresso-core", version.r
 dagger-impl = ["dagger", "dagger-android-support"]
 dagger-kapt = ["dagger-compiler", "dagger-android-processor"]
 retrofit = ["retrofit", "retrofit-moshi", "moshi"]
+lifecycle = ["androidx-lifecycle-runtime", "androidx-lifecycle-viewmodel"]
 
 
 [plugins]

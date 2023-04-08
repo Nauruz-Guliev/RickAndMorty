@@ -1,6 +1,8 @@
 plugins {
     id(libs.plugins.android.library.get().pluginId).apply(true)
     id(libs.plugins.kotlin.android.get().pluginId).apply(true)
+    id(libs.plugins.kotlin.kapt.get().pluginId).apply(true)
+
 }
 
 android {
@@ -40,7 +42,16 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
 
+    //libraries
+    implementation(libs.bundles.retrofit)
+
+    implementation(libs.bundles.dagger.impl)
+    kapt(libs.bundles.dagger.kapt)
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso)
+
+    implementation(project(":common"))
 }

@@ -1,9 +1,9 @@
-package ru.example.gnt.common.local.models
+package ru.example.gnt.common.data
 
 
 data class Characters(
     val info: Info,
-    val singles: List<Single>
+    val results: List<Result>
 ) {
     data class Info(
         val count: Int, // 826
@@ -12,7 +12,7 @@ data class Characters(
         val prev: Any? // null
     )
 
-    data class Single(
+    data class Result(
         val created: String, // 2017-11-04T18:48:46.250Z
         val episode: List<String>,
         val gender: String, // Male

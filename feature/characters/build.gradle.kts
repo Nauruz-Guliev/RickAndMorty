@@ -48,6 +48,12 @@ dependencies {
     //libraries
     implementation(libs.retrofit.moshi)
 
+    implementation(libs.bundles.dagger.impl)
+    kapt(libs.bundles.dagger.kapt)
+
+    implementation(libs.bundles.lifecycle)
+
+    //tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso)

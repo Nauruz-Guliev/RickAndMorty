@@ -51,10 +51,14 @@ dependencies {
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso)
 
+
+    implementation(libs.bundles.retrofit)
+
     implementation(libs.bundles.dagger.impl)
     kapt(libs.bundles.dagger.kapt)
 
     implementation(project(":core:ui"))
+    implementation(project(":core:data"))
     implementation(project(":common"))
     implementation(project(":feature:characters"))
 }
