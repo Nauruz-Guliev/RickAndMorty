@@ -1,6 +1,8 @@
 plugins {
     id(libs.plugins.android.library.get().pluginId).apply(true)
     id(libs.plugins.kotlin.android.get().pluginId).apply(true)
+
+    id(libs.plugins.kotlin.kapt.get().pluginId).apply(true)
 }
 
 android {

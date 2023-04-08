@@ -8,12 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import ru.example.gnt.common.enums.CharacterStatusEnum
 
-open class BaseFragment<VB : ViewBinding>(
+abstract class BaseFragment<VB : ViewBinding>(
     private val bindingInflater: (inflater: LayoutInflater) -> VB
 ) : Fragment() {
 
     private var _binding: VB? = null
-    val binding: VB by lazy { _binding!! }
+    private val binding: VB by lazy { _binding!! }
 
     override fun onCreateView(
         inflater: LayoutInflater,

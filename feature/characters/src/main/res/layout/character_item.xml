@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="200dp"
+    android:minHeight="248dp"
+    android:orientation="vertical">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_3"
+        android:layout_marginTop="@dimen/margin_3"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/avatar"
+        android:maxWidth="200dp"
+        android:minHeight="40dp"
+        tools:src="@tools:sample/backgrounds/scenic" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_3"
+        android:background="@color/black_70"
+        android:paddingHorizontal="@dimen/padding_2"
+        tools:text="Alive" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/TextViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="@dimen/margin_1"
+        tools:text="Rick and morty" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/TextViewSecondaryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        tools:text="Species: Human" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/TextViewSecondaryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="@dimen/margin_1"
+        tools:text="Gender: Male" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="@color/gray_100" />
+
+</LinearLayout>
