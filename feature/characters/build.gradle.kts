@@ -43,6 +43,9 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
 
+    //libraries
+    implementation(libs.retrofit.moshi)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso)
