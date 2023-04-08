@@ -4,6 +4,10 @@ plugins {
     alias(libs.plugins.kotlin.dsl).apply(false)
     alias(libs.plugins.android.library).apply(false)
     alias(libs.plugins.kotlin.android).apply(false)
+
+    alias(libs.plugins.toml.updater.github).apply(true)
+    alias(libs.plugins.toml.updater.version.catalog).apply(true)
+
 }
 buildscript {
     extra.apply {

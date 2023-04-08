@@ -46,4 +46,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso)
+
+    implementation(project(":core:ui"))
+    implementation(project(":feature:characters"))
 }

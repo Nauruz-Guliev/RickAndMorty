@@ -1,5 +1,8 @@
 [versions]
 
+# команда для обновления версий в терминале:    ./gradlew versionCatalogUpdate
+
+
 #default
 androidxCore = "1.9.0"
 androidxAppCompat = "1.6.1"
@@ -73,6 +76,6 @@ kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlinDsl" }
 
 kotlin-kapt = { id = "kotlin-kapt" }
 
-
-
+toml-updater-github = { id = "com.github.ben-manes.versions", version = "0.41.0" }
+toml-updater-version-catalog = { id = "nl.littlerobots.version-catalog-update", version = "0.8.0" }
 
