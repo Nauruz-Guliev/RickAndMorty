@@ -20,6 +20,10 @@ android {
     kotlinOptions {
         jvmTarget = rootProject.extra["JavaVersion"] as String
     }
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+    }
 }
 
 dependencies {

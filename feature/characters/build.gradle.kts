@@ -1,6 +1,8 @@
 plugins {
     id(libs.plugins.android.library.get().pluginId).apply(true)
     id(libs.plugins.kotlin.android.get().pluginId).apply(true)
+
+    id(libs.plugins.kotlin.kapt.get().pluginId).apply(true)
 }
 
 android {
@@ -16,7 +18,7 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -25,13 +27,16 @@ android {
         }
     }
     val compileJavaVersion = rootProject.extra["CompileJavaVersion"] as JavaVersion
-
     compileOptions {
         sourceCompatibility = compileJavaVersion
         sourceCompatibility = compileJavaVersion
     }
     kotlinOptions {
         jvmTarget = rootProject.extra["JavaVersion"] as String
+    }
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
     }
 }
 
@@ -41,7 +46,25 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
 
+    kaptAndroidTest("androidx.databinding:databinding-compiler:7.4.2")
+
+
+    //libraries
+    implementation(libs.retrofit.moshi)
+
+    implementation(libs.bundles.dagger.impl)
+    kapt(libs.bundles.dagger.kapt)
+
+    implementation(libs.bundles.lifecycle)
+    implementation(libs.glide)
+    //tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso)
+
+    implementation(project(":core:ui"))
+    implementation(project(":core:data"))
+    implementation(project(":common"))
+
+
 }

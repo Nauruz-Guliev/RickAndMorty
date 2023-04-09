@@ -1,6 +1,9 @@
 plugins {
     id(libs.plugins.android.library.get().pluginId).apply(true)
     id(libs.plugins.kotlin.android.get().pluginId).apply(true)
+
+    id(libs.plugins.kotlin.kapt.get().pluginId).apply(true)
+
 }
 
 android {
@@ -19,6 +22,10 @@ android {
     kotlinOptions {
         jvmTarget = rootProject.extra["JavaVersion"] as String
     }
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+    }
 }
 
 dependencies {
@@ -26,4 +33,13 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
+
+    implementation(libs.bundles.lifecycle)
+
+
+    //libraries
+    implementation(libs.bundles.dagger.impl)
+    kapt(libs.bundles.dagger.kapt)
+
+    implementation(project(":core:ui"))
 }

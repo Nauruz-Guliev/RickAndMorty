@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="200dp"
+        android:minHeight="248dp"
+        android:orientation="vertical">
+
+
+
+
+        <ImageView
+            android:id="@+id/iv_character"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:maxHeight="200dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_3"
+            android:contentDescription="@string/avatar"
+            android:maxWidth="120dp"
+            android:scaleType="fitCenter"
+            tools:src="@tools:sample/backgrounds/scenic" />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/black_70"
+            android:paddingHorizontal="@dimen/padding_2"
+            android:textColor="@color/white"
+            tools:text="Alive" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_name"
+            style="@style/TextViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/margin_2"
+            android:layout_marginVertical="@dimen/margin_1"
+            tools:text="Rick and morty" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_species"
+            style="@style/TextViewSecondaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            tools:text="Species: Human" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_gender"
+            style="@style/TextViewSecondaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="@dimen/margin_1"
+            tools:text="Gender: Male" />
+
+
+        <!--
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:background="@color/gray_100" />
+                    -->
+
+    </LinearLayout>
+
+</layout>
+

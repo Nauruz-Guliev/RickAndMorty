@@ -2,6 +2,7 @@ plugins {
     // почему-то студия ругается на libs, но при этом всё работает
     id(libs.plugins.android.application.get().pluginId).apply(true)
     id(libs.plugins.kotlin.android.get().pluginId).apply(true)
+    id(libs.plugins.kotlin.kapt.get().pluginId).apply(true)
 }
 
 android {
@@ -35,6 +36,10 @@ android {
     kotlinOptions {
         jvmTarget = rootProject.extra["JavaVersion"] as String
     }
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+    }
 }
 
 dependencies {
@@ -47,6 +52,14 @@ dependencies {
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso)
 
+
+    implementation(libs.bundles.retrofit)
+
+    implementation(libs.bundles.dagger.impl)
+    kapt(libs.bundles.dagger.kapt)
+
     implementation(project(":core:ui"))
+    implementation(project(":core:data"))
+    implementation(project(":common"))
     implementation(project(":feature:characters"))
 }
