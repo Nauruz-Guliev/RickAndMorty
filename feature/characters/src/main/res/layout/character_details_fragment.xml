@@ -2,12 +2,133 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress_indicator"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:indeterminate="true"
+        android:alpha="0.1"
+        app:trackThickness="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:indicatorColor="@color/brown_rm"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
-        android:id="@+id/image_view_character"
-        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        android:layout_height="120dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+        app:strokeWidth="@dimen/margin_1" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout_main_info"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:animateLayoutChanges="true"
+        android:layout_height="wrap_content"
+        android:background="@color/blue_rm"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageView">
+
+        <TextView
+            android:id="@+id/tv_status"
+            style="@style/TextViewSecondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="68dp"
+            android:gravity="center"
+            android:text="Alive" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/TextViewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Name"
+            android:textSize="@dimen/text_size_7" />
+
+        <TextView
+
+            android:id="@+id/tv_species"
+            style="@style/TextViewSecondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/margin_2"
+            android:gravity="center"
+            android:text="Human" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/layout_additional_info"
+        android:animateLayoutChanges="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_main_info">
+
+        <TextView
+
+            style="@style/TextViewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_4"
+            android:text="@string/information"
+            android:textColor="@color/gray_100" />
+
+        <TextView
+
+            android:id="@+id/tv_gender"
+            style="@style/TextViewSecondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_4"
+            android:background="@drawable/text_lines"
+            android:text="@string/gender" />
+
+        <TextView
+
+            android:id="@+id/tv_origin"
+            style="@style/TextViewSecondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_4"
+            android:background="@drawable/text_lines"
+            android:text="@string/origin" />
+
+        <TextView
+
+            android:id="@+id/tv_type"
+            style="@style/TextViewSecondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_4"
+            android:background="@drawable/text_lines"
+            android:text="@string/type" />
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

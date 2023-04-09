@@ -4,4 +4,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="characters_welcome_message"> Get to know rick and morty characters</string>
+    <string name="information">Information</string>
+    <string name="gender">Gender : %1s</string>
+    <string name="origin">Origin %1s</string>
+    <string name="type">Type %1s</string>
 </resources>
