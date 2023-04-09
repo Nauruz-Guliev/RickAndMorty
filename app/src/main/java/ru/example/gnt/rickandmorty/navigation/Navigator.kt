@@ -1,11 +1,12 @@
 package ru.example.gnt.rickandmorty.navigation
 
-import android.content.Context
 import androidx.annotation.IdRes
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.presentation.characters.CharactersFragment
 import ru.example.gnt.characters.presentation.characters.detials.CharacterDetailsFragment
+import ru.example.gnt.common.LayoutBackDropManager
 import ru.example.gnt.common.di.scope.ScreenScope
 import javax.inject.Inject
 
@@ -39,5 +40,26 @@ class Navigator @Inject constructor(
             CharactersFragment.CHARACTERS_FRAGMENT_TAG,
             FragmentManager.POP_BACK_STACK_INCLUSIVE
         )
+    }
+
+    fun toggleDropDown() {
+        val fragment = getActiveFragment()
+        if (fragment != null && fragment is LayoutBackDropManager) {
+            fragment.toggle()
+        }
+    }
+
+    private fun getActiveFragment(): Fragment? {
+        return fragmentManager.fragments.firstOrNull { fragment ->
+            fragment.isVisible
+        }
+    }
+
+    fun openInitialState() {
+        navigateBackToCharacters()
+        fragmentManager.beginTransaction().add(
+            mainContainerId,
+            CharactersFragment.createInstance()
+        ).commitNow()
     }
 }

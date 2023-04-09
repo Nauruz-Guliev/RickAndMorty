@@ -1,24 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:animateLayoutChanges="true"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
+    android:layout_height="match_parent">
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progress_indicator"
+    <!--This the interface sitting behind the backdrop and shown when it is collapsed-->
+    <LinearLayout
+        android:background="@color/blue_rm_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_characters"
+    </LinearLayout>
+
+    <!--This is the backdrop's content with a BottomSheetBehaviour applied to it-->
+    <LinearLayout
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
-        app:spanCount="2"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        tools:listitem="@layout/character_item"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:behavior_peekHeight="56dp"
+        app:layout_behavior="ru.example.gnt.common.GestureLockedBottomSheetBehavior">
 
-</LinearLayout>
+        <!--This is the backdrop's header with a title and icon-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="@drawable/filter_header_round_corners"
+            android:clickable="true"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_marginTop="@dimen/margin_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="@dimen/text_size_3"
+                style="@style/TextViewSecondaryText"
+                android:layout_marginHorizontal="@dimen/margin_5"
+                android:text="@string/characters_welcome_message" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:layout_marginTop="@dimen/margin_4"
+                android:id="@+id/progress_indicator"
+                android:layout_width="match_parent"
+                app:indicatorColor="@color/brown_rm"
+                android:layout_height="8dp"
+                android:layout_marginHorizontal="@dimen/margin_5"
+                android:indeterminate="true" />
+
+        </LinearLayout>
+
+        <!--And finally this is the body of the backdrop's content. You can add here whatever you need inside a view group (LinearLayout, RelativeLayout, SwipeRefreshLayout, ConstraintLayout, etc.)-->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/main_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:minHeight="800dp"
+            android:orientation="vertical">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_characters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
+                tools:listitem="@layout/character_item" />
+
+            <!--The content's body goes here-->
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </LinearLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
