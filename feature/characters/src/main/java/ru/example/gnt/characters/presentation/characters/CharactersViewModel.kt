@@ -1,6 +1,7 @@
 package ru.example.gnt.characters.presentation.characters
 
 import android.util.Log
+import android.widget.ImageView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.domain.model.CharactersUiModel
 import ru.example.gnt.characters.domain.repository.CharactersRepository
 import ru.example.gnt.common.Resource
@@ -15,7 +17,8 @@ import ru.example.gnt.common.UiState
 import javax.inject.Inject
 
 internal class CharactersViewModel @Inject constructor(
-    private val repository: CharactersRepository
+    private val repository: CharactersRepository,
+    private val navigator: CharactersRouter
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<UiState<CharactersUiModel>> =
@@ -35,5 +38,9 @@ internal class CharactersViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun navigateToDetails(id: Int) {
+        navigator.openCharacterDetails(id)
     }
 }

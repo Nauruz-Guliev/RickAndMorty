@@ -14,10 +14,10 @@ interface RickAndMortyApi {
     fun getAllCharacters(): Call<Characters>
 
     @GET("$CHARACTER_END_POINT/{id}")
-    fun getCharacterById(@Path("id") id: Int): Response<Characters.Result>
+    fun getCharacterById(@Path("id") id: Int): Call<Characters.Result>
 
     @GET("$CHARACTER_END_POINT/{array}")
-    fun getCharacters(@Path("array") array: Array<String>): Response<List<Characters.Result>>
+    fun getCharacters(@Path("array") array: Array<String>): Call<List<Characters.Result>>
 
     @GET(CHARACTER_END_POINT)
     fun getFilteredCharacters(

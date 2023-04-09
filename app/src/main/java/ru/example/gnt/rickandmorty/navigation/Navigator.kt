@@ -1,13 +1,18 @@
 package ru.example.gnt.rickandmorty.navigation
 
+import android.content.Context
+import android.view.View
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.presentation.characters.CharactersFragment
 import ru.example.gnt.characters.presentation.characters.detials.CharacterDetailsFragment
+import ru.example.gnt.common.DetailsFragmentLabel
 import ru.example.gnt.common.LayoutBackDropManager
 import ru.example.gnt.common.di.scope.ScreenScope
+import ru.example.gnt.rickandmorty.MainActivity
+import ru.example.gnt.rickandmorty.R
 import javax.inject.Inject
 
 
@@ -15,25 +20,29 @@ import javax.inject.Inject
 class Navigator @Inject constructor(
     private val fragmentManager: FragmentManager,
     @IdRes private val mainContainerId: Int,
-) : CharactersRouter {
+    private val context: Context
+) : CharactersRouter, FragmentManager.OnBackStackChangedListener {
+
+    init {
+        fragmentManager.addOnBackStackChangedListener(this)
+    }
 
     override fun openCharactersScreen() {
-        fragmentManager.beginTransaction().replace(
-            mainContainerId,
-            CharactersFragment.createInstance(),
-            CharactersFragment.CHARACTERS_FRAGMENT_TAG
-        ).addToBackStack(CharactersFragment.CHARACTERS_FRAGMENT_TAG)
-            .commit()
+        navigate(
+            fragment = CharactersFragment.createInstance(),
+            tag = CharactersFragment.CHARACTERS_FRAGMENT_TAG,
+            addToBackStack = true
+        )
     }
 
     override fun openCharacterDetails(characterId: Int) {
-        fragmentManager.beginTransaction().replace(
-            mainContainerId,
-            CharacterDetailsFragment.createInstance(characterId),
-            CharacterDetailsFragment.CHARACTER_DETAILS_FRAGMENT_TAG,
-        ).addToBackStack(CharacterDetailsFragment.CHARACTER_DETAILS_FRAGMENT_TAG)
-            .commit()
+        navigate(
+            fragment = CharacterDetailsFragment.createInstance(characterId),
+            tag = CharacterDetailsFragment.CHARACTER_DETAILS_FRAGMENT_TAG,
+            addToBackStack = true,
+        )
     }
+
 
     override fun navigateBackToCharacters() {
         fragmentManager.popBackStack(
@@ -50,9 +59,40 @@ class Navigator @Inject constructor(
     }
 
     private fun getActiveFragment(): Fragment? {
-        return fragmentManager.fragments.firstOrNull { fragment ->
-            fragment.isVisible
+        val f = fragmentManager.fragments.last()
+        return if (f?.isVisible == true) {
+            f
+        } else {
+            fragmentManager.fragments.firstOrNull {
+                it.isVisible
+            }
         }
+    }
+
+    private fun navigate(
+        fragment: Fragment,
+        tag: String,
+        addToBackStack: Boolean = true,
+    ) {
+        if (fragment is DetailsFragmentLabel) {
+            hideAppBar()
+        } else {
+            showAppBar()
+        }
+        val transaction = fragmentManager.beginTransaction().replace(
+            mainContainerId,
+            fragment,
+            tag,
+        )
+        if (addToBackStack) {
+            transaction.addToBackStack(tag)
+        }
+        transaction.setCustomAnimations(
+            androidx.appcompat.R.anim.abc_slide_in_bottom,
+            androidx.appcompat.R.anim.abc_slide_out_bottom,
+        )
+        transaction.setReorderingAllowed(true)
+        transaction.commit()
     }
 
     fun openInitialState() {
@@ -62,4 +102,25 @@ class Navigator @Inject constructor(
             CharactersFragment.createInstance()
         ).commitNow()
     }
+
+    private fun hideAppBar() {
+        val appBar: View = (context as MainActivity).window.decorView.findViewById(R.id.appbar)
+        appBar.visibility = View.GONE
+    }
+
+    private fun showAppBar() {
+        val appBar: View = (context as MainActivity).window.decorView.findViewById(R.id.appbar)
+        appBar.visibility = View.VISIBLE
+    }
+
+    override fun onBackStackChanged() {
+        val fragment = getActiveFragment()
+        if (fragment is DetailsFragmentLabel) {
+            hideAppBar()
+        } else {
+            showAppBar()
+        }
+    }
+
+
 }

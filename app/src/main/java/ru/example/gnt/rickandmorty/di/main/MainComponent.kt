@@ -5,6 +5,8 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentManager
 import dagger.BindsInstance
 import dagger.Component
+import ru.example.gnt.characters.CharactersRouter
+import ru.example.gnt.characters.di.NavigatorDeps
 import ru.example.gnt.common.di.scope.ScreenScope
 import ru.example.gnt.rickandmorty.MainActivity
 
@@ -14,8 +16,9 @@ import ru.example.gnt.rickandmorty.MainActivity
     ]
 )
 @ScreenScope
-interface MainComponent {
+interface MainComponent: NavigatorDeps {
 
+    override val charactersRouter: CharactersRouter
     @Component.Builder
     interface Builder {
         @BindsInstance
@@ -24,7 +27,7 @@ interface MainComponent {
         @BindsInstance
         fun mainContainerId(@IdRes containerId: Int): Builder
         @BindsInstance
-        fun context(activity: MainActivity): Builder
+        fun context(context: Context): Builder
         fun build(): MainComponent
     }
 

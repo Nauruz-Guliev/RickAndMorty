@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextViewTitle" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textColor">@color/black_100</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/text_size_4</item>
+    </style>
+    <style name="TextViewSecondaryText" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/text_size_3</item>
+    </style>
+</resources>

@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.get
@@ -119,11 +120,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
                                 target: Target<Drawable>?,
                                 isFirstResource: Boolean
                             ): Boolean {
-                                Toast.makeText(
-                                    binding.root.context,
-                                    "unable to load",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+
                                 return false
                             }
 
@@ -148,7 +145,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
             },
             actionListener = object : RecyclerViewAction {
                 override fun onItemClicked(id: Int) {
-                    Toast.makeText(context, id.toString(), Toast.LENGTH_SHORT).show()
+                    viewModel.navigateToDetails(id)
                 }
             },
             itemContainerId = R.layout.character_item
@@ -188,7 +185,6 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
 
     companion object {
         const val CHARACTERS_FRAGMENT_TAG: String = "CHARACTERS_FRAGMENT_TAG"
-        var coordinatorLayout: CoordinatorLayout? = null
 
         @IdRes
         var coordinatorContentId: Int? = null
@@ -198,6 +194,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
             arguments = Bundle()
         }
     }
+
 
     override fun toggle() {
         if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {

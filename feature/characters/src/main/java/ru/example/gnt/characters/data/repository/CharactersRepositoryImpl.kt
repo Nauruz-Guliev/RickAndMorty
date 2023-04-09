@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import retrofit2.await
+import ru.example.gnt.characters.data.mapper.CharacterSingleUIMapper
 import ru.example.gnt.characters.data.mapper.CharactersUiMapper
 import ru.example.gnt.characters.domain.model.CharactersUiModel
 import ru.example.gnt.characters.domain.repository.CharactersRepository
@@ -30,9 +31,16 @@ internal class CharactersRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun getCharacterById(id: Int): Flow<Result<CharactersUiModel.Single>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getCharacterById(id: Int): Flow<Result<CharactersUiModel.Single>> =
+        withContext(dispatcher) {
+            flow {
+                emit(
+                    Result.success(
+                        CharacterSingleUIMapper.mapTo(api.getCharacterById(id).await())
+                    )
+                )
+            }
+        }
 
     override suspend fun getMultipleCharacters(ids: Array<Int>): Flow<Result<List<CharactersUiModel.Single>>> {
         TODO("Not yet implemented")

@@ -5,6 +5,7 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Provides
+import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.di.CharactersDeps
 import ru.example.gnt.common.data.remote.RickAndMortyApi
 import ru.example.gnt.common.di.NetworkModule
@@ -17,7 +18,6 @@ import javax.inject.Inject
 @ApplicationScope
 interface AppComponent : CharactersDeps{
     override val rickAndMortyApi: RickAndMortyApi
-
     @Component.Builder
     interface Builder {
 

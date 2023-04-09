@@ -2,9 +2,11 @@ package ru.example.gnt.rickandmorty
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import ru.example.gnt.characters.di.provider.CharactersDepsStore
 import ru.example.gnt.rickandmorty.databinding.ActivityMainBinding
 import ru.example.gnt.rickandmorty.di.main.DaggerMainComponent
 import ru.example.gnt.rickandmorty.di.main.MainComponent
@@ -31,7 +33,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun initSearchViewListener() {
         val sv = binding.search
-
         sv.setOnCloseListener {
             val t = Toast.makeText(this@MainActivity, "close", Toast.LENGTH_SHORT)
             t.show()
@@ -55,6 +56,12 @@ class MainActivity : AppCompatActivity() {
                 .fragmentManager(supportFragmentManager)
                 .context(this)
                 .build()
+        CharactersDepsStore.navigatorDeps = mainComponent
         mainComponent.inject(mainActivity = this)
+    }
+
+
+    private fun hideAppBar() {
+        binding.appbar.visibility = ViewGroup.GONE
     }
 }
