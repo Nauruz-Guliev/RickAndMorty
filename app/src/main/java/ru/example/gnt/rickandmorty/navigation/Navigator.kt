@@ -51,11 +51,13 @@ class Navigator @Inject constructor(
         )
     }
 
-    fun toggleDropDown() {
+    fun toggleDropDown() : Boolean {
         val fragment = getActiveFragment()
         if (fragment != null && fragment is LayoutBackDropManager) {
             fragment.toggle()
+            return true
         }
+        return false
     }
 
     private fun getActiveFragment(): Fragment? {

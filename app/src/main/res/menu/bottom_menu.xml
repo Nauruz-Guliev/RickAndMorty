@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/characters"
+        android:icon="@drawable/baseline_groups_24"
+        android:title="@string/characters"
+
+        />
+
+    <item
+        android:id="@+id/episodes"
+        android:icon="@drawable/television_tv_svgrepo_com"
+        android:title="@string/episodes"
+
+        />
+
+    <item
+        android:id="@+id/locations"
+        android:icon="@drawable/earth_15_svgrepo_com"
+        android:title="@string/locations"
+
+        />
+
+</menu>

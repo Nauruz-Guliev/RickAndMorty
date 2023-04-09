@@ -196,7 +196,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     }
 
 
-    override fun toggle() {
+    override fun toggle()  {
         if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
             binding.rvCharacters.alpha = 0.3F
