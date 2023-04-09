@@ -19,6 +19,7 @@ androidxConstraint = "2.1.4"
 room = "2.5.1"
 daggerTwo = "2.45"
 moshi = "1.14.0"
+glide = "4.15.1"
 
 #testing
 junit = "4.13.2"
@@ -62,6 +63,9 @@ dagger = { group = "com.google.dagger", name = "dagger", version.ref = "daggerTw
 dagger-android-support = { group = "com.google.dagger", name = "dagger-android-support", version.ref = "daggerTwo" }
 dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "daggerTwo" }
 dagger-android-processor = { group = "com.google.dagger", name = "dagger-android-processor", version.ref = "daggerTwo" }
+
+#Glide
+glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
 
 #testing
 junit = { group = "junit", name = "junit", version.ref = "junit" } #testImplementation(libs...)

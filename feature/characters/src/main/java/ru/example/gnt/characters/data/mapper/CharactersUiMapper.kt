@@ -67,7 +67,7 @@ internal object CharactersUiMapper : BaseMapper<Characters, CharactersUiModel> {
                         name = character.origin.name,
                         url = character.origin.url
                     ),
-                    status = character.status.n,
+                    status = character.status.get,
                     type = character.type,
                     url = character.url,
                     species = character.species

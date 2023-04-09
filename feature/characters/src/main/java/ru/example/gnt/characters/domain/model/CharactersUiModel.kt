@@ -1,9 +1,9 @@
 package ru.example.gnt.characters.domain.model
 
 
+import ru.example.gnt.common.base.BaseClass
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
-import java.util.*
 
 
 internal data class CharactersUiModel(
@@ -21,16 +21,16 @@ internal data class CharactersUiModel(
         val created: String,
         val episode: List<String>,
         val gender: CharacterGenderEnum,
-        val id: Int,
+        override val id: Int,
         val image: String,
         val location: Location,
-        val name: String,
+        override val name: String,
         val origin: Origin,
         val species: String,
         val status: CharacterStatusEnum,
         val type: String,
         val url: String,
-    ) {
+    ) : BaseClass(id, name) {
         internal data class Location(
             val name: String,
             val url: String

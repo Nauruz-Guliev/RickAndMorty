@@ -36,6 +36,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        dataBinding = true
     }
 }
 
@@ -45,6 +46,9 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
 
+    kaptAndroidTest("androidx.databinding:databinding-compiler:7.4.2")
+
+
     //libraries
     implementation(libs.retrofit.moshi)
 
@@ -52,7 +56,7 @@ dependencies {
     kapt(libs.bundles.dagger.kapt)
 
     implementation(libs.bundles.lifecycle)
-
+    implementation(libs.glide)
     //tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)

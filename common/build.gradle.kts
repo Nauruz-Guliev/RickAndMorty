@@ -24,6 +24,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        dataBinding = true
     }
 }
 
@@ -32,6 +33,9 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
+
+    implementation(libs.bundles.lifecycle)
+
 
     //libraries
     implementation(libs.bundles.dagger.impl)
