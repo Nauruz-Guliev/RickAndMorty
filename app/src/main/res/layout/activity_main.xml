@@ -30,20 +30,19 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:layout_marginStart="-12dp"
                     android:id="@+id/btn_filter"
                     android:layout_width="64dp"
                     android:cropToPadding="true"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_marginEnd="8dp"
                     android:src="@drawable/settings_icon"
-                    android:paddingVertical="20dp" />
+                    android:paddingVertical="@dimen/padding_4" />
 
             </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
-
 
 
     <androidx.fragment.app.FragmentContainerView
@@ -52,6 +51,7 @@
         app:layout_constraintBottom_toBottomOf="@id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
+
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

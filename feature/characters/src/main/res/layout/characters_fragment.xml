@@ -14,6 +14,37 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TextView
+            style="@style/TextViewSecondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_4"
+            android:layout_marginTop="@dimen/margin_4"
+            android:text="@string/status"
+            android:textColor="@color/blue_rm" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_status_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_4"
+            app:singleSelection="true" />
+
+        <TextView
+            style="@style/TextViewSecondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_4"
+            android:text="@string/gender_empty"
+            android:textColor="@color/blue_rm" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_gender_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_4"
+            app:singleSelection="true" />
+
     </LinearLayout>
 
     <!--This is the backdrop's content with a BottomSheetBehaviour applied to it-->
@@ -53,6 +84,7 @@
                 android:layout_height="8dp"
                 android:layout_marginHorizontal="@dimen/margin_5"
                 android:indeterminate="true" />
+
 
         </LinearLayout>
 

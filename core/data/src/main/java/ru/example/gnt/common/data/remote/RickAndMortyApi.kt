@@ -26,7 +26,7 @@ interface RickAndMortyApi {
         @Query("species") species: String? = null,
         @Query("type") type: String? = null,
         @Query("gender") gender: String? = null
-    )
+    ) :  Call<Characters>
 
     companion object {
         const val CHARACTER_END_POINT: String = "character"

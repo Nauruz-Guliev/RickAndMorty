@@ -1,13 +1,12 @@
 package ru.example.gnt.characters.presentation.characters.detials
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
@@ -26,6 +25,7 @@ import ru.example.gnt.common.UiState
 import ru.example.gnt.common.base.BaseFragment
 import ru.example.gnt.common.flowWithLifecycle
 import javax.inject.Inject
+
 
 class CharacterDetailsFragment : BaseFragment<CharacterDetailsFragmentBinding>(
     CharacterDetailsFragmentBinding::inflate
@@ -64,6 +64,7 @@ class CharacterDetailsFragment : BaseFragment<CharacterDetailsFragmentBinding>(
 
     private fun initViews(item: CharactersUiModel.Single) {
         with(binding) {
+            Glide.with(binding.root).load("https://c4.wallpaperflare.com/wallpaper/325/762/449/rick-and-morty-adult-swim-cartoon-wallpaper-preview.jpg").into(imageView)
             tvName.text = item.name
             tvSpecies.text = item.species
             tvStatus.text = item.status.get

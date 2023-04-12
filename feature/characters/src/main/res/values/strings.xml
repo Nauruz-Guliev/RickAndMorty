@@ -8,4 +8,6 @@
     <string name="gender">Gender : %1s</string>
     <string name="origin">Origin %1s</string>
     <string name="type">Type %1s</string>
+    <string name="status">Status</string>
+    <string name="gender_empty">gender</string>
 </resources>

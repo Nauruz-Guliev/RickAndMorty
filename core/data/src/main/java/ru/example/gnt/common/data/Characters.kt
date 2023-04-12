@@ -2,13 +2,13 @@ package ru.example.gnt.common.data
 
 
 data class Characters(
-    val info: Info,
-    val results: List<Result>
+    val info: Info?,
+    val results: List<Result>?
 ) {
     data class Info(
-        val count: Int, // 826
-        val next: String, // https://rickandmortyapi.com/api/character?page=2
-        val pages: Int, // 42
+        val count: Int?, // 826
+        val next: String?, // https://rickandmortyapi.com/api/character?page=2
+        val pages: Int?, // 42
         val prev: Any? // null
     )
 

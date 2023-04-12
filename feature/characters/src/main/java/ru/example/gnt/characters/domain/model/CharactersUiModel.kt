@@ -7,13 +7,13 @@ import ru.example.gnt.common.enums.CharacterStatusEnum
 
 
 internal data class CharactersUiModel(
-    val info: Info,
-    val singles: List<Single>
+    val info: Info? = null,
+    val singles: List<Single>? = null
 ) {
     internal data class Info(
-        val count: Int,
-        val next: String,
-        val pages: Int,
+        val count: Int?,
+        val next: String?,
+        val pages: Int?,
         val prev: Any?
     )
 

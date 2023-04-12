@@ -46,6 +46,19 @@ internal class CharactersRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override suspend fun getFilteredCharacters(status: String?, gender: String?): Flow<Result<CharactersUiModel>> =
+        withContext(dispatcher) {
+            flow {
+                emit(
+                    Result.success(
+                        CharactersUiMapper.mapTo(
+                            api.getFilteredCharacters(status = status, gender = gender).await()
+                        )
+                    )
+                )
+            }
+        }
+
 }
 
 

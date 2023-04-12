@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.annotation.IdRes
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.get
@@ -22,6 +21,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.chip.Chip
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -35,7 +35,10 @@ import ru.example.gnt.characters.presentation.characters.recyclerview.RecyclerVi
 import ru.example.gnt.common.LayoutBackDropManager
 import ru.example.gnt.common.UiState
 import ru.example.gnt.common.base.BaseFragment
+import ru.example.gnt.common.enums.CharacterGenderEnum
+import ru.example.gnt.common.enums.CharacterStatusEnum
 import javax.inject.Inject
+
 
 class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     CharactersFragmentBinding::inflate
@@ -49,7 +52,6 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
 
     private var adapter: BaseRecyclerViewManager<CharactersUiModel.Single, CharacterItemBinding>.RecyclerViewAdapter? =
         null
-
 
 
     override fun onAttach(context: Context) {
@@ -81,6 +83,58 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
         initRecyclerView()
         initCoordinatorLayout()
         observeStateChanges()
+        initChipGroup()
+        listenForFilterChanges()
+    }
+
+    private fun listenForFilterChanges() {
+        binding.chipStatusGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            for (id in checkedIds) {
+                val chip: Chip = group.findViewById(id)
+                viewModel.setStatusFilter(CharacterStatusEnum.find(chip.text.toString()))
+            }
+            if (checkedIds.isEmpty()) {
+                viewModel.loadAllCharacters()
+            }
+        }
+        binding.chipGenderGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            for (id in checkedIds) {
+                val chip: Chip = group.findViewById(id)
+                viewModel.setGenderFilter(CharacterGenderEnum.find(chip.text.toString()))
+            }
+            if (checkedIds.isEmpty()) {
+                viewModel.loadAllCharacters()
+            }
+        }
+    }
+
+    private fun initChipGroup() {
+        binding.chipStatusGroup.removeAllViews()
+        CharacterStatusEnum.values().forEach {
+            binding.chipStatusGroup.addView(createChip(it))
+        }
+        binding.chipGenderGroup.removeAllViews()
+        CharacterGenderEnum.values().forEach {
+            binding.chipGenderGroup.addView(createChip(it))
+        }
+    }
+
+    private fun createChip(enum: Enum<*>): Chip {
+        return Chip(binding.root.context).apply {
+            when (enum) {
+                is CharacterStatusEnum -> {
+                    text = enum.get
+                    setChipBackgroundColorResource(enum.color.id)
+                }
+                is CharacterGenderEnum -> {
+                    text = enum.n
+                    setChipBackgroundColorResource(ru.example.gnt.ui.R.color.blue_rm_secondary)
+                    setTextColor(AppCompatResources.getColorStateList(context,ru.example.gnt.ui.R.color.blue_rm).defaultColor)
+                }
+            }
+            isCloseIconVisible = false
+            isCheckable = true
+        }
     }
 
     private fun observeStateChanges() {
@@ -196,7 +250,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     }
 
 
-    override fun toggle()  {
+    override fun toggle() {
         if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
             binding.rvCharacters.alpha = 0.3F
