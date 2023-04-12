@@ -24,4 +24,3 @@ fun <T> Flow<T>.flowWithLifecycle(
     }
     close()
 }
-

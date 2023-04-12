@@ -2,8 +2,8 @@ package ru.example.gnt.rickandmorty
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import ru.example.gnt.characters.di.provider.CharactersDepsStore
+import ru.example.gnt.common.setImageDrawable
 import ru.example.gnt.rickandmorty.databinding.ActivityMainBinding
 import ru.example.gnt.rickandmorty.di.main.DaggerMainComponent
 import ru.example.gnt.rickandmorty.di.main.MainComponent
@@ -37,22 +37,10 @@ class MainActivity : AppCompatActivity() {
         binding.btnFilter.setOnClickListener {
             if (navigator.toggleDropDown()) {
                 buttonState = !buttonState
-                when (buttonState) {
-                    true -> {
-                        binding.btnFilter.setImageDrawable(
-                            AppCompatResources.getDrawable(
-                                this,
-                                R.drawable.cross_svgrepo_com
-                            )
-                        )
-                    }
-                    false -> {
-                        binding.btnFilter.setImageDrawable(
-                            AppCompatResources.getDrawable(
-                                this,
-                                ru.example.gnt.ui.R.drawable.settings_icon
-                            )
-                        )
+                with(binding.btnFilter) {
+                    when (buttonState) {
+                        true -> setImageDrawable(ru.example.gnt.ui.R.drawable.cross_svgrepo_com)
+                        false -> setImageDrawable(ru.example.gnt.ui.R.drawable.settings_icon)
                     }
                 }
             }

@@ -3,4 +3,18 @@
     <string name="network_error">
         Failed to load data
     </string>
+    <string name="app_name">RickAndMorty</string>
+    <string name="characters">Characters</string>
+    <string name="episodes">Episodes</string>
+    <string name="locations">Locations</string>
+
+
+    <string name="avatar">Avatar</string>
+    <string name="characters_welcome_message"> Get to know rick and morty characters</string>
+    <string name="information">Information</string>
+    <string name="gender">Gender : %1s</string>
+    <string name="origin">Origin %1s</string>
+    <string name="type">Type %1s</string>
+    <string name="status">Status</string>
+    <string name="gender_empty">gender</string>
 </resources>
