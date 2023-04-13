@@ -1,32 +1,29 @@
 package ru.example.gnt.characters.presentation.characters
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 import ru.example.gnt.characters.CharactersRouter
-import ru.example.gnt.common.model.ui.CharactersUiModel
 import ru.example.gnt.characters.domain.usecases.GetAllCharactersUseCase
-import ru.example.gnt.characters.domain.usecases.GetFilteredCharacters
-import ru.example.gnt.common.model.Resource
-import ru.example.gnt.common.model.UiState
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
+import ru.example.gnt.common.model.ui.CharactersUiModel
 import javax.inject.Inject
 
 internal class CharactersViewModel @Inject constructor(
     private val getAllCharactersUseCase: GetAllCharactersUseCase,
-    private val getFilteredCharacters: GetFilteredCharacters,
+    //  private val getFilteredCharacters: GetFilteredCharacters,
     private val navigator: CharactersRouter
 ) : ViewModel() {
+    /*
 
     private val _state: MutableStateFlow<UiState<CharactersUiModel>> =
         MutableStateFlow(UiState.Empty)
     val state = _state.asStateFlow()
+
+     */
 
     private val _filterState: MutableStateFlow<CharactersFilterModel> = MutableStateFlow(
         CharactersFilterModel()
@@ -34,6 +31,13 @@ internal class CharactersViewModel @Inject constructor(
     val filterState = _filterState.asStateFlow()
 
 
+    lateinit var state: Flow<PagingData<CharactersUiModel.Single>>
+
+    init {
+        state = getAllCharactersUseCase()
+    }
+
+    /*
     init {
         loadAllCharacters()
         viewModelScope.launch {
@@ -54,6 +58,11 @@ internal class CharactersViewModel @Inject constructor(
         }
     }
 
+     */
+
+
+    /*
+
     fun loadAllCharacters() {
         _state.value = UiState.Loading
         viewModelScope.launch {
@@ -68,6 +77,8 @@ internal class CharactersViewModel @Inject constructor(
             }
         }
     }
+
+     */
 
     fun navigateToDetails(id: Int) {
         navigator.openCharacterDetails(id)
@@ -84,5 +95,6 @@ internal class CharactersViewModel @Inject constructor(
             gender = gender
         )
     }
+
 
 }

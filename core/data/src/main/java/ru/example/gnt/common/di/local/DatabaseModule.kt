@@ -1,11 +1,12 @@
 package ru.example.gnt.common.di.local
 
+import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import ru.example.gnt.common.data.local.RickAndMortyDatabase
 import ru.example.gnt.common.data.local.dao.CharacterDao
-import ru.example.gnt.common.di.CommonModuleDepsProvider
 import ru.example.gnt.common.di.scope.ApplicationScope
 
 @Module
@@ -13,9 +14,9 @@ class DatabaseModule {
 
     @Provides
     @ApplicationScope
-    fun provideDatabase(): RickAndMortyDatabase {
+    fun provideDatabase(application: Application): RickAndMortyDatabase {
         return Room.databaseBuilder(
-            CommonModuleDepsProvider.context,
+            application,
             RickAndMortyDatabase::class.java,
             DB_NAME
         ).build()

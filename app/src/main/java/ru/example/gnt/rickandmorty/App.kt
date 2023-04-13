@@ -9,18 +9,14 @@ import javax.inject.Singleton
 @Singleton
 class App: Application() {
 
-    val appComponent: AppComponent by lazy {
-        DaggerAppComponent
-            .builder()
-            .application(this)
-            .context(this)
-            .build()
+    private val appComponent: AppComponent by lazy {
+        DaggerAppComponent.builder().application(this).build()
     }
 
     override fun onCreate() {
-        super.onCreate()
         appComponent.inject(this)
         CharactersDepsStore.deps = appComponent
+        super.onCreate()
     }
 
 }

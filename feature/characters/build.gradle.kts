@@ -57,6 +57,9 @@ dependencies {
 
     implementation(libs.bundles.lifecycle)
     implementation(libs.glide)
+
+    implementation(libs.androidx.paging)
+
     //tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)

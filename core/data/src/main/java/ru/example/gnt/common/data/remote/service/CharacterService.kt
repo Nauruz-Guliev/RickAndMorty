@@ -15,8 +15,11 @@ interface CharacterService {
     @GET("$CHARACTER_END_POINT/{id}")
     fun getCharacterById(@Path("id") id: Int): Call<Characters.Result>
 
-    @GET("$CHARACTER_END_POINT/{array}")
-    fun getCharacters(@Path("array") array: Array<String>): Call<List<Characters.Result>>
+    /**@param ids Notice that all ids should be separated by comma
+     * example "character/1,2,3,4,5,6,...,800" etc..
+     */
+    @GET("$CHARACTER_END_POINT/{ids}")
+    fun getCharactersInRange(@Path("ids") ids: String): Call<List<Characters.Result>>
 
     @GET(CHARACTER_END_POINT)
     fun getFilteredCharacters(

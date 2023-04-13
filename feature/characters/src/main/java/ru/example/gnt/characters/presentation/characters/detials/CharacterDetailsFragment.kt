@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import ru.example.gnt.characters.R
 import ru.example.gnt.characters.databinding.CharacterDetailsFragmentBinding
 import ru.example.gnt.characters.di.provider.CharactersComponentViewModel
 import ru.example.gnt.common.model.ui.CharactersUiModel
@@ -39,7 +40,7 @@ class CharacterDetailsFragment : BaseFragment<CharacterDetailsFragmentBinding>(
         ViewModelProvider(this).get<CharactersComponentViewModel>()
             .charactersComponent.inject(this)
         id = arguments?.getInt(CHARACTER_ID_ARG)
-        viewModel.setCharacterId(id)
+      //  viewModel.setCharacterId(id)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,15 +62,16 @@ class CharacterDetailsFragment : BaseFragment<CharacterDetailsFragmentBinding>(
         binding.progressIndicator.visibility = ViewGroup.GONE
     }
 
+
     private fun initViews(item: CharactersUiModel.Single) {
         with(binding) {
             Glide.with(binding.root).load("https://c4.wallpaperflare.com/wallpaper/325/762/449/rick-and-morty-adult-swim-cartoon-wallpaper-preview.jpg").into(imageView)
             tvName.text = item.name
             tvSpecies.text = item.species
-            tvStatus.text = item.status.get
-            tvStatus.setTextColor(item.status.color.getValue(root.context).defaultColor)
-            tvGender.text = item.gender.n
-            tvOrigin.text = item.origin.name
+            tvStatus.text = item.status?.get
+            tvStatus.setTextColor(item.status?.color?.getValue(root.context)?.defaultColor ?: ru.example.gnt.ui.R.color.blue_rm)
+            tvGender.text = item.gender?.n
+            tvOrigin.text = item.origin?.name
             tvType.text = item.type
         }
     }

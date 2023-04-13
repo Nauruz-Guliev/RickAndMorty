@@ -24,7 +24,7 @@ internal class CharacterDetailsViewModel @Inject constructor(
         _state.value = UiState.Loading
     }
 
-
+ /*
     fun setCharacterId(id: Int?) {
         viewModelScope.launch {
             getCharacterById(id!!).collectLatest { result ->
@@ -39,4 +39,6 @@ internal class CharacterDetailsViewModel @Inject constructor(
 
         }
     }
+
+  */
 }

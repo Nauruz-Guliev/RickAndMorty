@@ -1,5 +1,6 @@
 package ru.example.gnt.common.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import ru.example.gnt.common.data.local.entity.CharacterEntity
@@ -18,6 +19,9 @@ interface CharacterDao {
 
     @Query("SELECT * FROM character")
     fun getAllCharacters(): Flow<List<CharacterEntity>>
+
+    @Query("SELECT * FROM character")
+    fun getCharacters() : PagingSource<Int, CharacterEntity>
 
     @Query("DELETE FROM character")
     suspend fun clear()

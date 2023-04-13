@@ -12,7 +12,7 @@ import ru.example.gnt.common.data.mapper.CharacterSingleUIMapper
 import ru.example.gnt.common.data.mapper.CharactersUiMapper
 import ru.example.gnt.common.data.remote.service.CharacterService
 import javax.inject.Inject
-
+/*
 internal class CharactersRepositoryImpl @Inject constructor(
     private val api: CharacterService
 ) : CharactersRepository {
@@ -60,6 +60,8 @@ internal class CharactersRepositoryImpl @Inject constructor(
         }
 
 }
+
+ */
 
 
 

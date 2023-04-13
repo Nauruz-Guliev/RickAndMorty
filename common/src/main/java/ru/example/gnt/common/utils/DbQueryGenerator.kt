@@ -1,12 +1,13 @@
 package ru.example.gnt.common.utils
 
-import ru.example.gnt.common.enums.CharacterGenderEnum
-import ru.example.gnt.common.enums.CharacterStatusEnum
 import ru.example.gnt.common.model.filter.CharacterFilterModel
 
-class QueryGenerator {
+object DbQueryGenerator {
 
-    fun generateCharacterFilterQuery(characterFilter: CharacterFilterModel) : String {
+    private const val CHARACTER_TABLE_NAME = "character"
+    private const val BASE = "SELECT * FROM "
+
+    fun generateCharacterFilterQuery(characterFilter: CharacterFilterModel): String {
         var query = BASE + CHARACTER_TABLE_NAME
 
         with(characterFilter) {
@@ -29,20 +30,20 @@ class QueryGenerator {
         return query
     }
 
-    companion object {
-        private const val CHARACTER_TABLE_NAME = "character"
-        private const val BASE = "SELECT * FROM "
-    }
 }
 
+/*
 fun main() {
     println(QueryGenerator().generateCharacterFilterQuery(
         CharacterFilterModel(
             name = "rick",
             statusList = listOf(CharacterStatusEnum.ALIVE, CharacterStatusEnum.UNKNOWN),
             species = "human",
-            type = "ass",
+            type = "test",
             genderList = listOf(CharacterGenderEnum.UNKNOWN, CharacterGenderEnum.FEMALE)
         )
     ))
 }
+
+
+ */

@@ -19,26 +19,26 @@ data class CharactersUiModel(
 
     data class Single(
         val created: String,
-        val episode: List<String>,
-        val gender: CharacterGenderEnum,
+        val episode: List<String>? = null,
+        val gender: CharacterGenderEnum? = null,
         override val id: Int,
         val image: String,
-        val location: Location,
+        val location: Location? = null,
         override val name: String,
-        val origin: Origin,
+        val origin: Origin? = null,
         val species: String,
-        val status: CharacterStatusEnum,
+        val status: CharacterStatusEnum? = null,
         val type: String,
         val url: String,
     ) : BaseClass(id, name) {
         data class Location(
-            val name: String,
-            val url: String
+            val name: String?,
+            val url: String?
         )
 
         data class Origin(
-            val name: String,
-            val url: String
+            val name: String?,
+            val url: String?
         )
     }
 }
