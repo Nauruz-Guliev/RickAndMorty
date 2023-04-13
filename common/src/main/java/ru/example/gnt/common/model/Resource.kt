@@ -1,4 +1,4 @@
-package ru.example.gnt.common
+package ru.example.gnt.common.model
 
 import android.content.Context
 import android.content.res.ColorStateList

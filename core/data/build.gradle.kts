@@ -53,6 +53,17 @@ dependencies {
     implementation(libs.bundles.dagger.impl)
     kapt(libs.bundles.dagger.kapt)
 
+    //room
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
+    implementation(libs.room.paging)
+    kapt(libs.room.compiler)
+    annotationProcessor(libs.room.compiler)
+
+    //paging
+    implementation(libs.room.paging)
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)

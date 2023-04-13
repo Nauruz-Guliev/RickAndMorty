@@ -1,4 +1,4 @@
-package ru.example.gnt.common
+package ru.example.gnt.common.model
 
 sealed class UiState<out T> {
     object Empty : UiState<Nothing>()

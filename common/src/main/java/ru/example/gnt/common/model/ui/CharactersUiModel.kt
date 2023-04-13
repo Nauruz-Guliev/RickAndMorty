@@ -1,4 +1,4 @@
-package ru.example.gnt.characters.domain.model
+package ru.example.gnt.common.model.ui
 
 
 import ru.example.gnt.common.base.BaseClass
@@ -6,18 +6,18 @@ import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 
 
-internal data class CharactersUiModel(
+data class CharactersUiModel(
     val info: Info? = null,
     val singles: List<Single>? = null
 ) {
-    internal data class Info(
+    data class Info(
         val count: Int?,
         val next: String?,
         val pages: Int?,
         val prev: Any?
     )
 
-    internal data class Single(
+    data class Single(
         val created: String,
         val episode: List<String>,
         val gender: CharacterGenderEnum,
@@ -31,12 +31,12 @@ internal data class CharactersUiModel(
         val type: String,
         val url: String,
     ) : BaseClass(id, name) {
-        internal data class Location(
+        data class Location(
             val name: String,
             val url: String
         )
 
-        internal data class Origin(
+        data class Origin(
             val name: String,
             val url: String
         )

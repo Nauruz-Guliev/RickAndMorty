@@ -29,11 +29,11 @@ import ru.example.gnt.characters.R
 import ru.example.gnt.characters.databinding.CharacterItemBinding
 import ru.example.gnt.characters.databinding.CharactersFragmentBinding
 import ru.example.gnt.characters.di.provider.CharactersComponentViewModel
-import ru.example.gnt.characters.domain.model.CharactersUiModel
+import ru.example.gnt.common.model.ui.CharactersUiModel
 import ru.example.gnt.characters.presentation.characters.recyclerview.BaseRecyclerViewManager
 import ru.example.gnt.characters.presentation.characters.recyclerview.RecyclerViewAction
-import ru.example.gnt.common.LayoutBackDropManager
-import ru.example.gnt.common.UiState
+import ru.example.gnt.common.utils.interfaces.LayoutBackDropManager
+import ru.example.gnt.common.model.UiState
 import ru.example.gnt.common.base.BaseFragment
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum

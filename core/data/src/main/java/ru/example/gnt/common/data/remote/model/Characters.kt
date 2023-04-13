@@ -1,4 +1,4 @@
-package ru.example.gnt.common.data
+package ru.example.gnt.common.data.remote.model
 
 
 data class Characters(

@@ -1,13 +1,12 @@
-package ru.example.gnt.common.data.remote
+package ru.example.gnt.common.data.remote.service
 
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import ru.example.gnt.common.data.Characters
+import ru.example.gnt.common.data.remote.model.Characters
 
-interface RickAndMortyApi {
+interface CharacterService {
 
 
     @GET(CHARACTER_END_POINT)

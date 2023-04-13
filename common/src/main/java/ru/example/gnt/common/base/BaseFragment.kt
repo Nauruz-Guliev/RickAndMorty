@@ -10,7 +10,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import ru.example.gnt.common.LayoutBackDropManager
 
 abstract class BaseFragment<VB : ViewBinding>(
     private val bindingInflater: (inflater: LayoutInflater) -> VB,

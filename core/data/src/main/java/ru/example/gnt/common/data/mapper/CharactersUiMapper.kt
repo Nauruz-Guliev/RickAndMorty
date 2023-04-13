@@ -1,10 +1,10 @@
-package ru.example.gnt.characters.data.mapper
+package ru.example.gnt.common.data.mapper
 
-import ru.example.gnt.characters.domain.model.CharactersUiModel
 import ru.example.gnt.common.base.BaseMapper
-import ru.example.gnt.common.data.Characters
+import ru.example.gnt.common.data.remote.model.Characters
+import ru.example.gnt.common.model.ui.CharactersUiModel
 
-internal object CharactersUiMapper : BaseMapper<Characters, CharactersUiModel> {
+object CharactersUiMapper : BaseMapper<Characters, CharactersUiModel> {
     override fun mapTo(model: Characters): CharactersUiModel {
         return CharactersUiModel(
             info = CharactersUiModel.Info(

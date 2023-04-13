@@ -26,6 +26,6 @@ object CharactersDepsStore : CharactersDepsProvider {
 internal class CharactersComponentViewModel : ViewModel() {
     val charactersComponent = DaggerCharactersComponent.builder()
         .deps(CharactersDepsProvider.deps)
-        .navigatorDeps(CharactersDepsStore.navigatorDeps)
+        .navigatorDeps(CharactersDepsProvider.navigatorDeps)
         .build()
 }

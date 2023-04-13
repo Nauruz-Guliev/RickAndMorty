@@ -8,8 +8,8 @@ import androidx.fragment.app.FragmentManager
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.presentation.characters.CharactersFragment
 import ru.example.gnt.characters.presentation.characters.detials.CharacterDetailsFragment
-import ru.example.gnt.common.DetailsFragmentLabel
-import ru.example.gnt.common.LayoutBackDropManager
+import ru.example.gnt.common.utils.interfaces.DetailsFragmentLabel
+import ru.example.gnt.common.utils.interfaces.LayoutBackDropManager
 import ru.example.gnt.common.di.scope.ScreenScope
 import ru.example.gnt.rickandmorty.MainActivity
 import ru.example.gnt.rickandmorty.R

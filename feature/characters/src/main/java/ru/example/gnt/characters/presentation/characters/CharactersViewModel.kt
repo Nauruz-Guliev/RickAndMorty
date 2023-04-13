@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import ru.example.gnt.characters.CharactersRouter
-import ru.example.gnt.characters.domain.model.CharactersUiModel
+import ru.example.gnt.common.model.ui.CharactersUiModel
 import ru.example.gnt.characters.domain.usecases.GetAllCharactersUseCase
 import ru.example.gnt.characters.domain.usecases.GetFilteredCharacters
-import ru.example.gnt.common.Resource
-import ru.example.gnt.common.UiState
+import ru.example.gnt.common.model.Resource
+import ru.example.gnt.common.model.UiState
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 import javax.inject.Inject

@@ -1,12 +1,12 @@
-package ru.example.gnt.characters.data.mapper
+package ru.example.gnt.common.data.mapper
 
-import ru.example.gnt.characters.domain.model.CharactersUiModel
 import ru.example.gnt.common.base.BaseMapper
-import ru.example.gnt.common.data.Characters
+import ru.example.gnt.common.data.remote.model.Characters
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
+import ru.example.gnt.common.model.ui.CharactersUiModel
 
-internal object CharacterSingleUIMapper : BaseMapper<Characters.Result, CharactersUiModel.Single> {
+object CharacterSingleUIMapper : BaseMapper<Characters.Result, CharactersUiModel.Single> {
     override fun mapTo(model: Characters.Result): CharactersUiModel.Single =
         CharactersUiModel.Single(
             created = model.created,

@@ -1,6 +1,6 @@
 package ru.example.gnt.common.enums
 
-import ru.example.gnt.common.Resource
+import ru.example.gnt.common.model.Resource
 
 
 enum class CharacterStatusEnum(val get: String, val color: Resource.Color) {

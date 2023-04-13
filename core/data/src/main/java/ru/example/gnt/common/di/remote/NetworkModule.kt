@@ -1,4 +1,4 @@
-package ru.example.gnt.common.di
+package ru.example.gnt.common.di.remote
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -7,7 +7,7 @@ import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
-import ru.example.gnt.common.data.remote.RickAndMortyApi
+import ru.example.gnt.common.data.remote.service.CharacterService
 import ru.example.gnt.common.di.qualifiers.BaseUrl
 import ru.example.gnt.common.di.scope.ApplicationScope
 
@@ -38,7 +38,7 @@ class NetworkModule {
     @ApplicationScope
     @BaseUrl
     fun provideBaseUrl(): String {
-        return RickAndMortyApi.BASE_URL
+        return CharacterService.BASE_URL
     }
 
     @Provides
@@ -46,7 +46,7 @@ class NetworkModule {
     fun provideRetrofit(
         @BaseUrl baseUrl: String,
         moshiConverterFactory: MoshiConverterFactory
-    ): RickAndMortyApi {
+    ): CharacterService {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(moshiConverterFactory)

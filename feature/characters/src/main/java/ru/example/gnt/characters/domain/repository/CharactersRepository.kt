@@ -1,7 +1,7 @@
 package ru.example.gnt.characters.domain.repository
 
 import kotlinx.coroutines.flow.Flow
-import ru.example.gnt.characters.domain.model.CharactersUiModel
+import ru.example.gnt.common.model.ui.CharactersUiModel
 
 internal interface CharactersRepository {
     suspend fun getAllCharacters(): Flow<Result<CharactersUiModel>>

@@ -1,7 +1,6 @@
 package ru.example.gnt.characters.presentation.characters.detials
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
@@ -19,9 +18,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.example.gnt.characters.databinding.CharacterDetailsFragmentBinding
 import ru.example.gnt.characters.di.provider.CharactersComponentViewModel
-import ru.example.gnt.characters.domain.model.CharactersUiModel
-import ru.example.gnt.common.DetailsFragmentLabel
-import ru.example.gnt.common.UiState
+import ru.example.gnt.common.model.ui.CharactersUiModel
+import ru.example.gnt.common.utils.interfaces.DetailsFragmentLabel
+import ru.example.gnt.common.model.UiState
 import ru.example.gnt.common.base.BaseFragment
 import ru.example.gnt.common.flowWithLifecycle
 import javax.inject.Inject
