@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:behavior_peekHeight="56dp"
+        app:behavior_peekHeight="112dp"
         app:layout_behavior="ru.example.gnt.common.GestureLockedBottomSheetBehavior">
 
         <!--This is the backdrop's header with a title and icon-->

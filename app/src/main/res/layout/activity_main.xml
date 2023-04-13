@@ -36,7 +36,7 @@
                     android:cropToPadding="true"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:src="@drawable/settings_icon"
+                    android:src="@drawable/baseline_filter_list_24"
                     android:paddingVertical="@dimen/padding_4" />
 
             </LinearLayout>
