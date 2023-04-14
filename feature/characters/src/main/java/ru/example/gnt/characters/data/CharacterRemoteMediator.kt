@@ -57,8 +57,12 @@ class CharacterRemoteMediator @Inject constructor(
             limit = limit,
             offset = offset
         )
-        return characterService.getCharactersInRange(query).await()
-            .map { CharactersEntityDtoMapper.mapTo(it) } ?: listOf()
+        return try {
+            characterService.getCharactersInRange(query).await()
+                .map { CharactersEntityDtoMapper.mapTo(it) }
+        } catch (ex : Exception) {
+            characterDao.getCharactersInRage(limit, offset)
+        }
     }
 
 

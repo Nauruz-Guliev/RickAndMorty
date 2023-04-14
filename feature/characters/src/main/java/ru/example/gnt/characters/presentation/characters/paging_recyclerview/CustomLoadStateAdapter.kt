@@ -11,19 +11,26 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.example.gnt.ui.databinding.LoadStateLayoutBinding
 
 typealias TryAgainAction = () -> Unit
+typealias LoadStateCallback = (LoadState) -> Unit
 
 
 class CustomLoadStateAdapter(
-    private val tryAgainAction: TryAgainAction
+    private val tryAgainAction: TryAgainAction,
 ) : LoadStateAdapter<CustomLoadStateAdapter.LoadStateViewHolder>() {
 
 
-    override fun onBindViewHolder(holder: LoadStateViewHolder, loadState: LoadState) =
+    override fun onBindViewHolder(holder: LoadStateViewHolder, loadState: LoadState) {
+        (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+            isFullSpan = true
+            holder.itemView.layoutParams = this
+        }
         holder.bind(loadState)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): LoadStateViewHolder =
         LoadStateViewHolder(
@@ -39,7 +46,7 @@ class CustomLoadStateAdapter(
     class LoadStateViewHolder(
         val binding: LoadStateLayoutBinding,
         val swipeRefreshLayout: SwipeRefreshLayout? = null,
-        val tryAgainAction: TryAgainAction? = null
+        val tryAgainAction: TryAgainAction? = null,
     ) : ViewHolder(binding.root) {
 
         init {

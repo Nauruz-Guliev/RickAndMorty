@@ -23,12 +23,14 @@ interface CharacterDao {
     @Query("SELECT * FROM character")
     fun getCharacters() : PagingSource<Int, CharacterEntity>
 
+    @Query("SELECT * FROM character LIMIT :pageSize OFFSET :pageIndex")
+    suspend fun getCharactersInRage(pageSize: Int, pageIndex: Int) : List<CharacterEntity>
+
     @Query("DELETE FROM character")
     suspend fun clear()
 
     @Transaction
     suspend fun refresh(characters: List<CharacterEntity>) {
-        clear()
         saveCharacters(characters)
     }
 

@@ -2,6 +2,7 @@ package ru.example.gnt.characters.presentation.characters
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +37,7 @@ import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 import ru.example.gnt.common.flowWithLifecycle
 import ru.example.gnt.common.scan
+import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.common.utils.interfaces.LayoutBackDropManager
 import javax.inject.Inject
 
@@ -119,7 +121,19 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     private fun observeStates() {
         lifecycleScope.launch {
             adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)?.collectLatest {
-                Toast.makeText(context, "iojoi" + it.toString(), Toast.LENGTH_SHORT).show()
+                state ->
+                binding.swipeRefresh.isRefreshing = state.refresh is LoadState.Loading
+                when(val res = state.refresh) {
+                    is LoadState.Error -> {
+                        context.showToastShort(res.error.localizedMessage)
+                    }
+                    is LoadState.Loading -> {
+
+                    }
+                    is LoadState.NotLoading -> {
+
+                    }
+                }
             }
         }
     }

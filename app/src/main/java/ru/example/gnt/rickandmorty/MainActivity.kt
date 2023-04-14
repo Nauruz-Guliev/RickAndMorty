@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import ru.example.gnt.characters.di.provider.CharactersDepsStore
-import ru.example.gnt.common.setImageDrawable
+import ru.example.gnt.common.utils.extensions.setImageDrawable
 import ru.example.gnt.rickandmorty.databinding.ActivityMainBinding
 import ru.example.gnt.rickandmorty.di.main.DaggerMainComponent
 import ru.example.gnt.rickandmorty.di.main.MainComponent
