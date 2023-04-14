@@ -19,6 +19,7 @@ moshi = "1.14.0"
 pagingVersion = "3.1.1"
 retrofit = "2.9.0"
 room = "2.5.1"
+gson = "2.7"
 
 [libraries]
 android-material = { module = "com.google.android.material:material", version.ref = "androidMaterial" }
@@ -33,7 +34,7 @@ dagger-android-processor = { module = "com.google.dagger:dagger-android-processo
 dagger-android-support = { module = "com.google.dagger:dagger-android-support", version.ref = "daggerTwo" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerTwo" }
 espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
-androidx-swiperefresh = {module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref ="androidxSwipeRefresh"}
+androidx-swiperefresh = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidxSwipeRefresh" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { module = "junit:junit", version.ref = "junit" }
 junit-ext = { module = "androidx.test.ext:junit", version.ref = "junitExt" }
@@ -44,7 +45,7 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 
 [bundles]

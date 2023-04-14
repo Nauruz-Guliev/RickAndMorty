@@ -50,6 +50,8 @@ dependencies {
     //libraries
     implementation(libs.bundles.retrofit)
 
+    implementation(libs.gson)
+
     implementation(libs.bundles.dagger.impl)
     kapt(libs.bundles.dagger.kapt)
 

@@ -37,6 +37,7 @@ dependencies {
 
     implementation(libs.androidx.paging)
 
+
     //libraries
     implementation(libs.bundles.dagger.impl)
     kapt(libs.bundles.dagger.kapt)

@@ -34,11 +34,8 @@ internal class CharactersViewModel @Inject constructor(
     val filterState = _filterState.asStateFlow()
 
 
-    var state: Flow<PagingData<CharactersUiModel.Single>>
-
-    init {
-        state = getAllCharactersUseCase().distinctUntilChanged().cachedIn(viewModelScope)
-    }
+    var state: Flow<PagingData<CharactersUiModel.Single>> =
+        getAllCharactersUseCase().distinctUntilChanged().cachedIn(viewModelScope)
 
     /*
     init {
