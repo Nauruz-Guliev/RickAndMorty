@@ -8,7 +8,6 @@ import ru.example.gnt.common.model.ui.CharactersUiModel
 class CharactersAdapter
     : PagingDataAdapter<CharactersUiModel.Single, CharactersViewHolder>(DiffCallback) {
 
-
     override fun onBindViewHolder(holder: CharactersViewHolder, position: Int) =
         holder.bind(getItem(position))
 

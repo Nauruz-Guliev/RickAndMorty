@@ -76,6 +76,8 @@
                 android:layout_marginHorizontal="@dimen/margin_5"
                 android:text="@string/characters_welcome_message" />
 
+            <!--
+
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:layout_marginTop="@dimen/margin_4"
                 android:id="@+id/progress_indicator"
@@ -84,6 +86,7 @@
                 android:layout_height="8dp"
                 android:layout_marginHorizontal="@dimen/margin_5"
                 android:indeterminate="true" />
+            -->
 
 
         </LinearLayout>
@@ -91,21 +94,28 @@
         <!--And finally this is the body of the backdrop's content. You can add here whatever you need inside a view group (LinearLayout, RelativeLayout, SwipeRefreshLayout, ConstraintLayout, etc.)-->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/main_layout"
+            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:background="@color/white"
-            android:minHeight="800dp"
+            android:minHeight="320dp"
+            android:layout_marginBottom="64dp"
             android:orientation="vertical">
 
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_characters"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="64dp"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="2"
-                tools:listitem="@layout/character_item" />
+                android:layout_height="match_parent"
+               >
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_characters"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="2"
+                    tools:listitem="@layout/character_item" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <!--The content's body goes here-->
         </androidx.appcompat.widget.LinearLayoutCompat>

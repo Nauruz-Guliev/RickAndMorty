@@ -44,7 +44,6 @@ class CharacterRemoteMediator @Inject constructor(
                 endOfPaginationReached = characters.size < limit
             )
         } catch (e: Exception) {
-            Log.d("CHARACTERS", e.toString())
             MediatorResult.Error(e)
         }
     }

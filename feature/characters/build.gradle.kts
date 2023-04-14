@@ -29,11 +29,12 @@ android {
     val compileJavaVersion = rootProject.extra["CompileJavaVersion"] as JavaVersion
     compileOptions {
         sourceCompatibility = compileJavaVersion
-        sourceCompatibility = compileJavaVersion
+        targetCompatibility = compileJavaVersion
     }
     kotlinOptions {
         jvmTarget = rootProject.extra["JavaVersion"] as String
     }
+
     buildFeatures {
         viewBinding = true
         dataBinding = true
@@ -59,7 +60,7 @@ dependencies {
     implementation(libs.glide)
 
     implementation(libs.androidx.paging)
-
+    implementation(libs.androidx.swiperefresh)
     //tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)

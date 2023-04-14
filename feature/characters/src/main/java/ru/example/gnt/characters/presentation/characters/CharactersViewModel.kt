@@ -1,10 +1,13 @@
 package ru.example.gnt.characters.presentation.characters
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.domain.usecases.GetAllCharactersUseCase
 import ru.example.gnt.common.enums.CharacterGenderEnum
@@ -31,10 +34,10 @@ internal class CharactersViewModel @Inject constructor(
     val filterState = _filterState.asStateFlow()
 
 
-    lateinit var state: Flow<PagingData<CharactersUiModel.Single>>
+    var state: Flow<PagingData<CharactersUiModel.Single>>
 
     init {
-        state = getAllCharactersUseCase()
+        state = getAllCharactersUseCase().distinctUntilChanged().cachedIn(viewModelScope)
     }
 
     /*

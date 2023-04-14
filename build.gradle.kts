@@ -11,8 +11,8 @@ plugins {
 }
 buildscript {
     extra.apply {
-        set("JavaVersion", "1.8")
-        set("CompileJavaVersion", JavaVersion.VERSION_1_8)
+        set("JavaVersion", "11")
+        set("CompileJavaVersion", JavaVersion.VERSION_11)
     }
 }
 

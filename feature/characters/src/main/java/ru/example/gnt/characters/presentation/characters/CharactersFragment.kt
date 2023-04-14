@@ -10,15 +10,20 @@ import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.isInvisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.filter
-import androidx.paging.map
+import androidx.paging.LoadState
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.example.gnt.characters.R
 import ru.example.gnt.characters.databinding.CharactersFragmentBinding
@@ -30,6 +35,7 @@ import ru.example.gnt.common.base.BaseFragment
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 import ru.example.gnt.common.flowWithLifecycle
+import ru.example.gnt.common.scan
 import ru.example.gnt.common.utils.interfaces.LayoutBackDropManager
 import javax.inject.Inject
 
@@ -45,6 +51,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     private var coordinatorLayout: CoordinatorLayout? = null
 
     private var adapter: CharactersAdapter? = null
+    private var footerAdapter: CustomLoadStateAdapter? = null
 
 
     override fun onAttach(context: Context) {
@@ -76,7 +83,20 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
         initRecyclerView()
         initCoordinatorLayout()
         initChipGroup()
-        listenForFilterChanges()
+        initSwipeRefreshLayout()
+
+        observeFilterChanges()
+        handleScrollingToTop()
+        handleListVisibility()
+        observeStates()
+    }
+
+
+
+    private fun initSwipeRefreshLayout() {
+        binding.swipeRefresh.setOnRefreshListener {
+            adapter?.refresh()
+        }
     }
 
     private fun initRecyclerView() {
@@ -84,26 +104,51 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
 
         val tryAgainAction: TryAgainAction = { adapter!!.retry() }
 
-        val footerAdapter = CustomLoadStateAdapter(tryAgainAction)
+        footerAdapter = CustomLoadStateAdapter(tryAgainAction)
 
-        val adapterWithLoadState = adapter!!.withLoadStateFooter(footerAdapter)
+        val loadStateAdapter = adapter!!.withLoadStateFooter(footerAdapter!!)
 
-        binding.rvCharacters.apply {
-            adapter = adapterWithLoadState
+        lifecycleScope.launch {
+            binding.rvCharacters.apply {
+                adapter = loadStateAdapter
+                (itemAnimator as? DefaultItemAnimator)?.supportsChangeAnimations = false
+            }
+            observeCharacters()
         }
-        observeCharacters()
+    }
+    private fun observeStates() {
+        lifecycleScope.launch {
+            adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)?.collectLatest {
+                Toast.makeText(context, "iojoi" + it.toString(), Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
-    private fun observeCharacters() {
-        lifecycleScope.launch {
-            viewModel.state
-                .collectLatest { pagingData ->
-                    adapter?.submitData(pagingData)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun handleScrollingToTop() = lifecycleScope.launch {
+        adapter?.let {
+            getRefreshLoadStateFlow(it)
+                .scan(count = 2)
+                .collect { (previousState, currentState) ->
+                    if (previousState is LoadState.Loading
+                        && currentState is LoadState.NotLoading
+                    ) {
+                        delay(200)
+                        binding.rvCharacters.scrollToPosition(0)
+                    }
                 }
         }
     }
 
-    private fun listenForFilterChanges() {
+    private suspend fun observeCharacters() {
+        viewModel.state.flowWithLifecycle(lifecycle)
+            .collectLatest { pagingData ->
+                adapter?.submitData(pagingData)
+            }
+
+    }
+
+    private fun observeFilterChanges() {
         binding.chipStatusGroup.setOnCheckedStateChangeListener { group, checkedIds ->
             for (id in checkedIds) {
                 val chip: Chip = group.findViewById(id)
@@ -121,6 +166,21 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
             if (checkedIds.isEmpty()) {
                 //    viewModel.loadAllCharacters()
             }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun handleListVisibility() = lifecycleScope.launch {
+        adapter?.let {
+            getRefreshLoadStateFlow(it)
+                .scan(count = 3)
+                .collectLatest { (beforePrevious, previous, current) ->
+                    binding.rvCharacters.isInvisible = current is LoadState.Error
+                            || previous is LoadState.Error
+                            || (beforePrevious is LoadState.Error
+                            && previous is LoadState.NotLoading
+                            && current is LoadState.Loading)
+                }
         }
     }
 
@@ -158,22 +218,10 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
         coordinatorContentId = R.id.contentLayout
     }
 
-
-    private fun disableProgressIndicator() {
-        binding.progressIndicator.apply {
-            isIndeterminate = false
-            visibility = ViewGroup.GONE
-        }
-
+    private fun getRefreshLoadStateFlow(adapter: PagingDataAdapter<*, *>): Flow<LoadState> {
+        return adapter.loadStateFlow
+            .map { it.refresh }
     }
-
-    private fun enableProgressIndicator() {
-        binding.progressIndicator.apply {
-            isIndeterminate = true
-            visibility = ViewGroup.VISIBLE
-        }
-    }
-
 
     companion object {
         const val CHARACTERS_FRAGMENT_TAG: String = "CHARACTERS_FRAGMENT_TAG"

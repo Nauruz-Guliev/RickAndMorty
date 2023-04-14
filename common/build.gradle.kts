@@ -16,7 +16,7 @@ android {
     val compileJavaVersion = rootProject.extra["CompileJavaVersion"] as JavaVersion
     compileOptions {
         sourceCompatibility = compileJavaVersion
-        sourceCompatibility = compileJavaVersion
+        targetCompatibility = compileJavaVersion
     }
     kotlinOptions {
         jvmTarget = rootProject.extra["JavaVersion"] as String

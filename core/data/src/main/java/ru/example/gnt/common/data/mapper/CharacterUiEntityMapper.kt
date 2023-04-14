@@ -2,6 +2,8 @@ package ru.example.gnt.common.data.mapper
 
 import ru.example.gnt.common.base.BaseMapper
 import ru.example.gnt.common.data.local.entity.CharacterEntity
+import ru.example.gnt.common.enums.CharacterGenderEnum
+import ru.example.gnt.common.enums.CharacterStatusEnum
 import ru.example.gnt.common.model.ui.CharactersUiModel
 
 object CharacterUiEntityMapper : BaseMapper<CharacterEntity, CharactersUiModel.Single> {
@@ -13,7 +15,9 @@ object CharacterUiEntityMapper : BaseMapper<CharacterEntity, CharactersUiModel.S
             name = model.name,
             species = model.species,
             type = model.type,
-            url = model.url
+            url = model.url,
+            status = CharacterStatusEnum.find(model.status),
+            gender = CharacterGenderEnum.find(model.gender)
         )
     }
 

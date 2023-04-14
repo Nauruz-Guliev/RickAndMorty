@@ -1,103 +1,78 @@
 [versions]
-
 # команда для обновления версий в терминале:    ./gradlew versionCatalogUpdate
 
-
-#default
-androidxCore = "1.9.0"
-androidxAppCompat = "1.6.1"
+androidGradlePlugin = "7.4.2"
 androidMaterial = "1.8.0"
-androidxFragmentKtx = "1.5.6"
-
-#ktx
-androidxLifecycleKtx = "2.4.0"
-
-#ui related
+androidxSwipeRefresh = "1.1.0"
+androidxAppCompat = "1.6.1"
 androidxConstraint = "2.1.4"
-splashScreen = "1.0.0"
-
-
-# ** third-party libraries ** #
-room = "2.5.1"
+androidxCore = "1.9.0"
+androidxLifecycleKtx = "2.6.1"
 daggerTwo = "2.45"
-moshi = "1.14.0"
+espresso = "3.5.1"
 glide = "4.15.1"
-pagingVersion = "3.1.1"
-
-
-#testing
 junit = "4.13.2"
 junitExt = "1.1.5"
-espresso = "3.5.1"
+kotlin = "1.8.20"
+kotlinDsl = "4.0.11"
+moshi = "1.14.0"
+pagingVersion = "3.1.1"
 retrofit = "2.9.0"
-
-
-# ** plugins ** #
-androidGradlePlugin = "7.4.0"
-kotlin = "1.8.0"
-kotlinDsl = "4.0.10"
-
-
+room = "2.5.1"
 
 [libraries]
-#default dependencies
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
-android-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
-androidx-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragmentKtx" }
+android-material = { module = "com.google.android.material:material", version.ref = "androidMaterial" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppCompat" }
+androidx-constraint = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidxConstraint" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxLifecycleKtx" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidxLifecycleKtx" }
+androidx-paging = { module = "androidx.paging:paging-runtime", version.ref = "pagingVersion" }
+dagger = { module = "com.google.dagger:dagger", version.ref = "daggerTwo" }
+dagger-android-processor = { module = "com.google.dagger:dagger-android-processor", version.ref = "daggerTwo" }
+dagger-android-support = { module = "com.google.dagger:dagger-android-support", version.ref = "daggerTwo" }
+dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerTwo" }
+espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
+androidx-swiperefresh = {module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref ="androidxSwipeRefresh"}
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+junit = { module = "junit:junit", version.ref = "junit" }
+junit-ext = { module = "androidx.test.ext:junit", version.ref = "junitExt" }
+moshi = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 
-androidx-lifecycle-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxLifecycleKtx"}
-androidx-lifecycle-runtime = {group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref="androidxLifecycleKtx"}
-
-#ui-related
-androidx-constraint = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraint" }
-androidx-splash = {group="androidx.core", name="core-splashscreen", version.ref="splashScreen"}
-androidx-paging = {group="androidx.paging", name="paging-runtime", version.ref="pagingVersion"}
-
-# ** other libraries ** #
-
-# room
-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-room-paging = {group = "androidx.room", name="room-paging", version.ref ="room"}
-
-
-# retrofit
-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
-moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
-
-#dagger 2
-dagger = { group = "com.google.dagger", name = "dagger", version.ref = "daggerTwo" }
-dagger-android-support = { group = "com.google.dagger", name = "dagger-android-support", version.ref = "daggerTwo" }
-dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "daggerTwo" }
-dagger-android-processor = { group = "com.google.dagger", name = "dagger-android-processor", version.ref = "daggerTwo" }
-
-#Glide
-glide = {group = "com.github.bumptech.glide", name = "glide", version.ref = "glide"}
-
-#testing
-junit = { group = "junit", name = "junit", version.ref = "junit" } #testImplementation(libs...)
-junit-ext = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" } #androidTestImplementation(libs...)
-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" } #androidTestImplementation(libs...)
 
 
 [bundles]
-dagger-impl = ["dagger", "dagger-android-support"]
-dagger-kapt = ["dagger-compiler", "dagger-android-processor"]
-retrofit = ["retrofit", "retrofit-moshi", "moshi"]
-lifecycle = ["androidx-lifecycle-runtime", "androidx-lifecycle-viewmodel"]
-
+dagger-impl = [
+    "dagger",
+    "dagger-android-support",
+]
+dagger-kapt = [
+    "dagger-android-processor",
+    "dagger-compiler",
+]
+lifecycle = [
+    "androidx-lifecycle-runtime",
+    "androidx-lifecycle-viewmodel",
+]
+retrofit = [
+    "moshi",
+    "retrofit",
+    "retrofit-moshi",
+]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlinDsl" }
-
 kotlin-kapt = { id = "kotlin-kapt" }
-
-toml-updater-github = { id = "com.github.ben-manes.versions", version = "0.41.0" }
-toml-updater-version-catalog = { id = "nl.littlerobots.version-catalog-update", version = "0.8.0" }
+toml-updater-github = "com.github.ben-manes.versions:0.46.0"
+toml-updater-version-catalog = "nl.littlerobots.version-catalog-update:0.8.0"
+# kotlin-kapt = { id = "kotlin-kapt" } плагин обновления версий иногда удаляет капт, поэтому надо добавлять вручную
 
