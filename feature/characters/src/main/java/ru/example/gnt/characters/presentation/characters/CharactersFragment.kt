@@ -163,7 +163,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     }
 
     private fun observeFilterChanges() {
-        binding.chipStatusGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+        binding.filterLayout.chipStatusGroup.setOnCheckedStateChangeListener { group, checkedIds ->
             for (id in checkedIds) {
                 val chip: Chip = group.findViewById(id)
                 viewModel.setStatusFilter(CharacterStatusEnum.find(chip.text.toString()))
@@ -172,7 +172,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
                 //    viewModel.loadAllCharacters()
             }
         }
-        binding.chipGenderGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+        binding.filterLayout.chipGenderGroup.setOnCheckedStateChangeListener { group, checkedIds ->
             for (id in checkedIds) {
                 val chip: Chip = group.findViewById(id)
                 viewModel.setGenderFilter(CharacterGenderEnum.find(chip.text.toString()))
@@ -199,13 +199,13 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     }
 
     private fun initChipGroup() {
-        binding.chipStatusGroup.removeAllViews()
+        binding.filterLayout.chipStatusGroup.removeAllViews()
         CharacterStatusEnum.values().forEach {
-            binding.chipStatusGroup.addView(createChip(it))
+            binding.filterLayout.chipStatusGroup.addView(createChip(it))
         }
-        binding.chipGenderGroup.removeAllViews()
+        binding.filterLayout.chipGenderGroup.removeAllViews()
         CharacterGenderEnum.values().forEach {
-            binding.chipGenderGroup.addView(createChip(it))
+            binding.filterLayout.chipGenderGroup.addView(createChip(it))
         }
     }
 

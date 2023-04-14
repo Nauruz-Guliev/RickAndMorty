@@ -4,10 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import androidx.paging.filter
+import kotlinx.coroutines.flow.*
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.domain.usecases.GetAllCharactersUseCase
 import ru.example.gnt.common.enums.CharacterGenderEnum

@@ -16,7 +16,7 @@
     <string name="origin">Origin %1s</string>
     <string name="type">Type %1s</string>
     <string name="status">Status</string>
-    <string name="gender_empty">gender</string>
+    <string name="gender_empty">Gender</string>
     <string name="search">Search</string>
     <string name="try_again">Try again</string>
     <string name="load_error">Failed to load</string>

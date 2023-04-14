@@ -23,5 +23,10 @@
         <item name="CustomChipChoiceStyle">@style/ChipCustomStyle</item>
     </style>
 
+    <style name="FilterEditTextStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColor">@color/blue_rm</item>
+        <item name="android:background">@color/blue_rm_secondary</item>
+    </style>
+
 
 </resources>
