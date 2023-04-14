@@ -16,10 +16,9 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ru.example.gnt.characters.R
 import ru.example.gnt.characters.databinding.CharacterDetailsFragmentBinding
 import ru.example.gnt.characters.di.provider.CharactersComponentViewModel
-import ru.example.gnt.common.model.ui.CharactersUiModel
+import ru.example.gnt.common.model.ui.characters.CharactersUiModel
 import ru.example.gnt.common.utils.interfaces.DetailsFragmentLabel
 import ru.example.gnt.common.model.UiState
 import ru.example.gnt.common.base.BaseFragment

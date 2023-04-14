@@ -3,7 +3,7 @@ package ru.example.gnt.characters.presentation.characters.paging_recyclerview
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import ru.example.gnt.common.model.ui.CharactersUiModel
+import ru.example.gnt.common.model.ui.characters.CharactersUiModel
 
 class CharactersAdapter
     : PagingDataAdapter<CharactersUiModel.Single, CharactersViewHolder>(DiffCallback) {

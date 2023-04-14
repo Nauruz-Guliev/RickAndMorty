@@ -3,7 +3,6 @@ package ru.example.gnt.common.data.mapper
 import ru.example.gnt.common.base.BaseMapper
 import ru.example.gnt.common.data.local.entity.CharacterEntity
 import ru.example.gnt.common.data.remote.model.Characters
-import ru.example.gnt.common.model.ui.CharactersUiModel
 
 //todo add other fields
 object CharactersEntityDtoMapper : BaseMapper<Characters.Result, CharacterEntity> {

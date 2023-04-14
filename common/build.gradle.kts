@@ -35,6 +35,7 @@ dependencies {
 
     implementation(libs.bundles.lifecycle)
 
+    implementation(libs.androidx.paging)
 
     //libraries
     implementation(libs.bundles.dagger.impl)

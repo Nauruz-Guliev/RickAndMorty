@@ -1,14 +1,10 @@
 package ru.example.gnt.characters.presentation.characters.detials
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import ru.example.gnt.common.model.ui.CharactersUiModel
+import ru.example.gnt.common.model.ui.characters.CharactersUiModel
 import ru.example.gnt.characters.domain.usecases.GetCharacterById
-import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.UiState
 import javax.inject.Inject
 

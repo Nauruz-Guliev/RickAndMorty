@@ -2,7 +2,7 @@ package ru.example.gnt.characters.domain.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import ru.example.gnt.common.model.ui.CharactersUiModel
+import ru.example.gnt.common.model.ui.characters.CharactersUiModel
 
 internal interface CharactersRepository {
     /*

@@ -1,4 +1,4 @@
-package ru.example.gnt.common.model.ui
+package ru.example.gnt.common.model.ui.characters
 
 
 import ru.example.gnt.common.base.BaseClass

@@ -2,7 +2,7 @@ package ru.example.gnt.common.data.mapper
 
 import ru.example.gnt.common.base.BaseMapper
 import ru.example.gnt.common.data.remote.model.Characters
-import ru.example.gnt.common.model.ui.CharactersUiModel
+import ru.example.gnt.common.model.ui.characters.CharactersUiModel
 
 object CharactersUiMapper : BaseMapper<Characters, CharactersUiModel> {
     override fun mapTo(model: Characters): CharactersUiModel {

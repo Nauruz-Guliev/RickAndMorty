@@ -12,7 +12,7 @@ import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.domain.usecases.GetAllCharactersUseCase
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
-import ru.example.gnt.common.model.ui.CharactersUiModel
+import ru.example.gnt.common.model.ui.characters.CharactersUiModel
 import javax.inject.Inject
 
 internal class CharactersViewModel @Inject constructor(

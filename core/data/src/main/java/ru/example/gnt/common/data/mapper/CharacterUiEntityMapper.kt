@@ -4,7 +4,7 @@ import ru.example.gnt.common.base.BaseMapper
 import ru.example.gnt.common.data.local.entity.CharacterEntity
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
-import ru.example.gnt.common.model.ui.CharactersUiModel
+import ru.example.gnt.common.model.ui.characters.CharactersUiModel
 
 object CharacterUiEntityMapper : BaseMapper<CharacterEntity, CharactersUiModel.Single> {
     override fun mapTo(model: CharacterEntity): CharactersUiModel.Single {
