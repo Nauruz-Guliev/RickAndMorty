@@ -1,98 +1,64 @@
 package ru.example.gnt.characters.presentation.characters
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.cachedIn
-import androidx.paging.filter
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import ru.example.gnt.characters.CharactersRouter
+import ru.example.gnt.characters.data.CharacterRemoteMediator
 import ru.example.gnt.characters.domain.usecases.GetAllCharactersUseCase
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
-import ru.example.gnt.common.model.ui.characters.CharactersUiModel
 import javax.inject.Inject
 
+@OptIn(ExperimentalPagingApi::class)
 internal class CharactersViewModel @Inject constructor(
     private val getAllCharactersUseCase: GetAllCharactersUseCase,
     //  private val getFilteredCharacters: GetFilteredCharacters,
-    private val navigator: CharactersRouter
+    private val navigator: CharactersRouter,
 ) : ViewModel() {
-    /*
 
-    private val _state: MutableStateFlow<UiState<CharactersUiModel>> =
-        MutableStateFlow(UiState.Empty)
-    val state = _state.asStateFlow()
+    private val _uiState: MutableStateFlow<CharactersState> = MutableStateFlow(CharactersState())
+    val uiState = _uiState.asStateFlow()
 
-     */
-
-    private val _filterState: MutableStateFlow<CharactersFilterModel> = MutableStateFlow(
-        CharactersFilterModel()
-    )
-    val filterState = _filterState.asStateFlow()
-
-
-    var state: Flow<PagingData<CharactersUiModel.Single>> =
-        getAllCharactersUseCase().distinctUntilChanged().cachedIn(viewModelScope)
-
-    /*
     init {
-        loadAllCharacters()
-        viewModelScope.launch {
-            _filterState.collectLatest {
-                getFilteredCharacters(
-                    gender = it.gender?.n,
-                    status = it.status?.get
-                ).distinctUntilChanged().collectLatest { result ->
-                    result.onFailure {
-                        _state.value =
-                            UiState.Error(Resource.String(ru.example.gnt.ui.R.string.network_error))
-                        Log.d("EXCEPTION", it.message.toString())
-                    }.onSuccess { characters ->
-                        _state.value = UiState.Success(characters)
-                    }
-                }
-            }
-        }
+        _uiState.value = _uiState.value.copy(
+            charactersFlow = getAllCharactersUseCase(_uiState.value.filter).distinctUntilChanged()
+                .cachedIn(viewModelScope)
+        )
     }
 
-     */
-
-
-    /*
-
-    fun loadAllCharacters() {
-        _state.value = UiState.Loading
-        viewModelScope.launch {
-            getAllCharactersUseCase().distinctUntilChanged().collectLatest { result ->
-                result.onFailure {
-                    _state.value =
-                        UiState.Error(Resource.String(ru.example.gnt.ui.R.string.network_error))
-                    Log.d("EXCEPTION", it.message.toString())
-                }.onSuccess { characters ->
-                    _state.value = UiState.Success(characters)
-                }
-            }
+    fun clearAllFilters() {
+        _uiState.value.filter.apply {
+            status = null
+            gender = null
         }
     }
-
-     */
 
     fun navigateToDetails(id: Int) {
         navigator.openCharacterDetails(id)
     }
 
-    fun setStatusFilter(status: CharacterStatusEnum?) {
-        _filterState.value = _filterState.value.copy(
-            status = status
-        )
+    fun setStatusFilter(status: CharacterStatusEnum) {
+        _uiState.value.filter.status = status
+    }
+    fun setGenderFilter(gender: CharacterGenderEnum) {
+        _uiState.value.filter.gender = gender
+        Log.d("FILTER_HERE",_uiState.value.filter.gender.toString())
     }
 
-    fun setGenderFilter(gender: CharacterGenderEnum?) {
-        _filterState.value = _filterState.value.copy(
-            gender = gender
-        )
+    fun setNameFilter(name: String) {
+        _uiState.value.filter.name = name
     }
 
-
+    fun setSpeciesFilter(species: String){
+        _uiState.value.filter.species = species
+    }
+    fun setTypeFilter(type: String) {
+        _uiState.value.filter.type = type
+    }
 }

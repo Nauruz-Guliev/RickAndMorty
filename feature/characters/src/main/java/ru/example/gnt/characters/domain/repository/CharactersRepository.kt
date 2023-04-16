@@ -2,9 +2,10 @@ package ru.example.gnt.characters.domain.repository
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import ru.example.gnt.characters.presentation.characters.CharactersFilterModel
 import ru.example.gnt.common.model.ui.characters.CharactersUiModel
 
-internal interface CharactersRepository {
+interface CharactersRepository {
     /*
     suspend fun getAllCharacters(): Flow<Result<CharactersUiModel>>
     suspend fun getCharacterById(id: Int): Flow<Result<CharactersUiModel.Single>>
@@ -13,5 +14,5 @@ internal interface CharactersRepository {
 
     */
 
-    fun getCharacters() :  Flow<PagingData<CharactersUiModel.Single>>
+    fun getCharacters(filterModel: CharactersFilterModel?) :  Flow<PagingData<CharactersUiModel.Single>>
 }

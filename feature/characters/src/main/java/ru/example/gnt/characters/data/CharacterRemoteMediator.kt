@@ -5,18 +5,22 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import retrofit2.await
+import ru.example.gnt.characters.presentation.characters.CharactersFilterModel
 import ru.example.gnt.common.data.local.dao.CharacterDao
 import ru.example.gnt.common.data.local.entity.CharacterEntity
 import ru.example.gnt.common.data.mapper.CharactersEntityDtoMapper
 import ru.example.gnt.common.data.remote.service.CharacterService
 import ru.example.gnt.common.utils.ApiQueryGenerator
-import javax.inject.Inject
 
 @ExperimentalPagingApi
-class CharacterRemoteMediator @Inject constructor(
+class CharacterRemoteMediator @AssistedInject constructor(
     private val characterDao: CharacterDao,
-    private val characterService: CharacterService
+    private val characterService: CharacterService,
+    @Assisted private val filterModel: CharactersFilterModel?
 ) : RemoteMediator<Int, CharacterEntity>() {
 
     private var pageIndex = 0
@@ -34,7 +38,6 @@ class CharacterRemoteMediator @Inject constructor(
 
         return try {
             val characters = fetchLaunches(limit, offset)
-            Log.d("CHARACTERS", "ha:" + characters.toString())
             if (loadType == LoadType.REFRESH) {
                 characterDao.refresh(characters)
             } else {
@@ -57,11 +60,22 @@ class CharacterRemoteMediator @Inject constructor(
             limit = limit,
             offset = offset
         )
+        Log.d("FILTER_MODEL", filterModel.toString())
         return try {
-            characterService.getCharactersInRange(query).await()
-                .map { CharactersEntityDtoMapper.mapTo(it) }
-        } catch (ex : Exception) {
-            characterDao.getCharactersInRage(limit, offset)
+            filterResults(characterService.getCharactersInRange(query).await()
+                .map { CharactersEntityDtoMapper.mapTo(it) })
+        } catch (ex: Exception) {
+            filterResults(characterDao.getCharactersInRage(limit, offset))
+        }
+    }
+
+    private fun filterResults(list: List<CharacterEntity>): List<CharacterEntity> {
+        Log.d("FILTER", filterModel?.gender.toString())
+        return list.filter {
+            // фильтруем по статусу
+                    filterModel?.gender?.n.equals(it.gender, ignoreCase = true) ?: true
+        }.filter {
+            filterModel?.status?.get?.equals(it.status, ignoreCase = true) ?: true
         }
     }
 
@@ -73,6 +87,12 @@ class CharacterRemoteMediator @Inject constructor(
             LoadType.APPEND -> ++pageIndex
         }
         return pageIndex
+    }
+
+    @AssistedFactory
+    interface CharactersRemoteMediatorFactory {
+        @OptIn(ExperimentalPagingApi::class)
+        fun create(filterModel: CharactersFilterModel?): CharacterRemoteMediator
     }
 
 }

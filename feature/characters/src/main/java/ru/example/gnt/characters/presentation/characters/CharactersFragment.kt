@@ -2,12 +2,10 @@ package ru.example.gnt.characters.presentation.characters
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -17,12 +15,10 @@ import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -37,6 +33,7 @@ import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 import ru.example.gnt.common.flowWithLifecycle
 import ru.example.gnt.common.scan
+import ru.example.gnt.common.utils.extensions.asFlow
 import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.common.utils.interfaces.LayoutBackDropManager
 import javax.inject.Inject
@@ -54,6 +51,8 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
 
     private var adapter: CharactersAdapter? = null
     private var footerAdapter: CustomLoadStateAdapter? = null
+
+    private var resultsAmount: Int = 0
 
 
     override fun onAttach(context: Context) {
@@ -155,30 +154,44 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     }
 
     private suspend fun observeCharacters() {
-        viewModel.state.flowWithLifecycle(lifecycle)
-            .collectLatest { pagingData ->
+        viewModel.uiState.value.charactersFlow?.flowWithLifecycle(lifecycle)
+            ?.collectLatest { pagingData ->
                 adapter?.submitData(pagingData)
             }
-
     }
 
     private fun observeFilterChanges() {
-        binding.filterLayout.chipStatusGroup.setOnCheckedStateChangeListener { group, checkedIds ->
-            for (id in checkedIds) {
-                val chip: Chip = group.findViewById(id)
-                viewModel.setStatusFilter(CharacterStatusEnum.find(chip.text.toString()))
+        with(binding.filterLayout) {
+            viewModel.apply {
+                etName.asFlow(::setNameFilter)
+                etSpecies.asFlow(::setSpeciesFilter)
+                etType.asFlow(::setTypeFilter)
             }
-            if (checkedIds.isEmpty()) {
-                //    viewModel.loadAllCharacters()
+            chipStatusGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+                for (id in checkedIds) {
+                    val chip: Chip = group.findViewById(id)
+                    viewModel.setStatusFilter(
+                        CharacterStatusEnum.find(chip.text.toString())
+                            ?: CharacterStatusEnum.UNKNOWN
+                    )
+                }
+                if (checkedIds.isEmpty()) {
+                    viewModel.clearAllFilters()
+                }
+                adapter?.refresh()
             }
-        }
-        binding.filterLayout.chipGenderGroup.setOnCheckedStateChangeListener { group, checkedIds ->
-            for (id in checkedIds) {
-                val chip: Chip = group.findViewById(id)
-                viewModel.setGenderFilter(CharacterGenderEnum.find(chip.text.toString()))
-            }
-            if (checkedIds.isEmpty()) {
-                //    viewModel.loadAllCharacters()
+            chipGenderGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+                for (id in checkedIds) {
+                    val chip: Chip = group.findViewById(id)
+                    viewModel.setGenderFilter(
+                        CharacterGenderEnum.find(chip.text.toString())
+                            ?: CharacterGenderEnum.UNKNOWN
+                    )
+                }
+                if (checkedIds.isEmpty()) {
+                    viewModel.clearAllFilters()
+                }
+                adapter?.refresh()
             }
         }
     }
@@ -219,7 +232,12 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
                 is CharacterGenderEnum -> {
                     text = enum.n
                     setChipBackgroundColorResource(ru.example.gnt.ui.R.color.blue_rm_secondary)
-                    setTextColor(AppCompatResources.getColorStateList(context,ru.example.gnt.ui.R.color.blue_rm).defaultColor)
+                    setTextColor(
+                        AppCompatResources.getColorStateList(
+                            context,
+                            ru.example.gnt.ui.R.color.blue_rm
+                        ).defaultColor
+                    )
                 }
             }
             isCloseIconVisible = false
@@ -253,10 +271,14 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     override fun toggle() {
         if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            binding.rvCharacters.visibility = ViewGroup.GONE
+            with(binding) {
+                rvCharacters.visibility = ViewGroup.GONE
+            }
         } else {
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
-            binding.rvCharacters.visibility = ViewGroup.VISIBLE
+            with(binding) {
+                rvCharacters.visibility = ViewGroup.VISIBLE
+            }
         }
     }
 }

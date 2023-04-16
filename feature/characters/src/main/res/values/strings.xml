@@ -3,4 +3,5 @@
     <string name="species">Species</string>
     <string name="name">Name</string>
     <string name="type_empty">Type</string>
+    <string name="results_amount">Results: %1s</string>
 </resources>

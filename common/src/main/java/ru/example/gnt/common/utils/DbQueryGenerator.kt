@@ -9,7 +9,7 @@ object DbQueryGenerator {
 
     fun generateCharacterFilterQuery(characterFilter: CharacterFilterModel): String {
         var query = BASE + CHARACTER_TABLE_NAME
-
+        /*
         with(characterFilter) {
             if (name != null) {
                 query += " WHERE name LIKE '$name'"
@@ -27,6 +27,8 @@ object DbQueryGenerator {
                 query += " AND gender LIKE '${it.n}'"
             }
         }
+
+         */
         return query
     }
 
