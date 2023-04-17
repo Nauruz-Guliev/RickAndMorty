@@ -1,5 +1,6 @@
 package ru.example.gnt.characters.domain.usecases
 
+import android.util.Log
 import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow

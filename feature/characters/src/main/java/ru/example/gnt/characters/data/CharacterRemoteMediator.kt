@@ -29,6 +29,7 @@ class CharacterRemoteMediator @AssistedInject constructor(
         loadType: LoadType,
         state: PagingState<Int, CharacterEntity>
     ): MediatorResult {
+        Log.d("FILTER_MEDIATOR", filterModel.toString())
         pageIndex =
             getPageIndex(loadType)
                 ?: return MediatorResult.Success(endOfPaginationReached = true)
@@ -60,17 +61,18 @@ class CharacterRemoteMediator @AssistedInject constructor(
             limit = limit,
             offset = offset
         )
-        Log.d("FILTER_MODEL", filterModel.toString())
         return try {
-            filterResults(characterService.getCharactersInRange(query).await()
-                .map { CharactersEntityDtoMapper.mapTo(it) })
+            filterResults(
+                list = characterService.getCharactersInRange(query).await()
+                    .map(CharactersEntityDtoMapper::mapTo)
+            )
+
         } catch (ex: Exception) {
             filterResults(characterDao.getCharactersInRage(limit, offset))
         }
     }
 
     private fun filterResults(list: List<CharacterEntity>): List<CharacterEntity> {
-        Log.d("FILTER", filterModel?.gender.toString())
         return list.filter {
             // фильтруем по статусу
                     filterModel?.gender?.n.equals(it.gender, ignoreCase = true) ?: true

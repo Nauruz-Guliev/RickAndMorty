@@ -1,9 +1,6 @@
 package ru.example.gnt.characters.data
 
 import androidx.paging.*
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.example.gnt.characters.domain.repository.CharactersRepository

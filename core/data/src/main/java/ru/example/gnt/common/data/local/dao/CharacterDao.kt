@@ -34,6 +34,19 @@ interface CharacterDao {
         saveCharacters(characters)
     }
 
+    @Query("SELECT * FROM character " +
+            "WHERE name LIKE '%' || :name  || '%' " +
+            "AND species LIKE '%' || :species  || '%' " +
+            "AND type LIKE '%' || :type  || '%'")
+    fun getCharactersFilteredPaged(name: String?, species: String?, type: String?): PagingSource<Int, CharacterEntity>
+
+    @Query("SELECT * FROM character " +
+            "WHERE name LIKE '%' || :name  || '%' " +
+            "AND species LIKE '%' || :species  || '%' " +
+            "AND type LIKE '%' || :type  || '%'")
+    fun getCharactersFiltered(name: String?, species: String?, type: String?): List<CharacterEntity>
+
+
     suspend fun save(character: CharacterEntity) {
         saveCharacters(listOf(character))
     }

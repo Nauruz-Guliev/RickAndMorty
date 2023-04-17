@@ -160,36 +160,46 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
             }
     }
 
+    //TODO cleanup
     private fun observeFilterChanges() {
         with(binding.filterLayout) {
             viewModel.apply {
-                etName.asFlow(::setNameFilter)
-                etSpecies.asFlow(::setSpeciesFilter)
-                etType.asFlow(::setTypeFilter)
+                etName.asFlow {
+                    applyFilter(name = it)
+                    adapter?.refresh()
+                }
+                etSpecies.asFlow {
+                    applyFilter(species = it)
+                    adapter?.refresh()
+                }
+                etType.asFlow {
+                    applyFilter(type = it)
+                    adapter?.refresh()
+                }
             }
             chipStatusGroup.setOnCheckedStateChangeListener { group, checkedIds ->
                 for (id in checkedIds) {
                     val chip: Chip = group.findViewById(id)
-                    viewModel.setStatusFilter(
-                        CharacterStatusEnum.find(chip.text.toString())
+                    viewModel.applyFilter(
+                        status = CharacterStatusEnum.find(chip.text.toString())
                             ?: CharacterStatusEnum.UNKNOWN
                     )
                 }
                 if (checkedIds.isEmpty()) {
-                    viewModel.clearAllFilters()
+                    viewModel.applyFilter(status = null)
                 }
                 adapter?.refresh()
             }
             chipGenderGroup.setOnCheckedStateChangeListener { group, checkedIds ->
                 for (id in checkedIds) {
                     val chip: Chip = group.findViewById(id)
-                    viewModel.setGenderFilter(
-                        CharacterGenderEnum.find(chip.text.toString())
+                    viewModel.applyFilter(
+                        gender = CharacterGenderEnum.find(chip.text.toString())
                             ?: CharacterGenderEnum.UNKNOWN
                     )
                 }
                 if (checkedIds.isEmpty()) {
-                    viewModel.clearAllFilters()
+                    viewModel.applyFilter(gender = null)
                 }
                 adapter?.refresh()
             }

@@ -7,8 +7,6 @@ import retrofit2.http.Query
 import ru.example.gnt.common.data.remote.model.Characters
 
 interface CharacterService {
-
-
     @GET(CHARACTER_END_POINT)
     fun getAllCharacters(): Call<Characters>
 
@@ -24,10 +22,8 @@ interface CharacterService {
     @GET(CHARACTER_END_POINT)
     fun getFilteredCharacters(
         @Query("name") name: String? = null,
-        @Query("status") status: String? = null,
         @Query("species") species: String? = null,
         @Query("type") type: String? = null,
-        @Query("gender") gender: String? = null
     ) :  Call<Characters>
 
     companion object {

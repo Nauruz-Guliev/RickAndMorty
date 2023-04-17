@@ -1,6 +1,5 @@
 package ru.example.gnt.characters.presentation.characters
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
@@ -9,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import ru.example.gnt.characters.CharactersRouter
-import ru.example.gnt.characters.data.CharacterRemoteMediator
 import ru.example.gnt.characters.domain.usecases.GetAllCharactersUseCase
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
@@ -26,16 +24,16 @@ internal class CharactersViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-        _uiState.value = _uiState.value.copy(
-            charactersFlow = getAllCharactersUseCase(_uiState.value.filter).distinctUntilChanged()
-                .cachedIn(viewModelScope)
-        )
+       loadCharacters()
     }
 
     fun clearAllFilters() {
         _uiState.value.filter.apply {
-            status = null
+            type = null
             gender = null
+            name = null
+            status = null
+            species = null
         }
     }
 
@@ -43,22 +41,27 @@ internal class CharactersViewModel @Inject constructor(
         navigator.openCharacterDetails(id)
     }
 
-    fun setStatusFilter(status: CharacterStatusEnum) {
-        _uiState.value.filter.status = status
-    }
-    fun setGenderFilter(gender: CharacterGenderEnum) {
-        _uiState.value.filter.gender = gender
-        Log.d("FILTER_HERE",_uiState.value.filter.gender.toString())
+    fun applyFilter(
+        status: CharacterStatusEnum? = _uiState.value.filter.status,
+        gender: CharacterGenderEnum? = _uiState.value.filter.gender,
+        name: String? = _uiState.value.filter.name,
+        type: String? = _uiState.value.filter.type,
+        species: String? = _uiState.value.filter.species
+    ) {
+        _uiState.value.filter.apply {
+            this.type = type
+            this.status = status
+            this.species = species
+            this.gender = gender
+            this.name = name
+        }
+        loadCharacters()
     }
 
-    fun setNameFilter(name: String) {
-        _uiState.value.filter.name = name
-    }
-
-    fun setSpeciesFilter(species: String){
-        _uiState.value.filter.species = species
-    }
-    fun setTypeFilter(type: String) {
-        _uiState.value.filter.type = type
+    private fun loadCharacters() {
+        _uiState.value = _uiState.value.copy(
+            charactersFlow = getAllCharactersUseCase(_uiState.value.filter).distinctUntilChanged()
+                .cachedIn(viewModelScope)
+        )
     }
 }
