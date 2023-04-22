@@ -17,6 +17,7 @@ import ru.example.gnt.rickandmorty.App
 interface AppComponent : CharactersDeps {
     override val characterService: CharacterService
     override var characterDao: CharacterDao
+    override val context: Context
 
 
     @Component.Builder

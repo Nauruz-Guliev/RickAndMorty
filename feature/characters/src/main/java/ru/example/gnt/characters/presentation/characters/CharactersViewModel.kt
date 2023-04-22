@@ -7,13 +7,13 @@ import androidx.paging.cachedIn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.domain.usecases.GetAllCharactersUseCase
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 import javax.inject.Inject
 
-@OptIn(ExperimentalPagingApi::class)
 internal class CharactersViewModel @Inject constructor(
     private val getAllCharactersUseCase: GetAllCharactersUseCase,
     //  private val getFilteredCharacters: GetFilteredCharacters,
@@ -24,7 +24,7 @@ internal class CharactersViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
-       loadCharacters()
+        applyFilter()
     }
 
     fun clearAllFilters() {
@@ -35,6 +35,7 @@ internal class CharactersViewModel @Inject constructor(
             status = null
             species = null
         }
+        applyFilter()
     }
 
     fun navigateToDetails(id: Int) {
@@ -55,10 +56,12 @@ internal class CharactersViewModel @Inject constructor(
             this.gender = gender
             this.name = name
         }
-        loadCharacters()
+        viewModelScope.launch {
+            loadCharacters()
+        }
     }
 
-    private fun loadCharacters() {
+    private suspend fun loadCharacters() {
         _uiState.value = _uiState.value.copy(
             charactersFlow = getAllCharactersUseCase(_uiState.value.filter).distinctUntilChanged()
                 .cachedIn(viewModelScope)

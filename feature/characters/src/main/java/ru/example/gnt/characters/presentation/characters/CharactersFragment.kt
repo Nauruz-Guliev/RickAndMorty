@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.IdRes
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.isInvisible
+import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
@@ -18,7 +18,10 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -29,11 +32,18 @@ import ru.example.gnt.characters.presentation.characters.paging_recyclerview.Cha
 import ru.example.gnt.characters.presentation.characters.paging_recyclerview.CustomLoadStateAdapter
 import ru.example.gnt.characters.presentation.characters.paging_recyclerview.TryAgainAction
 import ru.example.gnt.common.base.BaseFragment
+import ru.example.gnt.common.base.search.SearchActivity
+import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
+import ru.example.gnt.common.exceptions.NetworkConnectionException
 import ru.example.gnt.common.flowWithLifecycle
+import ru.example.gnt.common.internetCapabilitiesCallback
+import ru.example.gnt.common.isNetworkOn
 import ru.example.gnt.common.scan
 import ru.example.gnt.common.utils.extensions.asFlow
+import ru.example.gnt.common.utils.extensions.createChip
+import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.common.utils.interfaces.LayoutBackDropManager
 import javax.inject.Inject
@@ -41,7 +51,7 @@ import javax.inject.Inject
 
 class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     CharactersFragmentBinding::inflate
-), LayoutBackDropManager {
+), LayoutBackDropManager, SearchFragment {
     @Inject
     internal lateinit var viewModel: CharactersViewModel
 
@@ -52,13 +62,22 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     private var adapter: CharactersAdapter? = null
     private var footerAdapter: CustomLoadStateAdapter? = null
 
-    private var resultsAmount: Int = 0
+    private var isInternetOn: Boolean = false
 
+    private var searchQuery: String? = null
 
     override fun onAttach(context: Context) {
         ViewModelProvider(this).get<CharactersComponentViewModel>()
             .charactersComponent.inject(this)
         super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        isInternetOn = requireContext().isNetworkOn()
+
+        (requireActivity() as? SearchActivity)?.registerSearchFragment(this)
+        searchQuery?.let { (requireActivity() as? SearchActivity)?.setSearchText(it) }
     }
 
     override fun onCreateView(
@@ -78,7 +97,6 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
         return coordinatorLayout
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
@@ -88,27 +106,30 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
 
         observeFilterChanges()
         handleScrollingToTop()
-        handleListVisibility()
         observeStates()
+        observeInternetConnectionChanges()
+        setUpUiState()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as? SearchActivity)?.showSearchView(true)
     }
 
 
 
     private fun initSwipeRefreshLayout() {
         binding.swipeRefresh.setOnRefreshListener {
+            viewModel.applyFilter()
             adapter?.refresh()
         }
     }
 
     private fun initRecyclerView() {
         adapter = CharactersAdapter()
-
-        val tryAgainAction: TryAgainAction = { adapter!!.retry() }
-
+        val tryAgainAction: TryAgainAction = { adapter?.retry() }
         footerAdapter = CustomLoadStateAdapter(tryAgainAction)
-
         val loadStateAdapter = adapter!!.withLoadStateFooter(footerAdapter!!)
-
         lifecycleScope.launch {
             binding.rvCharacters.apply {
                 adapter = loadStateAdapter
@@ -117,23 +138,47 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
             observeCharacters()
         }
     }
+
+    @OptIn(FlowPreview::class)
     private fun observeStates() {
         lifecycleScope.launch {
-            adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)?.collectLatest {
-                state ->
-                binding.swipeRefresh.isRefreshing = state.refresh is LoadState.Loading
-                when(val res = state.refresh) {
-                    is LoadState.Error -> {
-                        context.showToastShort(res.error.localizedMessage)
-                    }
-                    is LoadState.Loading -> {
-
-                    }
-                    is LoadState.NotLoading -> {
-
+            adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)
+                ?.debounce(400)?.collectLatest { state ->
+                    binding.swipeRefresh.isRefreshing = state.refresh is LoadState.Loading
+                    val isEmpty = (adapter?.snapshot()?.items?.size ?: 0) <= 0
+                    binding.loadingStateLayout.tryAgainButton.setOnClickListener(::handleFilterReset)
+                    when (val res = state.source.refresh) {
+                        is LoadState.Error -> handleErrorState(res.error)
+                        is LoadState.Loading -> { context.showToastShort(isEmpty) }
+                        is LoadState.NotLoading -> handleNotLoadingState(isEmpty)
                     }
                 }
+        }
+    }
+
+    private fun handleErrorState(ex: Throwable) {
+        var i = 0
+        when (ex) {
+            is NetworkConnectionException -> {
+
             }
+        }
+    }
+
+    private fun handleNotLoadingState(isEmpty: Boolean) {
+        with(binding) {
+            with(loadingStateLayout) {
+                messageTextView.apply {
+                    isVisible = isEmpty
+                    text = getString(R.string.no_filter_results)
+                }
+                tryAgainButton.apply {
+                    isVisible = isEmpty
+                    text = getString(R.string.clear_filter)
+                }
+            }
+            swipeRefresh.isVisible = !isEmpty
+            swipeRefresh.isEnabled = !isEmpty
         }
     }
 
@@ -151,6 +196,14 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
                     }
                 }
         }
+    }
+
+    private fun handleFilterReset(it: View) {
+        (activity as SearchActivity).setSearchText("")
+        binding.loadingStateLayout.root.children.forEach { it.isVisible = false }
+        viewModel.clearAllFilters()
+        resetAllUiFilters()
+        adapter?.refresh()
     }
 
     private suspend fun observeCharacters() {
@@ -206,52 +259,17 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun handleListVisibility() = lifecycleScope.launch {
-        adapter?.let {
-            getRefreshLoadStateFlow(it)
-                .scan(count = 3)
-                .collectLatest { (beforePrevious, previous, current) ->
-                    binding.rvCharacters.isInvisible = current is LoadState.Error
-                            || previous is LoadState.Error
-                            || (beforePrevious is LoadState.Error
-                            && previous is LoadState.NotLoading
-                            && current is LoadState.Loading)
-                }
-        }
-    }
 
     private fun initChipGroup() {
-        binding.filterLayout.chipStatusGroup.removeAllViews()
-        CharacterStatusEnum.values().forEach {
-            binding.filterLayout.chipStatusGroup.addView(createChip(it))
-        }
-        binding.filterLayout.chipGenderGroup.removeAllViews()
-        CharacterGenderEnum.values().forEach {
-            binding.filterLayout.chipGenderGroup.addView(createChip(it))
-        }
-    }
-
-    private fun createChip(enum: Enum<*>): Chip {
-        return Chip(binding.root.context).apply {
-            when (enum) {
-                is CharacterStatusEnum -> {
-                    text = enum.get
-                    setChipBackgroundColorResource(enum.color.id)
-                }
-                is CharacterGenderEnum -> {
-                    text = enum.n
-                    setChipBackgroundColorResource(ru.example.gnt.ui.R.color.blue_rm_secondary)
-                    setTextColor(
-                        AppCompatResources.getColorStateList(
-                            context,
-                            ru.example.gnt.ui.R.color.blue_rm
-                        ).defaultColor
-                    )
-                }
+        with(binding.filterLayout) {
+            chipStatusGroup.removeAllViews()
+            CharacterStatusEnum.values().forEach {
+                chipStatusGroup.addView(chipGenderGroup.createChip(it))
             }
-            isCloseIconVisible = false
-            isCheckable = true
+            chipGenderGroup.removeAllViews()
+            CharacterGenderEnum.values().forEach {
+                chipGenderGroup.addView(chipStatusGroup.createChip(it))
+            }
         }
     }
 
@@ -260,10 +278,70 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
         coordinatorContentId = R.id.contentLayout
     }
 
+    private fun resetAllUiFilters() {
+        binding.filterLayout.root.children.forEach { view ->
+            when (view) {
+                is TextInputLayout -> view.editText?.text = null
+                is ChipGroup -> view.clearCheck()
+            }
+        }
+    }
+
+    private fun observeInternetConnectionChanges() {
+        lifecycleScope.launch {
+            context?.internetCapabilitiesCallback()?.flowWithLifecycle(lifecycle)?.collectLatest {
+                isInternetOn = it
+                setUpUiState()
+                when (it) {
+                    true -> {
+                        viewModel.applyFilter()
+                        adapter?.refresh()
+                    }
+                    false -> {
+
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setUpUiState() {
+        binding.swipeRefresh.isEnabled = isInternetOn
+        binding.tvInformational.text =
+            if (isInternetOn) getString(ru.example.gnt.ui.R.string.characters_welcome_message)
+            else getString(R.string.not_connected_ui_message)
+    }
+
     private fun getRefreshLoadStateFlow(adapter: PagingDataAdapter<*, *>): Flow<LoadState> {
         return adapter.loadStateFlow
             .map { it.refresh }
     }
+
+
+    override fun toggle(): Int {
+        val state = sheetBehavior.state
+        if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            with(binding) {
+                rvCharacters.visibility = ViewGroup.GONE
+            }
+        } else {
+            sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            with(binding) {
+                rvCharacters.visibility = ViewGroup.VISIBLE
+            }
+        }
+        context?.hideKeyboard(binding.root)
+        return state
+    }
+
+    override fun doSearch(searchQuery: String) {
+        binding.swipeRefresh.isEnabled = false
+        this.searchQuery = searchQuery
+        viewModel.applyFilter(name = searchQuery)
+        adapter?.refresh()
+    }
+
 
     companion object {
         const val CHARACTERS_FRAGMENT_TAG: String = "CHARACTERS_FRAGMENT_TAG"
@@ -274,21 +352,6 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
         fun createInstance() = CharactersFragment().apply {
             //пока сюда передавать нечего
             arguments = Bundle()
-        }
-    }
-
-
-    override fun toggle() {
-        if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            with(binding) {
-                rvCharacters.visibility = ViewGroup.GONE
-            }
-        } else {
-            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
-            with(binding) {
-                rvCharacters.visibility = ViewGroup.VISIBLE
-            }
         }
     }
 }

@@ -29,6 +29,12 @@ class DatabaseModule {
         return database.getCharacterDao()
     }
 
+    @Provides
+    @ApplicationScope
+    fun provideContext(app: Application): Context {
+        return app
+    }
+
     private companion object {
         const val DB_NAME = "rick_and_morty.db"
     }

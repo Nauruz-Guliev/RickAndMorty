@@ -23,9 +23,22 @@
         <item name="CustomChipChoiceStyle">@style/ChipCustomStyle</item>
     </style>
 
-    <style name="FilterEditTextStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="FilterTextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:textColor">@color/blue_rm</item>
         <item name="android:background">@color/blue_rm_secondary</item>
+        <item name="singleLine">true</item>
+        <item name="colorAccent">@color/blue_rm</item>
+    </style>
+
+    <style name="FilterInputEditTextLayout" parent="ThemeOverlay.Material3.TextInputEditText.OutlinedBox">
+        <item name="maxLines">1</item>
+        <item name="singleLine">true</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:inputType">text</item>
+        <item name="android:textColor">@color/blue_rm</item>
+        <item name="android:background">@color/blue_rm_secondary</item>
+        <item name="colorAccent">@color/blue_rm</item>
+        <item name="android:imeOptions">actionDone</item>
     </style>
 
 

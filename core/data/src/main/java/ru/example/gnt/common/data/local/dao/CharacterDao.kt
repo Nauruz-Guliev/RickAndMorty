@@ -21,30 +21,80 @@ interface CharacterDao {
     fun getAllCharacters(): Flow<List<CharacterEntity>>
 
     @Query("SELECT * FROM character")
-    fun getCharacters() : PagingSource<Int, CharacterEntity>
+    fun getCharacters(): PagingSource<Int, CharacterEntity>
 
     @Query("SELECT * FROM character LIMIT :pageSize OFFSET :pageIndex")
-    suspend fun getCharactersInRage(pageSize: Int, pageIndex: Int) : List<CharacterEntity>
+    suspend fun getCharactersInRage(pageSize: Int, pageIndex: Int): List<CharacterEntity>
 
-    @Query("DELETE FROM character")
-    suspend fun clear()
+
+    @Query(
+        "DELETE FROM character " +
+                "WHERE (:name IS NULL OR name LIKE '%' || :name  || '%') " +
+                "AND (:species IS NULL OR species LIKE '%' || :species  || '%') " +
+                "AND (:type IS NULL OR type LIKE '%' || :type  || '%') " +
+                "AND (:gender IS NULL OR gender LIKE :gender) " +
+                "AND (:status IS NULL OR status LIKE :status) "
+    )
+    suspend fun clear(
+        name: String?,
+        species: String?,
+        type: String?,
+        status: String?,
+        gender: String?
+    )
 
     @Transaction
-    suspend fun refresh(characters: List<CharacterEntity>) {
+    suspend fun refresh(
+        characters: List<CharacterEntity>,
+        name: String?,
+        species: String?,
+        type: String?,
+        gender: String?,
+        status: String?,
+    ) {
+        clear(name, species, type, status = status, gender = gender)
         saveCharacters(characters)
     }
 
-    @Query("SELECT * FROM character " +
-            "WHERE name LIKE '%' || :name  || '%' " +
-            "AND species LIKE '%' || :species  || '%' " +
-            "AND type LIKE '%' || :type  || '%'")
-    fun getCharactersFilteredPaged(name: String?, species: String?, type: String?): PagingSource<Int, CharacterEntity>
+    @Query(
+        "SELECT * FROM character " +
+                "WHERE (:name IS NULL OR name LIKE '%' || :name  || '%') " +
+                "AND (:species IS NULL OR species LIKE '%' || :species  || '%') " +
+                "AND (:type IS NULL OR type LIKE '%' || :type  || '%') " +
+                "AND (:gender IS NULL OR gender LIKE :gender) " +
+                "AND (:status IS NULL OR status LIKE :status) " +
+                "ORDER BY id ASC"
+    )
+    fun getCharactersFilteredPaged(
+        name: String?,
+        species: String?,
+        type: String?,
+        status: String?,
+        gender: String?
+    ): PagingSource<Int, CharacterEntity>
 
-    @Query("SELECT * FROM character " +
-            "WHERE name LIKE '%' || :name  || '%' " +
-            "AND species LIKE '%' || :species  || '%' " +
-            "AND type LIKE '%' || :type  || '%'")
-    fun getCharactersFiltered(name: String?, species: String?, type: String?): List<CharacterEntity>
+
+    @Query(
+        "SELECT * FROM character " +
+                "WHERE (:name IS NULL OR name LIKE '%' || :name  || '%') " +
+                "AND (:species IS NULL OR species LIKE '%' || :species  || '%') " +
+                "AND (:type IS NULL OR type LIKE '%' || :type  || '%') " +
+                "AND (:gender IS NULL OR gender LIKE :gender) " +
+                "AND (:status IS NULL OR status LIKE :status) " +
+                "ORDER BY id ASC " +
+                "LIMIT :limit " +
+                "OFFSET :offset "
+
+    )
+    fun getCharactersFiltered(
+        name: String?,
+        species: String?,
+        type: String?,
+        gender: String?,
+        status: String?,
+        limit: Int?,
+        offset: Int?
+    ): List<CharacterEntity>
 
 
     suspend fun save(character: CharacterEntity) {

@@ -4,4 +4,10 @@
     <string name="name">Name</string>
     <string name="type_empty">Type</string>
     <string name="results_amount">Results: %1s</string>
+    <string name="no_filter_results">No matching results.</string>
+    <string name="clear_filter">Clear filter</string>
+    <string name="no_internet_connection">No internet connection.</string>
+    <string name="unknown_resource_error">Call to unknown resource</string>
+    <string name="unknown_network_error">Unknown network error</string>
+    <string name="not_connected_ui_message">You are not connected to internet</string>
 </resources>

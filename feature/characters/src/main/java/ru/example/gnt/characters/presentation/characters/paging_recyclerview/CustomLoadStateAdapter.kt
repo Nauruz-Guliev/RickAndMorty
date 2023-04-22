@@ -7,6 +7,7 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import ru.example.gnt.common.isNetworkOn
 import ru.example.gnt.ui.databinding.LoadStateLayoutBinding
 
 typealias TryAgainAction = () -> Unit
@@ -48,9 +49,10 @@ class CustomLoadStateAdapter(
         }
 
         fun bind(loadState: LoadState) = with(binding) {
-            messageTextView.isVisible = loadState is LoadState.Error
-            tryAgainButton.isVisible = loadState is LoadState.Error
-            progressBar.isVisible = loadState is LoadState.Loading
+            val isInternetOn = root.context.isNetworkOn()
+            messageTextView.isVisible = loadState is LoadState.Error && isInternetOn
+            tryAgainButton.isVisible = loadState is LoadState.Error && isInternetOn
+            progressBar.isVisible = loadState is LoadState.Loading && isInternetOn
         }
     }
 }

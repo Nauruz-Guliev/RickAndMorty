@@ -1,5 +1,5 @@
 package ru.example.gnt.common.utils.interfaces
 
 interface LayoutBackDropManager {
-    fun toggle()
+    fun toggle() : Int
 }

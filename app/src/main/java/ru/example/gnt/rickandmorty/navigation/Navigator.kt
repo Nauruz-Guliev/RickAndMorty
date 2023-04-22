@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.presentation.characters.CharactersFragment
 import ru.example.gnt.characters.presentation.characters.detials.CharacterDetailsFragment
@@ -23,7 +24,9 @@ class Navigator @Inject constructor(
     private val context: Context
 ) : CharactersRouter, FragmentManager.OnBackStackChangedListener {
 
+    private var bottomNavView: BottomNavigationView? = null
     init {
+        bottomNavView = (context as MainActivity).findViewById(R.id.bottom_nav)
         fragmentManager.addOnBackStackChangedListener(this)
     }
 
@@ -51,13 +54,12 @@ class Navigator @Inject constructor(
         )
     }
 
-    fun toggleDropDown() : Boolean {
+    fun toggleDropDown() : Int? {
         val fragment = getActiveFragment()
         if (fragment != null && fragment is LayoutBackDropManager) {
-            fragment.toggle()
-            return true
+            return fragment.toggle()
         }
-        return false
+        return null
     }
 
     private fun getActiveFragment(): Fragment? {
@@ -106,8 +108,8 @@ class Navigator @Inject constructor(
     }
 
     private fun hideAppBar() {
-        val appBar: View = (context as MainActivity).window.decorView.findViewById(R.id.appbar)
-        appBar.visibility = View.GONE
+        val bottomBar: BottomNavigationView = (context as MainActivity).findViewById(R.id.bottom_nav)
+        bottomBar.visibility = View.GONE
     }
 
     private fun showAppBar() {

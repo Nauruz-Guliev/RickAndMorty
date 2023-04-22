@@ -14,5 +14,5 @@ interface CharactersRepository {
 
     */
 
-    fun getCharacters(filterModel: CharactersFilterModel?) :  Flow<PagingData<CharactersUiModel.Single>>
+    suspend fun getCharacters(filterModel: CharactersFilterModel) :  Flow<PagingData<CharactersUiModel.Single>>
 }
