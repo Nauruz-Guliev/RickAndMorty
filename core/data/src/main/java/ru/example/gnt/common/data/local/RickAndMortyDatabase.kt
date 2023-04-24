@@ -8,7 +8,7 @@ import ru.example.gnt.common.data.local.dao.CharacterDao
 import ru.example.gnt.common.data.local.entity.CharacterEntity
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [
         CharacterEntity::class
     ],

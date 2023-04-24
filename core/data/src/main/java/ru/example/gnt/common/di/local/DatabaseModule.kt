@@ -19,7 +19,9 @@ class DatabaseModule {
             application,
             RickAndMortyDatabase::class.java,
             DB_NAME
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
 

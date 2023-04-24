@@ -1,9 +1,8 @@
 package ru.example.gnt.characters.di
 
 import dagger.Component
-import dagger.Subcomponent
-import ru.example.gnt.characters.presentation.characters.CharactersFragment
-import ru.example.gnt.characters.presentation.characters.detials.CharacterDetailsFragment
+import ru.example.gnt.characters.presentation.list.CharactersFragment
+import ru.example.gnt.characters.presentation.detials.CharacterDetailsFragment
 import ru.example.gnt.common.di.scope.ScreenScope
 
 

@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.toml.updater.github).apply(true)
     alias(libs.plugins.toml.updater.version.catalog).apply(true)
 
+
 }
 buildscript {
     extra.apply {

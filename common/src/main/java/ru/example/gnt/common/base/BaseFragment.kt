@@ -13,14 +13,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 abstract class BaseFragment<VB : ViewBinding>(
     private val bindingInflater: (inflater: LayoutInflater) -> VB,
-    private val coordinatorLayout: CoordinatorLayout? = null,
     @IdRes private val contentLayoutId: Int? = null
 ) : Fragment() {
 
     protected var _binding: VB? = null
     protected val binding: VB by lazy { _binding!! }
-
-    private var sheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,

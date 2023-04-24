@@ -5,6 +5,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import ru.example.gnt.common.data.remote.service.CharacterService
@@ -43,13 +44,21 @@ class NetworkModule {
 
     @Provides
     @ApplicationScope
+    fun provideRxJavaFactory(): RxJava3CallAdapterFactory {
+        return RxJava3CallAdapterFactory.create()
+    }
+
+    @Provides
+    @ApplicationScope
     fun provideRetrofit(
         @BaseUrl baseUrl: String,
-        moshiConverterFactory: MoshiConverterFactory
+        moshiConverterFactory: MoshiConverterFactory,
+        rxJava3CallAdapterFactory: RxJava3CallAdapterFactory
     ): CharacterService {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(moshiConverterFactory)
+            .addCallAdapterFactory(rxJava3CallAdapterFactory)
             .build()
             .create()
     }

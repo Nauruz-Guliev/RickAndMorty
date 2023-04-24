@@ -17,6 +17,8 @@
         tools:visibility="visible" />
 
     <TextView
+        android:textSize="@dimen/text_size_3"
+        android:textColor="@color/black_70"
         android:layout_gravity="center"
         android:id="@+id/messageTextView"
         android:layout_width="wrap_content"

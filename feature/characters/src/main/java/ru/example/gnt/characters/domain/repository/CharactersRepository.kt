@@ -1,8 +1,9 @@
 package ru.example.gnt.characters.domain.repository
 
 import androidx.paging.PagingData
+import io.reactivex.rxjava3.core.Observable
 import kotlinx.coroutines.flow.Flow
-import ru.example.gnt.characters.presentation.characters.CharactersFilterModel
+import ru.example.gnt.characters.presentation.list.model.CharactersFilterModel
 import ru.example.gnt.common.model.ui.characters.CharactersUiModel
 
 interface CharactersRepository {
@@ -13,6 +14,6 @@ interface CharactersRepository {
     suspend fun getFilteredCharacters(status: String?, gender: String?):  Flow<Result<CharactersUiModel>>
 
     */
-
+    fun getCharacterById(id: Int) : Observable<CharactersUiModel.Single>
     suspend fun getCharacters(filterModel: CharactersFilterModel) :  Flow<PagingData<CharactersUiModel.Single>>
 }

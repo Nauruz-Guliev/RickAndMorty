@@ -20,6 +20,9 @@ pagingVersion = "3.1.1"
 retrofit = "2.9.0"
 room = "2.5.1"
 gson = "2.7"
+retrofitRxJava = "2.9.0"
+rxAndroid = "3.0.2"
+rxJava = "3.1.5"
 
 [libraries]
 android-material = { module = "com.google.android.material:material", version.ref = "androidMaterial" }
@@ -46,12 +49,25 @@ room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+retrofit-rxjava = { module = "com.squareup.retrofit2:adapter-rxjava3", version.ref = "retrofitRxJava" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidxLifecycleKtx" }
+androidx-lifecycle-livedata-core = { module = "androidx.lifecycle:lifecycle-livedata-core", version.ref = "androidxLifecycleKtx" }
+rx-android = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxAndroid" }
+rx-java = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxJava" }
 
 
 [bundles]
 dagger-impl = [
     "dagger",
     "dagger-android-support",
+]
+android-java-rx = [
+    "rx-android",
+    "rx-java"
+]
+androidx-lifecycle-livedata = [
+    "androidx-lifecycle-livedata-ktx",
+    "androidx-lifecycle-livedata-core"
 ]
 dagger-kapt = [
     "dagger-android-processor",
@@ -65,6 +81,7 @@ retrofit = [
     "moshi",
     "retrofit",
     "retrofit-moshi",
+    "retrofit-rxjava"
 ]
 
 [plugins]

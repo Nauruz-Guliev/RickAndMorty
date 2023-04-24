@@ -47,20 +47,23 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
 
-    kaptAndroidTest("androidx.databinding:databinding-compiler:7.4.2")
+    kaptAndroidTest("androidx.databinding:databinding-compiler:8.0.0")
 
 
     //libraries
-    implementation(libs.retrofit.moshi)
+    implementation(libs.bundles.retrofit)
 
     implementation(libs.bundles.dagger.impl)
     kapt(libs.bundles.dagger.kapt)
 
     implementation(libs.bundles.lifecycle)
+    implementation(libs.bundles.androidx.lifecycle.livedata)
     implementation(libs.glide)
+    implementation(libs.bundles.android.java.rx)
 
     implementation(libs.androidx.paging)
     implementation(libs.androidx.swiperefresh)
+
     //tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)

@@ -4,34 +4,33 @@ import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.view.Menu
-import android.widget.Toast
+import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.lifecycleScope
+import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import ru.example.gnt.characters.di.provider.CharactersDepsStore
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.setImageDrawable
 import ru.example.gnt.rickandmorty.databinding.ActivityMainBinding
-import ru.example.gnt.rickandmorty.di.main.DaggerMainComponent
-import ru.example.gnt.rickandmorty.di.main.MainComponent
-import ru.example.gnt.rickandmorty.navigation.Navigator
+import ru.example.gnt.rickandmorty.di.main.ActivityComponent
+import ru.example.gnt.rickandmorty.di.main.DaggerActivityComponent
+import ru.example.gnt.rickandmorty.navigation.MainRouter
 import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(), SearchActivity {
 
-    private lateinit var mainComponent: MainComponent
+    private lateinit var activityComponent: ActivityComponent
     private lateinit var binding: ActivityMainBinding
 
     private var searchView: SearchView? = null
 
     @Inject
-    lateinit var navigator: Navigator
+    lateinit var mainRouter: MainRouter
 
     private var buttonState: Boolean = false
 
@@ -48,17 +47,31 @@ class MainActivity : AppCompatActivity(), SearchActivity {
 
 
     private fun initActionBar() {
-        navigator.openInitialState()
+        mainRouter.openInitialState()
         setSupportActionBar(binding.toolbar)
         binding.toolbar.outlineProvider = null
+
         with(binding.btnFilter) {
             setOnClickListener {
-                when (navigator.toggleDropDown()) {
-                    BottomSheetBehavior.STATE_EXPANDED -> setImageDrawable(ru.example.gnt.ui.R.drawable.cross_svgrepo_com)
-                    BottomSheetBehavior.STATE_COLLAPSED -> setImageDrawable(ru.example.gnt.ui.R.drawable.baseline_filter_list_24)
+                (searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView).callOnClick()
+                when (mainRouter.toggleDropDown()) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        searchView?.isVisible = false
+                        setImageDrawable(ru.example.gnt.ui.R.drawable.cross_svgrepo_com)
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        searchView?.isVisible = true
+                        setImageDrawable(ru.example.gnt.ui.R.drawable.baseline_filter_list_24)
+                    }
                 }
             }
         }
+        binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+    }
+
+    fun setToolbarBackButtonVisibility(isVisible: Boolean) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(isVisible)
+        supportActionBar?.setDisplayShowHomeEnabled(isVisible)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -69,6 +82,17 @@ class MainActivity : AppCompatActivity(), SearchActivity {
         searchView = searchItem?.actionView as SearchView
 
         searchView?.setSearchableInfo(manager.getSearchableInfo(componentName))
+
+
+        val closeButton: ImageView =
+            searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
+
+        closeButton.setOnClickListener {
+            searchView?.setQuery(null, false)
+            searchFragment?.doSearch(null)
+            searchView?.onActionViewCollapsed()
+
+        }
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -86,15 +110,25 @@ class MainActivity : AppCompatActivity(), SearchActivity {
         return true
     }
 
+    fun setItemsVisibility(isVisible: Boolean) {
+        val status = if (isVisible) ViewGroup.VISIBLE else ViewGroup.INVISIBLE
+
+        with(binding) {
+            btnFilter.isVisible = isVisible
+            toolbar.menu?.findItem(ru.example.gnt.ui.R.id.search)?.isVisible = isVisible
+            //    bottomNav.isVisible = isVisible
+        }
+    }
+
     private fun initDagger() {
-        mainComponent =
-            DaggerMainComponent.builder()
+        activityComponent =
+            DaggerActivityComponent.builder()
                 .mainContainerId(R.id.main_container)
                 .fragmentManager(supportFragmentManager)
                 .context(this)
                 .build()
-        CharactersDepsStore.navigatorDeps = mainComponent
-        mainComponent.inject(mainActivity = this)
+        CharactersDepsStore.navigatorDeps = activityComponent
+        activityComponent.inject(mainActivity = this)
     }
 
     override fun showSearchView(isShown: Boolean) {

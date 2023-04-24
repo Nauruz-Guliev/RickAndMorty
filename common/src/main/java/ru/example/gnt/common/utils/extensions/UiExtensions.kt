@@ -40,11 +40,12 @@ fun <T> Context?.showToastLong(message: T?) {
 fun <T> View.showSimpleSnackbar(
     message: T?,
     action: (() -> Unit)? = null,
-    actionMessage: String? = null
+    actionMessage: String? = null,
+    infinite: Boolean = false
 ) {
     Snackbar.make(
         this,
-        message.toString(), Snackbar.LENGTH_SHORT
+        message.toString(), if (infinite) Snackbar.LENGTH_INDEFINITE else Snackbar.LENGTH_SHORT
     ).apply {
         if (action != null && actionMessage != null) {
             setAction(actionMessage) { action.invoke() }
@@ -63,7 +64,6 @@ fun EditText.asFlow(resetTarget : (String) -> Unit): Flow<EditText> {
         }
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             s?.let {
-                this@asFlow
                 resetTarget(s.toString());
                 channel.trySend(this@asFlow).isSuccess
             }

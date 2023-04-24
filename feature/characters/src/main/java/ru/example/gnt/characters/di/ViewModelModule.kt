@@ -5,8 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import ru.example.gnt.characters.presentation.characters.CharactersViewModel
+import ru.example.gnt.characters.presentation.list.CharactersViewModel
 import ru.example.gnt.common.di.scope.ApplicationScope
+import ru.example.gnt.common.di.scope.ScreenScope
 import ru.example.gnt.common.di.viewmodel.ViewModelFactory
 import ru.example.gnt.common.di.viewmodel.ViewModelKey
 
@@ -14,7 +15,7 @@ import ru.example.gnt.common.di.viewmodel.ViewModelKey
 abstract class ViewModelModule {
 
     @Binds
-    @ApplicationScope
+    @ScreenScope
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds

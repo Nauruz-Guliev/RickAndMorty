@@ -10,4 +10,6 @@
     <string name="unknown_resource_error">Call to unknown resource</string>
     <string name="unknown_network_error">Unknown network error</string>
     <string name="not_connected_ui_message">You are not connected to internet</string>
+    <string name="human">Human</string>
+    <string name="name_empty">Name</string>
 </resources>
