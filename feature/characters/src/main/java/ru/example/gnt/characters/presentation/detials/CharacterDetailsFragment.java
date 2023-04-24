@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import ru.example.gnt.characters.databinding.CharacterDetailsFragmentBinding;
 import ru.example.gnt.characters.di.provider.CharactersComponentViewModel;
 import ru.example.gnt.common.model.UiState;
-import ru.example.gnt.common.model.ui.characters.CharactersUiModel;
+import ru.example.gnt.characters.presentation.list.model.CharactersUiModel;
 import ru.example.gnt.common.utils.interfaces.DetailsFragment;
 
 

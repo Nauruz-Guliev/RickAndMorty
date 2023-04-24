@@ -11,10 +11,10 @@ import dagger.assisted.AssistedInject
 import retrofit2.*
 import ru.example.gnt.characters.R
 import ru.example.gnt.characters.presentation.list.model.CharactersFilterModel
-import ru.example.gnt.common.data.local.dao.CharacterDao
-import ru.example.gnt.common.data.local.entity.CharacterEntity
-import ru.example.gnt.common.data.mapper.CharacterEntityDtoMapper
-import ru.example.gnt.common.data.remote.service.CharacterService
+import ru.example.gnt.data.local.dao.CharacterDao
+import ru.example.gnt.data.local.entity.CharacterEntity
+import ru.example.gnt.data.mapper.CharacterEntityResponseMapper
+import ru.example.gnt.data.remote.service.CharacterService
 import ru.example.gnt.common.exceptions.NetworkConnectionException
 import ru.example.gnt.common.exceptions.NetworkException
 import ru.example.gnt.common.isNetworkOn
@@ -83,7 +83,7 @@ class CharacterRemoteMediator @AssistedInject constructor(
                     status = filterModel?.status?.get,
                     gender = filterModel?.gender?.n
                 ).awaitResponse()
-                Result.success(response.body()?.results?.map(CharacterEntityDtoMapper::mapTo))
+                Result.success(response.body()?.results?.map(CharacterEntityResponseMapper::mapTo))
             } else {
                 Result.success(
                     characterDao.getCharactersFiltered(

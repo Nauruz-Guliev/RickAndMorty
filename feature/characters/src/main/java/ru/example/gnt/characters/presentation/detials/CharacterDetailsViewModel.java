@@ -11,11 +11,10 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import ru.example.gnt.characters.R;
 import ru.example.gnt.characters.domain.usecases.GetCharacterById;
 import ru.example.gnt.common.model.Resource;
 import ru.example.gnt.common.model.UiState;
-import ru.example.gnt.common.model.ui.characters.CharactersUiModel;
+import ru.example.gnt.characters.presentation.list.model.CharactersUiModel;
 
 
 public class CharacterDetailsViewModel extends ViewModel {

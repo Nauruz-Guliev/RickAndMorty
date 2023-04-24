@@ -5,10 +5,10 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import ru.example.gnt.characters.di.CharactersDeps
-import ru.example.gnt.common.data.local.dao.CharacterDao
-import ru.example.gnt.common.data.remote.service.CharacterService
-import ru.example.gnt.common.di.local.DatabaseModule
-import ru.example.gnt.common.di.remote.NetworkModule
+import ru.example.gnt.data.local.dao.CharacterDao
+import ru.example.gnt.data.remote.service.CharacterService
+import ru.example.gnt.data.di.local.DatabaseModule
+import ru.example.gnt.data.di.remote.NetworkModule
 import ru.example.gnt.common.di.scope.ApplicationScope
 import ru.example.gnt.rickandmorty.App
 

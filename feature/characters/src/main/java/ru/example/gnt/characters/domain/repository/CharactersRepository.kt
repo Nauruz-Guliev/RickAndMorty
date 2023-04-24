@@ -4,7 +4,7 @@ import androidx.paging.PagingData
 import io.reactivex.rxjava3.core.Observable
 import kotlinx.coroutines.flow.Flow
 import ru.example.gnt.characters.presentation.list.model.CharactersFilterModel
-import ru.example.gnt.common.model.ui.characters.CharactersUiModel
+import ru.example.gnt.characters.presentation.list.model.CharactersUiModel
 
 interface CharactersRepository {
     /*
