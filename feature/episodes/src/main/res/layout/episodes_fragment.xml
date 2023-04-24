@@ -7,10 +7,6 @@
     android:animateLayoutChanges="true"
     android:layout_height="match_parent">
 
-    <!--This the interface sitting behind the backdrop and shown when it is collapsed-->
-
-    <!--This is the backdrop's content with a BottomSheetBehaviour applied to it-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,7 +15,7 @@
 
         <include
             android:id="@+id/filter_layout"
-            layout="@layout/characters_filter_layout" />
+            layout="@layout/locations_filter_layout" />
 
     </LinearLayout>
 
@@ -42,7 +38,7 @@
 
 
             <TextView
-                android:id="@+id/tv_info"
+                android:id="@+id/tv_informational"
                 android:layout_marginTop="@dimen/margin_4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,19 +46,7 @@
                 android:textSize="@dimen/text_size_3"
                 style="@style/TextViewSecondaryText"
                 android:layout_marginHorizontal="@dimen/margin_5"
-                android:text="@string/characters_welcome_message" />
-
-            <!--
-
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:layout_marginTop="@dimen/margin_4"
-                android:id="@+id/progress_indicator"
-                android:layout_width="match_parent"
-                app:indicatorColor="@color/brown_rm"
-                android:layout_height="8dp"
-                android:layout_marginHorizontal="@dimen/margin_5"
-                android:indeterminate="true" />
-            -->
+                android:text="@string/episodes_welcome_message" />
 
 
         </LinearLayout>
@@ -103,20 +87,18 @@
 
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_characters"
+                    android:id="@+id/rv_episodes"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                     app:spanCount="2"
-                    tools:listitem="@layout/character_item" />
+                    tools:listitem="@layout/episode_item" />
 
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <!--The content's body goes here-->
     </LinearLayout>
 
 

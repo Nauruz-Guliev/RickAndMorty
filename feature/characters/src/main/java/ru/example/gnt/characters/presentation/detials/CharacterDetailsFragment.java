@@ -21,7 +21,7 @@ import ru.example.gnt.characters.databinding.CharacterDetailsFragmentBinding;
 import ru.example.gnt.characters.di.provider.CharactersComponentViewModel;
 import ru.example.gnt.common.model.UiState;
 import ru.example.gnt.characters.presentation.list.model.CharactersUiModel;
-import ru.example.gnt.common.utils.interfaces.DetailsFragment;
+import ru.example.gnt.common.base.interfaces.DetailsFragment;
 
 
 public class CharacterDetailsFragment extends Fragment implements DetailsFragment {
@@ -80,7 +80,6 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
     }
 
     private void setValues(CharactersUiModel.Single item) {
-        Toast.makeText(requireContext(), item.toString(), Toast.LENGTH_SHORT).show();
         binding.layoutAdditionalInfo.setVisibility(View.VISIBLE);
         binding.tvGender.setText(item.getGender().getN());
         binding.tvName.setText(item.getName());

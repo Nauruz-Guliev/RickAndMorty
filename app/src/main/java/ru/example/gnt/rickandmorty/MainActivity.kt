@@ -4,17 +4,21 @@ import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.view.Menu
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import ru.example.gnt.characters.di.provider.CharactersDepsStore
+import ru.example.gnt.characters.presentation.detials.CharacterDetailsFragment
+import ru.example.gnt.characters.presentation.list.CharactersFragment
+import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.setImageDrawable
+import ru.example.gnt.episodes.presentation.episodes.EpisodesFragment
 import ru.example.gnt.rickandmorty.databinding.ActivityMainBinding
 import ru.example.gnt.rickandmorty.di.main.ActivityComponent
 import ru.example.gnt.rickandmorty.di.main.DaggerActivityComponent
@@ -22,7 +26,7 @@ import ru.example.gnt.rickandmorty.navigation.MainRouter
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), SearchActivity {
+class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedListener {
 
     private lateinit var activityComponent: ActivityComponent
     private lateinit var binding: ActivityMainBinding
@@ -35,6 +39,7 @@ class MainActivity : AppCompatActivity(), SearchActivity {
     private var buttonState: Boolean = false
 
     private var searchFragment: SearchFragment? = null
+    private var searchCloseButton: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +47,28 @@ class MainActivity : AppCompatActivity(), SearchActivity {
         initDagger()
         initActionBar()
         setContentView(binding.root)
+        initBottomNav()
+        supportFragmentManager.addOnBackStackChangedListener(this)
     }
 
+    private fun initBottomNav() {
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                ru.example.gnt.ui.R.id.characters -> {
+                    mainRouter.openCharactersScreen()
+                }
+                ru.example.gnt.ui.R.id.episodes -> {
+                    mainRouter.openEpisodesScreen()
+                }
+                ru.example.gnt.ui.R.id.locations -> {
+                    mainRouter.openLocationScreen()
+                }
+                else -> {
+                }
+            }
+            return@setOnItemSelectedListener true
+        }
+    }
 
 
     private fun initActionBar() {
@@ -84,14 +109,13 @@ class MainActivity : AppCompatActivity(), SearchActivity {
         searchView?.setSearchableInfo(manager.getSearchableInfo(componentName))
 
 
-        val closeButton: ImageView =
-            searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
+        searchCloseButton =
+        searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
 
-        closeButton.setOnClickListener {
+        searchCloseButton?.setOnClickListener {
             searchView?.setQuery(null, false)
             searchFragment?.doSearch(null)
             searchView?.onActionViewCollapsed()
-
         }
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -111,12 +135,9 @@ class MainActivity : AppCompatActivity(), SearchActivity {
     }
 
     fun setItemsVisibility(isVisible: Boolean) {
-        val status = if (isVisible) ViewGroup.VISIBLE else ViewGroup.INVISIBLE
-
         with(binding) {
             btnFilter.isVisible = isVisible
             toolbar.menu?.findItem(ru.example.gnt.ui.R.id.search)?.isVisible = isVisible
-            //    bottomNav.isVisible = isVisible
         }
     }
 
@@ -141,6 +162,27 @@ class MainActivity : AppCompatActivity(), SearchActivity {
 
     override fun registerSearchFragment(instance: SearchFragment) {
         searchFragment = instance
+    }
+
+    override fun closeSearchInterface() {
+        searchCloseButton?.callOnClick()
+    }
+
+    private fun checkBottomNavSelectedItemId(selectedItemId: Int) {
+        if (binding.bottomNav.selectedItemId != selectedItemId) {
+            binding.bottomNav.selectedItemId = selectedItemId
+        }
+    }
+
+    override fun onBackStackChanged() {
+        val fragment = mainRouter.getActiveFragment()
+        if (fragment is RootFragment) {
+            when (fragment) {
+                is CharactersFragment -> checkBottomNavSelectedItemId(ru.example.gnt.ui.R.id.characters)
+                is CharacterDetailsFragment -> checkBottomNavSelectedItemId(ru.example.gnt.ui.R.id.characters)
+                is EpisodesFragment -> checkBottomNavSelectedItemId(ru.example.gnt.ui.R.id.episodes)
+            }
+        }
     }
 
 }

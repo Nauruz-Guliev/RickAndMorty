@@ -4,16 +4,17 @@ import android.content.Context
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.presentation.detials.CharacterDetailsFragment
 import ru.example.gnt.characters.presentation.list.CharactersFragment
+import ru.example.gnt.common.base.interfaces.DetailsFragment
+import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
+import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.di.scope.ScreenScope
-import ru.example.gnt.common.utils.interfaces.DetailsFragment
-import ru.example.gnt.common.utils.interfaces.LayoutBackDropManager
+import ru.example.gnt.episodes.presentation.episodes.EpisodesFragment
+import ru.example.gnt.locations.presentation.LocationsFragment
 import ru.example.gnt.rickandmorty.MainActivity
-import ru.example.gnt.rickandmorty.R
 import javax.inject.Inject
 
 
@@ -24,9 +25,7 @@ class MainRouter @Inject constructor(
     private val context: Context
 ) : CharactersRouter, FragmentManager.OnBackStackChangedListener {
 
-    private var bottomNavView: BottomNavigationView? = null
     init {
-        bottomNavView = (context as MainActivity).findViewById(R.id.bottom_nav)
         fragmentManager.addOnBackStackChangedListener(this)
     }
 
@@ -34,11 +33,32 @@ class MainRouter @Inject constructor(
         navigate(
             fragment = CharactersFragment.createInstance(),
             tag = CharactersFragment.CHARACTERS_FRAGMENT_TAG,
-            addToBackStack = true
+            addToBackStack = false,
+        )
+    }
+
+    private fun clearBackStack() {
+        fragmentManager.popBackStack()
+    }
+
+    fun openEpisodesScreen() {
+        navigate(
+            fragment = EpisodesFragment.createInstance(),
+            tag = EpisodesFragment.EPISODES_FRAGMENT_TAG,
+            addToBackStack = false
+        )
+    }
+
+    fun openLocationScreen() {
+        navigate(
+            fragment = LocationsFragment.createInstance(),
+            tag = LocationsFragment.LOCATIONS_FRAGMENT_TAG,
+            addToBackStack = false
         )
     }
 
     override fun openCharacterDetails(id: Int) {
+
         navigate(
             fragment = CharacterDetailsFragment.createInstance(id),
             tag = CharacterDetailsFragment.CHARACTER_DETAILS_FRAGMENT_TAG,
@@ -62,7 +82,7 @@ class MainRouter @Inject constructor(
         return null
     }
 
-    private fun getActiveFragment(): Fragment? {
+    fun getActiveFragment(): Fragment? {
         val f = fragmentManager.fragments.last()
         return if (f?.isVisible == true) {
             f
@@ -79,20 +99,28 @@ class MainRouter @Inject constructor(
         addToBackStack: Boolean = true,
     ) {
         checkFragment(fragment)
-        val transaction = fragmentManager.beginTransaction().replace(
-            mainContainerId,
-            fragment,
-            tag,
-        )
-        if (addToBackStack) {
-            transaction.addToBackStack(tag)
+        if (fragment is RootFragment && fragmentManager.findFragmentByTag(tag) != null) {
+            fragmentManager.popBackStack(
+                EpisodesFragment.EPISODES_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+        } else {
+            val transaction = fragmentManager.beginTransaction().replace(
+                mainContainerId,
+                fragment,
+                tag,
+            )
+            if (addToBackStack) {
+                transaction.addToBackStack(tag)
+            }
+            transaction.setCustomAnimations(
+                androidx.appcompat.R.anim.abc_slide_in_bottom,
+                androidx.appcompat.R.anim.abc_slide_out_bottom,
+                androidx.appcompat.R.anim.abc_popup_enter,
+                androidx.appcompat.R.anim.abc_popup_exit
+            )
+            transaction.setReorderingAllowed(true)
+            transaction.commit()
         }
-        transaction.setCustomAnimations(
-            androidx.appcompat.R.anim.abc_slide_in_bottom,
-            androidx.appcompat.R.anim.abc_slide_out_bottom,
-        )
-        transaction.setReorderingAllowed(true)
-        transaction.commit()
     }
 
     fun openInitialState() {

@@ -1,6 +1,8 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    id(libs.plugins.android.library.get().pluginId).apply(true)
+    id(libs.plugins.kotlin.android.get().pluginId).apply(true)
+
+    id(libs.plugins.kotlin.kapt.get().pluginId).apply(true)
 }
 
 android {
@@ -24,21 +26,52 @@ android {
             )
         }
     }
+    val compileJavaVersion = rootProject.extra["CompileJavaVersion"] as JavaVersion
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = compileJavaVersion
+        targetCompatibility = compileJavaVersion
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = rootProject.extra["JavaVersion"] as String
+    }
+
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
     }
 }
 
 dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.android.material)
+    implementation(libs.androidx.constraint)
 
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.8.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    kaptAndroidTest("androidx.databinding:databinding-compiler:8.0.0")
+
+
+    //libraries
+    implementation(libs.bundles.retrofit)
+
+    implementation(libs.bundles.dagger.impl)
+    kapt(libs.bundles.dagger.kapt)
+
+    implementation(libs.bundles.lifecycle)
+    implementation(libs.bundles.androidx.lifecycle.livedata)
+    implementation(libs.glide)
+    implementation(libs.bundles.android.java.rx)
+
+    implementation(libs.androidx.paging)
+    implementation(libs.androidx.swiperefresh)
+
+    //tests
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.junit.ext)
+    androidTestImplementation(libs.espresso)
+
+    implementation(project(":core:ui"))
+    implementation(project(":core:data"))
+    implementation(project(":common"))
+
+
 }

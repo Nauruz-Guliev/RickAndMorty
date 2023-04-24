@@ -30,6 +30,8 @@ import ru.example.gnt.characters.presentation.list.paging_recyclerview.Character
 import ru.example.gnt.characters.presentation.list.paging_recyclerview.CustomLoadStateAdapter
 import ru.example.gnt.characters.presentation.list.paging_recyclerview.TryAgainAction
 import ru.example.gnt.common.base.BaseFragment
+import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
+import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.enums.CharacterGenderEnum
@@ -41,13 +43,12 @@ import ru.example.gnt.common.isNetworkOn
 import ru.example.gnt.common.utils.extensions.createChip
 import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.showToastShort
-import ru.example.gnt.common.utils.interfaces.LayoutBackDropManager
 import javax.inject.Inject
 
 
 class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     CharactersFragmentBinding::inflate
-), LayoutBackDropManager, SearchFragment {
+), LayoutBackDropManager, SearchFragment, RootFragment {
     @Inject
     internal lateinit var viewModel: CharactersViewModel
 
@@ -56,6 +57,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     private var coordinatorLayout: CoordinatorLayout? = null
 
     private var adapter: CharactersAdapter? = null
+
     private var footerAdapter: CustomLoadStateAdapter? = null
 
     private var isInternetOn: Boolean = false
@@ -71,7 +73,6 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isInternetOn = requireContext().isNetworkOn()
-
         (requireActivity() as? SearchActivity)?.registerSearchFragment(this)
         searchQuery?.let { (requireActivity() as? SearchActivity)?.setSearchText(it) }
     }
@@ -89,7 +90,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
         sheetBehavior.isFitToContents = false
         sheetBehavior.isHideable = false
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
+        setUpUiState()
         return coordinatorLayout
     }
 
@@ -104,14 +105,6 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
         observeInternetConnectionChanges()
         setUpUiState()
     }
-
-    override fun onResume() {
-        super.onResume()
-        (requireActivity() as? SearchActivity)?.showSearchView(true)
-    }
-
-
-
     private fun initSwipeRefreshLayout() {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.applyFilter()
@@ -181,7 +174,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
 
 
     private fun handleFilterReset(it: View) {
-        (activity as SearchActivity).setSearchText("")
+        (requireActivity() as? SearchActivity)?.closeSearchInterface()
         binding.loadingStateLayout.root.children.forEach { it.isVisible = false }
         viewModel.clearAllFilters()
         resetAllUiFilters()
@@ -225,7 +218,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     private fun observeInternetConnectionChanges() {
         lifecycleScope.launch {
             context?.internetCapabilitiesCallback()?.flowWithLifecycle(lifecycle)?.collectLatest {
-                isInternetOn = it
+                isInternetOn = context?.isNetworkOn() ?: it
                 setUpUiState()
                 when (it) {
                     true -> {
@@ -240,8 +233,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     }
 
     private fun setUpUiState() {
-        binding.swipeRefresh.isEnabled = isInternetOn
-        binding.tvInformational.text =
+        binding.tvInfo.text =
             if (isInternetOn) getString(ru.example.gnt.ui.R.string.characters_welcome_message)
             else getString(R.string.not_connected_ui_message)
     }

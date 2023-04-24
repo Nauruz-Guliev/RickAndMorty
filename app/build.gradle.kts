@@ -61,4 +61,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":common"))
     implementation(project(":feature:characters"))
+    implementation(project(":feature:episodes"))
+    implementation(project(":feature:locations"))
+
 }
