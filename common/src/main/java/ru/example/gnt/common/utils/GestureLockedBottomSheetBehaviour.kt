@@ -1,4 +1,4 @@
-package ru.example.gnt.common
+package ru.example.gnt.common.utils
 
 import android.content.Context
 import android.util.AttributeSet

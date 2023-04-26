@@ -5,8 +5,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -64,6 +62,12 @@ fun Context.internetCapabilitiesCallback() = callbackFlow {
         connectivityManager?.unregisterNetworkCallback(callback)
     }
 }
+
+fun String.isValidUrl(): Boolean =
+    this.matches(
+        "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)\$".toRegex()
+    )
+
 
 fun Context.isNetworkOn(): Boolean {
     val connectivityManager =

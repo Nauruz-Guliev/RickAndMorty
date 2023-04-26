@@ -4,14 +4,14 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 
-@Entity(tableName = "location")
-data class LocationEntity(
+@Entity(tableName = "episode")
+data class EpisodeEntity (
     @PrimaryKey
     val id: Int,
+    val airDate: String,
+    val characters: List<String>,
     val created: String,
-    val dimension: String,
+    val episode: String,
     val name: String,
-    val residents: List<String>,
-    val url: String,
-    val type: String,
+    val url: String
 )

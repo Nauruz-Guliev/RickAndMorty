@@ -11,21 +11,23 @@ import dagger.assisted.AssistedInject
 import retrofit2.*
 import ru.example.gnt.characters.R
 import ru.example.gnt.characters.presentation.list.model.CharactersFilterModel
-import ru.example.gnt.data.local.dao.CharacterDao
-import ru.example.gnt.data.local.entity.CharacterEntity
-import ru.example.gnt.data.mapper.CharacterEntityResponseMapper
-import ru.example.gnt.data.remote.service.CharacterService
 import ru.example.gnt.common.exceptions.NetworkConnectionException
 import ru.example.gnt.common.exceptions.NetworkException
 import ru.example.gnt.common.isNetworkOn
 import ru.example.gnt.common.model.Resource
+import ru.example.gnt.data.local.dao.CharacterDao
+import ru.example.gnt.data.local.entity.CharacterEntity
+import ru.example.gnt.data.mapper.CharacterEntityResponseMapper
+import ru.example.gnt.data.remote.service.CharacterService
 
 @ExperimentalPagingApi
 class CharacterRemoteMediator @AssistedInject constructor(
     private val characterDao: CharacterDao,
-    private val characterService: CharacterService,
+    private val service: CharacterService,
     @Assisted private val filterModel: CharactersFilterModel?,
-    private val context: Context
+    private val context: Context,
+    private val characterMapper: CharacterEntityResponseMapper
+
 ) : RemoteMediator<Int, CharacterEntity>() {
 
     private var pageIndex = 0
@@ -75,7 +77,7 @@ class CharacterRemoteMediator @AssistedInject constructor(
     ): Result<List<CharacterEntity>?> {
         return try {
             if (context.isNetworkOn()) {
-                val response = characterService.getCharactersByPageFiltered(
+                val response = service.getCharactersByPageFiltered(
                     page = pageIndex.toString(),
                     name = filterModel?.name,
                     species = filterModel?.species,
@@ -83,7 +85,7 @@ class CharacterRemoteMediator @AssistedInject constructor(
                     status = filterModel?.status?.get,
                     gender = filterModel?.gender?.n
                 ).awaitResponse()
-                Result.success(response.body()?.results?.map(CharacterEntityResponseMapper::mapTo))
+                Result.success(response.body()?.results?.map(characterMapper::mapTo))
             } else {
                 Result.success(
                     characterDao.getCharactersFiltered(
@@ -100,44 +102,6 @@ class CharacterRemoteMediator @AssistedInject constructor(
         } catch (ex: Exception) {
             Result.failure(NetworkConnectionException(resource = Resource.String(R.string.unknown_network_error)))
         }
-
-
-        /*
-
-        .enqueue(object : Callback<Characters> {
-        override fun onResponse(call: Call<Characters>, response: Response<Characters>) {
-            result = if (response.isSuccessful && response.code() == 200) {
-                Result.success(response.body()?.results?.map(CharactersEntityDtoMapper::mapTo))
-            } else {
-                Result.failure(NetworkException(message = Resource.String(R.string.unknown_network_error)))
-            }
-        }
-        override fun onFailure(call: Call<Characters>, t: Throwable) {
-            result =
-                Result.failure(NetworkException(message = Resource.String(R.string.unknown_network_error)))
-        }
-    })
-
-         */
-        /*
-    } else {
-        result = try {
-            Result.success(
-                characterDao.getCharactersFiltered(
-                    name = filterModel?.name,
-                    species = filterModel?.species,
-                    type = filterModel?.type,
-                    status = filterModel?.status?.get,
-                    gender = filterModel?.gender?.n,
-                    limit = limit,
-                    offset = offset
-                )
-            )
-        } catch (ex: Exception) {
-            Result.failure(DatabaseException())
-        }
-    }
-         */
     }
 
     private fun getPageIndex(loadType: LoadType): Int? {

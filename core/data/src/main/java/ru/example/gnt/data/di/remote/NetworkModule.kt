@@ -8,10 +8,15 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
-import ru.example.gnt.data.remote.service.CharacterService
-import ru.example.gnt.data.di.qualifiers.BaseUrl
 import ru.example.gnt.common.di.scope.ApplicationScope
+import ru.example.gnt.data.di.qualifiers.BaseUrl
+import ru.example.gnt.data.di.qualifiers.CharacterServiceQualifier
+import ru.example.gnt.data.di.qualifiers.EpisodeServiceQualifier
+import ru.example.gnt.data.remote.service.CharacterService
+import ru.example.gnt.data.remote.service.LocationService
 
+
+private const val BASE_URL = "https://rickandmortyapi.com/api/"
 
 @Module
 class NetworkModule {
@@ -39,7 +44,7 @@ class NetworkModule {
     @ApplicationScope
     @BaseUrl
     fun provideBaseUrl(): String {
-        return CharacterService.BASE_URL
+        return BASE_URL
     }
 
     @Provides
@@ -49,8 +54,40 @@ class NetworkModule {
     }
 
     @Provides
+    @EpisodeServiceQualifier
     @ApplicationScope
-    fun provideRetrofit(
+    fun provideEpisodeRetrofitInstance(
+        @BaseUrl baseUrl: String,
+        moshiConverterFactory: MoshiConverterFactory,
+    ): ru.example.gnt.data.remote.service.EpisodeService {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(moshiConverterFactory)
+            .build()
+            .create()
+    }
+
+
+    @Provides
+    @ru.example.gnt.data.di.qualifiers.LocationServiceQualifier
+    @ApplicationScope
+    fun provideLocationRetrofitInstance(
+        @BaseUrl baseUrl: String,
+        moshiConverterFactory: MoshiConverterFactory,
+        rxJava3CallAdapterFactory: RxJava3CallAdapterFactory
+    ): LocationService {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(moshiConverterFactory)
+            .addCallAdapterFactory(rxJava3CallAdapterFactory)
+            .build()
+            .create()
+    }
+
+
+    @ApplicationScope
+    @Provides
+    fun provideCharacterService(
         @BaseUrl baseUrl: String,
         moshiConverterFactory: MoshiConverterFactory,
         rxJava3CallAdapterFactory: RxJava3CallAdapterFactory

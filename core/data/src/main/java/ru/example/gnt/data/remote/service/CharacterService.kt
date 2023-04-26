@@ -36,6 +36,5 @@ interface CharacterService {
 
     companion object {
         const val CHARACTER_END_POINT: String = "character"
-        const val BASE_URL = "https://rickandmortyapi.com/api/"
     }
 }

@@ -1,12 +1,15 @@
 package ru.example.gnt.characters.data.mapper
 
 import ru.example.gnt.common.base.BaseMapper
-import ru.example.gnt.data.local.entity.CharacterEntity
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 import ru.example.gnt.common.utils.UrlIdExtractor
+import ru.example.gnt.data.local.entity.CharacterEntity
+import javax.inject.Inject
 
-object CharacterUiEntityMapper : BaseMapper<CharacterEntity, ru.example.gnt.characters.presentation.list.model.CharactersUiModel.Single> {
+class CharacterUiEntityMapper @Inject constructor(
+    private val urlIdExtractor: UrlIdExtractor
+) : BaseMapper<CharacterEntity, ru.example.gnt.characters.presentation.list.model.CharactersUiModel.Single> {
     override fun mapTo(model: CharacterEntity): ru.example.gnt.characters.presentation.list.model.CharactersUiModel.Single {
         return ru.example.gnt.characters.presentation.list.model.CharactersUiModel.Single(
             created = model.created,
@@ -35,9 +38,9 @@ object CharacterUiEntityMapper : BaseMapper<CharacterEntity, ru.example.gnt.char
             url = model.url,
             gender = model.gender?.n ?: "unknown",
             status = model.status?.get ?: "unknown",
-            episode = model.episode?.map {
-                UrlIdExtractor.extract(it).toString()
-            } ?: listOf()
+            episode = model.episode?.map(
+                urlIdExtractor::extract
+            ) ?: listOf()
         )
     }
 
