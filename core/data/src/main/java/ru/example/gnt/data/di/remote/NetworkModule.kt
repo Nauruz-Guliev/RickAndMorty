@@ -10,8 +10,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import ru.example.gnt.common.di.scope.ApplicationScope
 import ru.example.gnt.data.di.qualifiers.BaseUrl
-import ru.example.gnt.data.di.qualifiers.CharacterServiceQualifier
-import ru.example.gnt.data.di.qualifiers.EpisodeServiceQualifier
 import ru.example.gnt.data.remote.service.CharacterService
 import ru.example.gnt.data.remote.service.LocationService
 
@@ -54,7 +52,6 @@ class NetworkModule {
     }
 
     @Provides
-    @EpisodeServiceQualifier
     @ApplicationScope
     fun provideEpisodeRetrofitInstance(
         @BaseUrl baseUrl: String,
@@ -69,7 +66,6 @@ class NetworkModule {
 
 
     @Provides
-    @ru.example.gnt.data.di.qualifiers.LocationServiceQualifier
     @ApplicationScope
     fun provideLocationRetrofitInstance(
         @BaseUrl baseUrl: String,

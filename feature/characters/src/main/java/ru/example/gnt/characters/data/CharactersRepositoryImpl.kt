@@ -20,7 +20,6 @@ class CharactersRepositoryImpl @Inject constructor(
     private val factory: CharacterRemoteMediator.CharactersRemoteMediatorFactory,
     private val characterApi: CharacterService,
     private val mapper: CharacterUiEntityMapper,
-    private val context: Context,
 ) : CharactersRepository {
     override fun getCharacterById(id: Int): Observable<CharactersUiModel.Single> {
         return characterApi.getCharacterById(id).map(CharacterDtoUiMapper::mapTo)

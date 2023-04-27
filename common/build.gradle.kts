@@ -36,6 +36,7 @@ dependencies {
     implementation(libs.bundles.lifecycle)
 
     implementation(libs.androidx.paging)
+    implementation(libs.bundles.retrofit)
 
 
     //libraries

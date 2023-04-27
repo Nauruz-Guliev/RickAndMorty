@@ -1,7 +1,8 @@
-package ru.example.gnt.episodes.di
+package ru.example.gnt.episodes.di.deps
 
 import androidx.annotation.RestrictTo
 import androidx.lifecycle.ViewModel
+import ru.example.gnt.episodes.di.DaggerEpisodesComponent
 import kotlin.properties.Delegates
 
 interface EpisodesDepsProvider {

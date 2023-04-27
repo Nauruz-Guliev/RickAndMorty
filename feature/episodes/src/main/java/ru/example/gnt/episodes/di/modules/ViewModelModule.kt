@@ -1,4 +1,4 @@
-package ru.example.gnt.episodes.di
+package ru.example.gnt.episodes.di.modules
 
 import androidx.lifecycle.ViewModel
 import dagger.Binds

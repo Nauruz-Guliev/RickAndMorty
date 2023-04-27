@@ -1,6 +1,10 @@
-package ru.example.gnt.episodes.di
+package ru.example.gnt.episodes.di.components
 
 import dagger.Component
+import ru.example.gnt.episodes.di.modules.RepositoryModule
+import ru.example.gnt.episodes.di.modules.ViewModelModule
+import ru.example.gnt.episodes.di.deps.EpisodeRouterDeps
+import ru.example.gnt.episodes.di.deps.EpisodesDeps
 import ru.example.gnt.episodes.presentation.episodes.EpisodesFragment
 
 @Component(

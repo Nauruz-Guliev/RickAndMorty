@@ -22,4 +22,9 @@
     <string name="search">Search</string>
     <string name="try_again">Try again</string>
     <string name="load_error">Failed to load</string>
+
+    <string name="network_empty_result_error">Empty result received.</string>
+    <string name="network_error_with_code">Encountered %1s error trying to retrieve the data.</string>
+    <string name="unknown_network_exception">Unknown error occurred during remote data retrieval.</string>
+    <string name="database_error">Error occurred during database call.</string>
 </resources>
