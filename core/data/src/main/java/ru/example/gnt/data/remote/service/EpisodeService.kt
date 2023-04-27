@@ -13,7 +13,7 @@ interface EpisodeService {
     fun getEpisodesByPageFiltered(
         @Query("page") page: String,
         @Query("name") name: String? = null,
-        @Query("episode") species: String? = null,
+        @Query("episode") episode: String? = null,
     ): Call<EpisodesResponseModel>
 
     @GET("${EPISODE_END_POINT}/{id}")
