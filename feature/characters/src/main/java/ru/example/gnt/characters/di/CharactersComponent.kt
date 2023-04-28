@@ -10,7 +10,7 @@ import ru.example.gnt.common.di.scope.ScreenScope
     modules = [
         CharactersModule::class
     ],
-    dependencies = [CharactersDeps::class, NavigatorDeps::class]
+    dependencies = [CharactersDeps::class, CharactersRouterDeps::class]
 )
 @ScreenScope
 internal interface CharactersComponent {
@@ -21,7 +21,7 @@ internal interface CharactersComponent {
     @Component.Builder
     interface Builder {
         fun deps(deps: CharactersDeps): Builder
-        fun navigatorDeps(deps: NavigatorDeps): Builder
+        fun navigatorDeps(deps: CharactersRouterDeps): Builder
         fun build(): CharactersComponent
     }
 }

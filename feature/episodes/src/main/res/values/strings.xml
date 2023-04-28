@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="unknown_data_access_error">Unknown data access error occured.</string>
+    <string name="name">Name</string>
+    <string name="episode">Episode</string>
+</resources>

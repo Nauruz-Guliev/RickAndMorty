@@ -1,4 +1,4 @@
-package ru.example.gnt.characters.presentation.list.paging_recyclerview
+package ru.example.gnt.common.utils
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

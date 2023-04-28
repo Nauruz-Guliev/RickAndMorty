@@ -2,6 +2,7 @@ package ru.example.gnt.rickandmorty
 
 import android.app.Application
 import ru.example.gnt.characters.di.provider.CharactersDepsStore
+import ru.example.gnt.episodes.di.deps.EpisodesDepsStore
 import ru.example.gnt.rickandmorty.di.app.AppComponent
 import ru.example.gnt.rickandmorty.di.app.DaggerAppComponent
 import javax.inject.Singleton
@@ -16,6 +17,7 @@ class App: Application() {
     override fun onCreate() {
         appComponent.inject(this)
         CharactersDepsStore.deps = appComponent
+        EpisodesDepsStore.deps = appComponent
         super.onCreate()
     }
 

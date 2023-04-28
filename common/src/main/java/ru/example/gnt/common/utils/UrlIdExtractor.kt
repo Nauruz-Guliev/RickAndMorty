@@ -18,7 +18,6 @@ class UrlIdExtractor @Inject constructor() {
      * P.s можно улучшить регулярку
      */
     fun extract(url: String): String {
-        Log.d("FILTER_RESPONSE", url)
         if (!url.isValidUrl()) throw IllegalArgumentException("Given url is not valid!")
 
         val regex = "[0-9]+".toRegex()

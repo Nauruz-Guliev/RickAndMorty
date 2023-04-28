@@ -4,7 +4,7 @@ import androidx.annotation.RestrictTo
 import androidx.lifecycle.ViewModel
 import ru.example.gnt.characters.di.CharactersDeps
 import ru.example.gnt.characters.di.DaggerCharactersComponent
-import ru.example.gnt.characters.di.NavigatorDeps
+import ru.example.gnt.characters.di.CharactersRouterDeps
 import kotlin.properties.Delegates
 
 interface CharactersDepsProvider {
@@ -13,19 +13,19 @@ interface CharactersDepsProvider {
     val deps: CharactersDeps
 
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
-    val navigatorDeps: NavigatorDeps
+    val charactersRouterDeps: CharactersRouterDeps
 
     companion object : CharactersDepsProvider by CharactersDepsStore
 }
 
 object CharactersDepsStore : CharactersDepsProvider {
     override var deps: CharactersDeps by Delegates.notNull()
-    override var navigatorDeps: NavigatorDeps by Delegates.notNull()
+    override var charactersRouterDeps: CharactersRouterDeps by Delegates.notNull()
 }
 
 internal class CharactersComponentViewModel : ViewModel() {
     val charactersComponent = DaggerCharactersComponent.builder()
         .deps(CharactersDepsProvider.deps)
-        .navigatorDeps(CharactersDepsProvider.navigatorDeps)
+        .navigatorDeps(CharactersDepsProvider.charactersRouterDeps)
         .build()
 }

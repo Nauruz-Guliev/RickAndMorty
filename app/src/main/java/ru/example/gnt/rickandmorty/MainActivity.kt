@@ -18,7 +18,8 @@ import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.setImageDrawable
-import ru.example.gnt.episodes.presentation.episodes.EpisodesFragment
+import ru.example.gnt.episodes.di.deps.EpisodesDepsStore
+import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
 import ru.example.gnt.rickandmorty.databinding.ActivityMainBinding
 import ru.example.gnt.rickandmorty.di.main.ActivityComponent
 import ru.example.gnt.rickandmorty.di.main.DaggerActivityComponent
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                 }
                 ru.example.gnt.ui.R.id.episodes -> {
                     mainRouter.openEpisodesScreen()
+
                 }
                 ru.example.gnt.ui.R.id.locations -> {
                     mainRouter.openLocationScreen()
@@ -72,10 +74,9 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
 
 
     private fun initActionBar() {
-        mainRouter.openInitialState()
         setSupportActionBar(binding.toolbar)
         binding.toolbar.outlineProvider = null
-
+        mainRouter.openCharactersScreen()
         with(binding.btnFilter) {
             setOnClickListener {
                 (searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView).callOnClick()
@@ -148,7 +149,8 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                 .fragmentManager(supportFragmentManager)
                 .context(this)
                 .build()
-        CharactersDepsStore.navigatorDeps = activityComponent
+        CharactersDepsStore.charactersRouterDeps = activityComponent
+        EpisodesDepsStore.routerDeps = activityComponent
         activityComponent.inject(mainActivity = this)
     }
 
@@ -180,7 +182,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
             when (fragment) {
                 is CharactersFragment -> checkBottomNavSelectedItemId(ru.example.gnt.ui.R.id.characters)
                 is CharacterDetailsFragment -> checkBottomNavSelectedItemId(ru.example.gnt.ui.R.id.characters)
-                is EpisodesFragment -> checkBottomNavSelectedItemId(ru.example.gnt.ui.R.id.episodes)
+                is EpisodeListFragment -> checkBottomNavSelectedItemId(ru.example.gnt.ui.R.id.episodes)
             }
         }
     }

@@ -4,7 +4,7 @@ package ru.example.gnt.data.remote.model
 import com.squareup.moshi.Json
 
 data class EpisodesResponseModel(
-    val info: Info,
+    val info: Info? = null,
     val results: List<Result>
 ) {
     data class Info(

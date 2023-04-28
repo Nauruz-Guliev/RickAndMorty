@@ -1,5 +1,8 @@
 package ru.example.gnt.common.utils
 
+import android.util.Log
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,8 +20,13 @@ class RetrofitCachingResultWrapper<RemoteResponse, UiResult, Entity> private con
     private val isNetworkOn: Boolean,
     private inline val cacheSource: suspend () -> Result<Entity?>
 ) : Callback<RemoteResponse> {
-    var result =
-        Result.failure<UiResult>(NetworkException(resource = Resource.String(ru.example.gnt.ui.R.string.unknown_network_exception)))
+    private var uiResult: MutableStateFlow<RetrofitResult<UiResult>> =
+        MutableStateFlow(RetrofitResult.Empty)
+
+
+    private var entityResult: MutableStateFlow<RetrofitResult<UiResult>> =
+        MutableStateFlow(RetrofitResult.Empty)
+
 
     companion object {
         fun <RemoteResponse, UiResult, Entity> builder(): RetrofitCall<RemoteResponse, UiResult, Entity> {
@@ -95,53 +103,76 @@ class RetrofitCachingResultWrapper<RemoteResponse, UiResult, Entity> private con
         }
     }
 
-    suspend fun getUiResult(): Result<UiResult> {
+    suspend fun getUiResult(): Flow<RetrofitResult<UiResult>> {
         if (isNetworkOn) {
             call.enqueue(this)
         } else {
             cacheSource().onFailure {
-                result = Result.failure(it)
+                uiResult.emit(RetrofitResult.Error(it))
             }.onSuccess {
-                result = if (it != null) {
-                    Result.success(this.entityMapper!!.mapTo(it))
+                if (it != null) {
+                    uiResult.emit(RetrofitResult.Success(this.entityMapper!!.mapTo(it)))
                 } else {
-                    Result.failure(DatabaseException(resource = Resource.String(R.string.empty_database_result)))
+                    uiResult.emit(
+                        RetrofitResult.Error(
+                            DatabaseException(
+                                resource = Resource.String(
+                                    R.string.empty_database_result
+                                )
+                            )
+                        )
+                    )
                 }
             }
         }
-        return result
+        return uiResult
     }
 
-    suspend fun getEntityResult(): Result<Entity> {
-        var res =
-            Result.failure<Entity>(NetworkException(resource = Resource.String(ru.example.gnt.ui.R.string.unknown_network_exception)))
+    suspend fun getEntityResult(): Flow<RetrofitResult<UiResult>?> {
         if (isNetworkOn) {
             call.enqueue(this)
         } else {
             cacheSource().onFailure {
-                res = Result.failure(it)
+                entityResult.emit(RetrofitResult.Error(it))
             }.onSuccess {
-                res = if (it != null) {
-                    Result.success(it)
+                if (it != null && entityMapper != null) {
+                    entityResult.emit(RetrofitResult.Success(entityMapper.mapTo(it)))
                 } else {
-                    Result.failure(DatabaseException(resource = Resource.String(R.string.empty_database_result)))
+                    uiResult.emit(
+                        RetrofitResult.Error(
+                            DatabaseException(
+                                resource = Resource.String(
+                                    R.string.empty_database_result
+                                )
+                            )
+                        )
+                    )
                 }
             }
         }
-        return res
+        return entityResult
     }
 
 
     override fun onResponse(call: Call<RemoteResponse>, response: Response<RemoteResponse>) {
         if (response.code() == 200) {
             val item = response.body()
-            result = if (item != null) {
-                Result.success(responseMapper.mapTo(item))
+            uiResult.value = if (item != null) {
+                RetrofitResult.Success(responseMapper.mapTo(item))
             } else {
-                Result.failure(NetworkException(resource = Resource.String(ru.example.gnt.ui.R.string.network_empty_result_error)))
+                RetrofitResult.Error(NetworkException(resource = Resource.String(ru.example.gnt.ui.R.string.network_empty_result_error)))
+            }
+            entityResult.value = if (item != null) {
+                if (entityMapper != null) {
+                    RetrofitResult.Success(responseMapper.mapTo(item))
+                } else {
+                    RetrofitResult.Error(NetworkException(resource = Resource.String(ru.example.gnt.ui.R.string.network_empty_result_error)))
+                }
+            } else {
+                RetrofitResult.Error(NetworkException(resource = Resource.String(ru.example.gnt.ui.R.string.network_empty_result_error)))
             }
         } else if (!response.isSuccessful) {
-            result = Result.failure(
+            uiResult.value = RetrofitResult.Error(
                 NetworkException(
                     resource = Resource.String(
                         ru.example.gnt.ui.R.string.network_error_with_code,
@@ -154,8 +185,8 @@ class RetrofitCachingResultWrapper<RemoteResponse, UiResult, Entity> private con
 
     override fun onFailure(call: Call<RemoteResponse>, t: Throwable) {
         //todo improve error handling
-        result =
-            Result.failure(NetworkException(resource = Resource.String(ru.example.gnt.ui.R.string.unknown_network_exception)))
+        uiResult =
+            MutableStateFlow(RetrofitResult.Error(NetworkException(resource = Resource.String(ru.example.gnt.ui.R.string.unknown_network_exception))))
     }
 
 }

@@ -1,6 +1,7 @@
 package ru.example.gnt.episodes.data
 
 import android.content.Context
+import android.util.Log
 import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -9,6 +10,7 @@ import ru.example.gnt.common.isNetworkOn
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.episodes.EpisodeListItem
 import ru.example.gnt.common.utils.RetrofitCachingResultWrapper
+import ru.example.gnt.common.utils.RetrofitResult
 import ru.example.gnt.data.local.dao.EpisodesDao
 import ru.example.gnt.data.local.entity.EpisodeEntity
 import ru.example.gnt.data.remote.model.EpisodesResponseModel
@@ -31,7 +33,7 @@ class EpisodesRepositoryImpl @Inject constructor(
     private val factory: EpisodesRemoteMediator.EpisodesRemoteMediatorFactory,
     private val context: Context,
 ) : EpisodesRepository {
-    override suspend fun getEpisodeListItemById(id: Int): Result<EpisodeDetailsItem> {
+    override suspend fun getEpisodeListItemById(id: Int): Flow<RetrofitResult<EpisodeDetailsItem>> {
         return RetrofitCachingResultWrapper.builder<EpisodesResponseModel.Result, EpisodeDetailsItem, EpisodeEntity>()
             .retrofitCall(episodesService.getEpisodeById(id))
             .retrofitResponseMapper(episodeResponseUiDetailsMapper)
@@ -63,7 +65,13 @@ class EpisodesRepositoryImpl @Inject constructor(
             }
         )
             .flow
-            .map { pagingData -> pagingData.map(episodeEntityListMapper::mapTo) }
+            .map { pagingData ->
+                Log.d("RETROFIT_RESULT", pagingData.toString())
+                pagingData.map {
+                    Log.d("RETROFIT_RESULT", it.toString())
+                    episodeEntityListMapper.mapTo(it)
+                }
+            }
     }
 
     private fun getMediator(filter: EpisodeFilterModel): EpisodesRemoteMediator {
@@ -71,6 +79,6 @@ class EpisodesRepositoryImpl @Inject constructor(
     }
 
     companion object {
-        private const val PAGE_SIZE = 5
+        private const val PAGE_SIZE = 6
     }
 }

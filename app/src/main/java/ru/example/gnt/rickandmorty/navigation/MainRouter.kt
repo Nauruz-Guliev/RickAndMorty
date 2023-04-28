@@ -12,7 +12,9 @@ import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
 import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.di.scope.ScreenScope
-import ru.example.gnt.episodes.presentation.episodes.EpisodesFragment
+import ru.example.gnt.common.utils.extensions.showToastShort
+import ru.example.gnt.episodes.EpisodesRouter
+import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
 import ru.example.gnt.locations.presentation.LocationsFragment
 import ru.example.gnt.rickandmorty.MainActivity
 import javax.inject.Inject
@@ -23,7 +25,7 @@ class MainRouter @Inject constructor(
     private val fragmentManager: FragmentManager,
     @IdRes private val mainContainerId: Int,
     private val context: Context
-) : CharactersRouter, FragmentManager.OnBackStackChangedListener {
+) : CharactersRouter, EpisodesRouter, FragmentManager.OnBackStackChangedListener {
 
     init {
         fragmentManager.addOnBackStackChangedListener(this)
@@ -33,19 +35,19 @@ class MainRouter @Inject constructor(
         navigate(
             fragment = CharactersFragment.createInstance(),
             tag = CharactersFragment.CHARACTERS_FRAGMENT_TAG,
-            addToBackStack = false,
+            addToBackStack = true,
         )
     }
 
-    private fun clearBackStack() {
+    fun clearBackStack() {
         fragmentManager.popBackStack()
     }
 
     fun openEpisodesScreen() {
         navigate(
-            fragment = EpisodesFragment.createInstance(),
-            tag = EpisodesFragment.EPISODES_FRAGMENT_TAG,
-            addToBackStack = false
+            fragment = EpisodeListFragment.createInstance(),
+            tag = EpisodeListFragment.EPISODES_FRAGMENT_TAG,
+            addToBackStack = true
         )
     }
 
@@ -53,7 +55,7 @@ class MainRouter @Inject constructor(
         navigate(
             fragment = LocationsFragment.createInstance(),
             tag = LocationsFragment.LOCATIONS_FRAGMENT_TAG,
-            addToBackStack = false
+            addToBackStack = true
         )
     }
 
@@ -83,7 +85,7 @@ class MainRouter @Inject constructor(
     }
 
     fun getActiveFragment(): Fragment? {
-        val f = fragmentManager.fragments.last()
+        val f = fragmentManager.fragments.lastOrNull()
         return if (f?.isVisible == true) {
             f
         } else {
@@ -99,9 +101,11 @@ class MainRouter @Inject constructor(
         addToBackStack: Boolean = true,
     ) {
         checkFragment(fragment)
+        context.showToastShort(fragmentManager.findFragmentByTag(tag))
         if (fragment is RootFragment && fragmentManager.findFragmentByTag(tag) != null) {
+            context.showToastShort(fragmentManager.backStackEntryCount)
             fragmentManager.popBackStack(
-                EpisodesFragment.EPISODES_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE
+                tag, 0
             )
         } else {
             val transaction = fragmentManager.beginTransaction().replace(
@@ -121,14 +125,6 @@ class MainRouter @Inject constructor(
             transaction.setReorderingAllowed(true)
             transaction.commit()
         }
-    }
-
-    fun openInitialState() {
-        navigateBackToCharacters()
-        fragmentManager.beginTransaction().add(
-            mainContainerId,
-            CharactersFragment.createInstance()
-        ).commitNow()
     }
 
 

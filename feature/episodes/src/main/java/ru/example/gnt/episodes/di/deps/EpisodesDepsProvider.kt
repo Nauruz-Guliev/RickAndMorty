@@ -2,7 +2,7 @@ package ru.example.gnt.episodes.di.deps
 
 import androidx.annotation.RestrictTo
 import androidx.lifecycle.ViewModel
-import ru.example.gnt.episodes.di.DaggerEpisodesComponent
+import ru.example.gnt.episodes.di.components.DaggerEpisodesComponent
 import kotlin.properties.Delegates
 
 interface EpisodesDepsProvider {
@@ -12,18 +12,18 @@ interface EpisodesDepsProvider {
     val deps: EpisodesDeps
 
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
-    val routerDeps: EpisodeRouterDeps
+    val routerDeps: EpisodesRouterDeps
 
     companion object : EpisodesDepsProvider by EpisodesDepsStore
 }
 
 object EpisodesDepsStore : EpisodesDepsProvider {
     override var deps: EpisodesDeps by Delegates.notNull()
-    override var routerDeps: EpisodeRouterDeps by Delegates.notNull()
+    override var routerDeps: EpisodesRouterDeps by Delegates.notNull()
 }
 
 internal class EpisodesComponentViewModel : ViewModel() {
-    val charactersComponent = DaggerEpisodesComponent.builder()
+    val episodesComponent = DaggerEpisodesComponent.builder()
         .mainDeps(EpisodesDepsProvider.deps)
         .routerDeps(EpisodesDepsProvider.routerDeps)
         .build()

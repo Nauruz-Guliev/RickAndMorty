@@ -27,8 +27,6 @@ import ru.example.gnt.characters.R
 import ru.example.gnt.characters.databinding.CharactersFragmentBinding
 import ru.example.gnt.characters.di.provider.CharactersComponentViewModel
 import ru.example.gnt.characters.presentation.list.paging_recyclerview.CharactersAdapter
-import ru.example.gnt.characters.presentation.list.paging_recyclerview.CustomLoadStateAdapter
-import ru.example.gnt.characters.presentation.list.paging_recyclerview.TryAgainAction
 import ru.example.gnt.common.base.BaseFragment
 import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
 import ru.example.gnt.common.base.interfaces.RootFragment
@@ -40,6 +38,8 @@ import ru.example.gnt.common.exceptions.NetworkConnectionException
 import ru.example.gnt.common.flowWithLifecycle
 import ru.example.gnt.common.internetCapabilitiesCallback
 import ru.example.gnt.common.isNetworkOn
+import ru.example.gnt.common.utils.CustomLoadStateAdapter
+import ru.example.gnt.common.utils.TryAgainAction
 import ru.example.gnt.common.utils.extensions.createChip
 import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.showToastShort

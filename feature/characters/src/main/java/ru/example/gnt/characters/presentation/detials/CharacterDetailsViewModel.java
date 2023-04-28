@@ -3,18 +3,18 @@ package ru.example.gnt.characters.presentation.detials;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedInject;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import ru.example.gnt.characters.domain.usecases.GetCharacterById;
+import ru.example.gnt.characters.presentation.list.model.CharactersUiModel;
 import ru.example.gnt.common.model.Resource;
 import ru.example.gnt.common.model.UiState;
-import ru.example.gnt.characters.presentation.list.model.CharactersUiModel;
 
 
 public class CharacterDetailsViewModel extends ViewModel {
@@ -48,7 +48,7 @@ public class CharacterDetailsViewModel extends ViewModel {
 
             @Override
             public void onError(@NonNull Throwable e) {
-                state.setValue(new UiState.Error(new Resource.String(ru.example.gnt.ui.R.string.network_error)));
+                state.setValue(new UiState.Error(new Resource.String(ru.example.gnt.ui.R.string.network_error, null)));
             }
 
             @Override

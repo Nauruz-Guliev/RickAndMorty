@@ -6,8 +6,10 @@ import androidx.fragment.app.FragmentManager
 import dagger.BindsInstance
 import dagger.Component
 import ru.example.gnt.characters.CharactersRouter
-import ru.example.gnt.characters.di.NavigatorDeps
+import ru.example.gnt.characters.di.CharactersRouterDeps
 import ru.example.gnt.common.di.scope.ScreenScope
+import ru.example.gnt.episodes.EpisodesRouter
+import ru.example.gnt.episodes.di.deps.EpisodesRouterDeps
 import ru.example.gnt.rickandmorty.MainActivity
 import ru.example.gnt.rickandmorty.di.RouterModule
 
@@ -18,9 +20,10 @@ import ru.example.gnt.rickandmorty.di.RouterModule
     ]
 )
 @ScreenScope
-interface ActivityComponent : NavigatorDeps {
+interface ActivityComponent : CharactersRouterDeps, EpisodesRouterDeps {
 
     override val charactersRouter: CharactersRouter
+    override val router: EpisodesRouter
 
     @Component.Builder
     interface Builder {

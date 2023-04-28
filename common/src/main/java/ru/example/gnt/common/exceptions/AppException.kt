@@ -2,9 +2,15 @@ package ru.example.gnt.common.exceptions
 
 import ru.example.gnt.common.model.Resource
 
-open class AppException : RuntimeException {
-    constructor() : super()
-    constructor(message: String) : super(message)
-    constructor(cause: Throwable) : super(cause)
-    constructor(resource: Resource.String?)
+open class AppException(
+    open val resource: Resource.String? = null,
+    override val message: String? = null,
+    override val cause: Throwable? = null
+) : RuntimeException(message, cause) {
+
+    constructor() : this(null, "", null)
+
+    constructor(message: String) : this(null, "", null)
+    constructor(cause: Throwable) : this(null, "", null)
+
 }
