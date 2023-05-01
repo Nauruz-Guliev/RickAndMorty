@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import ru.example.gnt.common.model.episodes.EpisodeListItem
 
 class EpisodeListAdapter(
-    private val onItemClicked: ((id: Int) -> Unit)?
+    private val onItemClicked: (id: Int?) -> Unit
 ) : PagingDataAdapter<EpisodeListItem, EpisodeListViewHolder>(DiffCallback) {
 
 
@@ -14,7 +14,7 @@ class EpisodeListAdapter(
         holder.bind(getItem(position))
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EpisodeListViewHolder =
-        EpisodeListViewHolder(parent)
+        EpisodeListViewHolder(parent, onItemClicked)
 
     object DiffCallback : DiffUtil.ItemCallback<EpisodeListItem>() {
 

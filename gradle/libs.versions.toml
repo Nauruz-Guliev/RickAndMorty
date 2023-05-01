@@ -14,15 +14,16 @@ glide = "4.15.1"
 junit = "4.13.2"
 junitExt = "1.1.5"
 kotlin = "1.8.20"
+gson = "2.10.1"
 kotlinDsl = "4.0.11"
 moshi = "1.14.0"
 pagingVersion = "3.1.1"
 retrofit = "2.9.0"
 room = "2.5.1"
-gson = "2.7"
 retrofitRxJava = "2.9.0"
 rxAndroid = "3.0.2"
 rxJava = "3.1.5"
+okHttp = "4.10.0"
 
 [libraries]
 android-material = { module = "com.google.android.material:material", version.ref = "androidMaterial" }
@@ -54,12 +55,17 @@ androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-lived
 androidx-lifecycle-livedata-core = { module = "androidx.lifecycle:lifecycle-livedata-core", version.ref = "androidxLifecycleKtx" }
 rx-android = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxAndroid" }
 rx-java = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxJava" }
-
+okHttp = {module = "com.squareup.okhttp3:okhttp", version.ref ="okHttp"}
+okHttp-logging = {module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okHttp"}
 
 [bundles]
 dagger-impl = [
     "dagger",
     "dagger-android-support",
+]
+okHttp = [
+    "okHttp",
+    "okHttp-logging",
 ]
 android-java-rx = [
     "rx-android",

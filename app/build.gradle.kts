@@ -53,6 +53,8 @@ dependencies {
 
 
     implementation(libs.bundles.retrofit)
+    implementation(libs.bundles.okHttp)
+
 
     implementation(libs.bundles.dagger.impl)
     kapt(libs.bundles.dagger.kapt)

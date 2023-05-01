@@ -30,6 +30,7 @@ import ru.example.gnt.characters.presentation.list.paging_recyclerview.Character
 import ru.example.gnt.common.base.BaseFragment
 import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
 import ru.example.gnt.common.base.interfaces.RootFragment
+import ru.example.gnt.common.base.interfaces.ToggleActivity
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.enums.CharacterGenderEnum
@@ -52,9 +53,6 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     @Inject
     internal lateinit var viewModel: CharactersViewModel
 
-    private lateinit var sheetBehavior: BottomSheetBehavior<LinearLayout>
-
-    private var coordinatorLayout: CoordinatorLayout? = null
 
     private var adapter: CharactersAdapter? = null
 
@@ -73,8 +71,14 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isInternetOn = requireContext().isNetworkOn()
+    }
+
+    override fun onResume() {
+        super.onResume()
         (requireActivity() as? SearchActivity)?.registerSearchFragment(this)
+        (requireActivity() as? ToggleActivity)?.registerToggleFragment(this)
         searchQuery?.let { (requireActivity() as? SearchActivity)?.setSearchText(it) }
+        setExpanded()
     }
 
     override fun onCreateView(
@@ -82,16 +86,9 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
         savedInstanceState: Bundle?
     ): View {
         _binding = CharactersFragmentBinding.inflate(layoutInflater)
-
-        val coordinatorLayout = binding.coordinatorLayout
-        val contentLayout: LinearLayout = coordinatorLayout.findViewById(R.id.contentLayout)
-
-        sheetBehavior = BottomSheetBehavior.from(contentLayout)
-        sheetBehavior.isFitToContents = false
-        sheetBehavior.isHideable = false
-        sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        setUpCoordinatorLayout(R.id.contentLayout, binding.coordinatorLayout)
         setUpUiState()
-        return coordinatorLayout
+        return binding.coordinatorLayout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -238,29 +235,22 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
             else getString(R.string.not_connected_ui_message)
     }
 
-    private fun getRefreshLoadStateFlow(adapter: PagingDataAdapter<*, *>): Flow<LoadState> {
-        return adapter.loadStateFlow
-            .map { it.refresh }
-    }
 
-
-    override fun toggle(): Int {
-        val state = sheetBehavior.state
-        if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            with(binding) {
-                rvCharacters.visibility = ViewGroup.GONE
-            }
+    override fun toggle(): Int? {
+        val state = sheetBehavior?.state
+        if (sheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
+            sheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         } else {
-            sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-            with(binding) {
-                rvCharacters.visibility = ViewGroup.VISIBLE
-            }
+            sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
             setUpFilterValues()
             adapter?.refresh()
         }
         context?.hideKeyboard(binding.root)
         return state
+    }
+
+    override fun setExpanded() {
+        sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     private fun setUpFilterValues() {

@@ -31,10 +31,10 @@ interface ActivityComponent : CharactersRouterDeps, EpisodesRouterDeps {
         fun fragmentManager(fragmentManager: FragmentManager): Builder
 
         @BindsInstance
+        fun context(context: Context) : Builder
+        @BindsInstance
         fun mainContainerId(@IdRes containerId: Int): Builder
 
-        @BindsInstance
-        fun context(context: Context): Builder
         fun build(): ActivityComponent
     }
 

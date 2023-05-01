@@ -11,7 +11,7 @@ import javax.inject.Singleton
 class App: Application() {
 
     private val appComponent: AppComponent by lazy {
-        DaggerAppComponent.builder().application(this).build()
+        DaggerAppComponent.builder().context(this).build()
     }
 
     override fun onCreate() {

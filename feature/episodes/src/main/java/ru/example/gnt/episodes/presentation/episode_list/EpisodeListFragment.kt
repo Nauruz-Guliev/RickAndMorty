@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -24,12 +22,12 @@ import kotlinx.coroutines.launch
 import ru.example.gnt.common.base.BaseFragment
 import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
 import ru.example.gnt.common.base.interfaces.RootFragment
+import ru.example.gnt.common.base.interfaces.ToggleActivity
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.utils.CustomLoadStateAdapter
 import ru.example.gnt.common.utils.TryAgainAction
 import ru.example.gnt.common.utils.extensions.hideKeyboard
-import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.databinding.EpisodesFragmentBinding
 import ru.example.gnt.episodes.di.deps.EpisodesComponentViewModel
@@ -39,10 +37,6 @@ import javax.inject.Inject
 class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
     EpisodesFragmentBinding::inflate
 ), LayoutBackDropManager, SearchFragment, RootFragment {
-
-    private lateinit var sheetBehavior: BottomSheetBehavior<LinearLayout>
-
-    private var coordinatorLayout: CoordinatorLayout? = null
 
     private var adapter: EpisodeListAdapter? = null
 
@@ -60,11 +54,12 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initSearching()
     }
 
-    private fun initSearching() {
+    override fun onResume() {
+        super.onResume()
         (requireActivity() as? SearchActivity)?.registerSearchFragment(this)
+        (requireActivity() as? ToggleActivity)?.registerToggleFragment(this)
         searchQuery?.let { (requireActivity() as? SearchActivity)?.setSearchText(it) }
     }
 
@@ -74,24 +69,15 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
         savedInstanceState: Bundle?
     ): View {
         _binding = EpisodesFragmentBinding.inflate(layoutInflater)
-
-        val coordinatorLayout = binding.coordinatorLayout
-        val contentLayout: LinearLayout = coordinatorLayout.findViewById(R.id.contentLayout)
-
-        sheetBehavior = BottomSheetBehavior.from(contentLayout)
-        sheetBehavior.isFitToContents = false
-        sheetBehavior.isHideable = false
-        sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        iniCoordinatorLayout()
-        return coordinatorLayout
+        setUpCoordinatorLayout(R.id.contentLayout, binding.coordinatorLayout)
+        return binding.coordinatorLayout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         initSwipeRefreshLayout()
-
-        observeStates()
+        observePaginationStates()
     }
 
     private fun initSwipeRefreshLayout() {
@@ -101,10 +87,13 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
         }
     }
 
-    private fun initRecyclerView() {
-        adapter = EpisodeListAdapter {
+    private fun onItemClicked(id: Int?) {
+        episodesViewModel.navigateToEpisodeDetails(id)
+    }
 
-        }
+    private fun initRecyclerView() {
+        adapter = EpisodeListAdapter(::onItemClicked)
+
         val tryAgainAction: TryAgainAction = { adapter?.retry() }
 
         footerAdapter = CustomLoadStateAdapter(tryAgainAction)
@@ -121,7 +110,7 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
     }
 
     @OptIn(FlowPreview::class)
-    private fun observeStates() {
+    private fun observePaginationStates() {
         lifecycleScope.launch {
             adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)?.debounce(400)
                 ?.collectLatest { state ->
@@ -129,11 +118,15 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
                     val isEmpty = (adapter?.snapshot()?.items?.size ?: 0) <= 0
                     binding.loadingStateLayout.tryAgainButton.setOnClickListener(::handleFilterReset)
                     when (val res = state.source.refresh) {
-                        is LoadState.Error -> {}
-                        is LoadState.Loading -> {
-                            context.showToastShort(isEmpty)
+                        is LoadState.Error -> {
+                            binding.swipeRefresh.isRefreshing = false
                         }
-                        is LoadState.NotLoading -> {}
+                        is LoadState.Loading -> {
+                            binding.swipeRefresh.isRefreshing = true
+                        }
+                        is LoadState.NotLoading -> {
+                            binding.swipeRefresh.isRefreshing = false
+                        }
                     }
                 }
         }
@@ -170,15 +163,15 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
         adapter?.refresh()
     }
 
-    override fun toggle(): Int {
-        val state = sheetBehavior.state
-        if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-            sheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+    override fun toggle(): Int? {
+        val state = sheetBehavior?.state
+        if (sheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
+            sheetBehavior?.state = BottomSheetBehavior.STATE_HALF_EXPANDED
             with(binding) {
                 rvEpisodes.visibility = ViewGroup.GONE
             }
         } else {
-            sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
             with(binding) {
                 rvEpisodes.visibility = ViewGroup.VISIBLE
             }
@@ -189,6 +182,11 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
         return state
     }
 
+    override fun setExpanded() {
+        sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        binding.rvEpisodes.isVisible = true
+    }
+
     private fun setUpUiFilterValues() {
         with(binding.filterLayout) {
             episodesViewModel.applyFilter(
@@ -196,10 +194,6 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
                 episode = etEpisode.text.toString()
             )
         }
-    }
-
-    private fun iniCoordinatorLayout() {
-        coordinatorLayout = binding.coordinatorLayout
     }
 
     companion object {

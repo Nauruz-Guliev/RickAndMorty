@@ -20,7 +20,7 @@
         android:layout_marginTop="@dimen/margin_6"
         style="@style/TextViewSecondaryText"
         tools:text="Lawnmower Dog"
-        android:gravity="start"
+        android:gravity="center_horizontal"
         android:layout_marginHorizontal="@dimen/margin_4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -30,7 +30,7 @@
         android:layout_marginTop="@dimen/margin_6"
         style="@style/TextViewSecondaryText"
         tools:text="Lawnmower Dog"
-        android:gravity="start"
+        android:gravity="center_horizontal"
         android:layout_marginHorizontal="@dimen/margin_4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

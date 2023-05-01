@@ -8,12 +8,11 @@ import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.presentation.detials.CharacterDetailsFragment
 import ru.example.gnt.characters.presentation.list.CharactersFragment
 import ru.example.gnt.common.base.interfaces.DetailsFragment
-import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
 import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.di.scope.ScreenScope
-import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.EpisodesRouter
+import ru.example.gnt.episodes.presentation.episode_details.EpisodeDetailsFragment
 import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
 import ru.example.gnt.locations.presentation.LocationsFragment
 import ru.example.gnt.rickandmorty.MainActivity
@@ -75,15 +74,6 @@ class MainRouter @Inject constructor(
             FragmentManager.POP_BACK_STACK_INCLUSIVE
         )
     }
-
-    fun toggleDropDown() : Int? {
-        val fragment = getActiveFragment()
-        if (fragment != null && fragment is LayoutBackDropManager) {
-            return fragment.toggle()
-        }
-        return null
-    }
-
     fun getActiveFragment(): Fragment? {
         val f = fragmentManager.fragments.lastOrNull()
         return if (f?.isVisible == true) {
@@ -101,9 +91,7 @@ class MainRouter @Inject constructor(
         addToBackStack: Boolean = true,
     ) {
         checkFragment(fragment)
-        context.showToastShort(fragmentManager.findFragmentByTag(tag))
         if (fragment is RootFragment && fragmentManager.findFragmentByTag(tag) != null) {
-            context.showToastShort(fragmentManager.backStackEntryCount)
             fragmentManager.popBackStack(
                 tag, 0
             )
@@ -139,7 +127,7 @@ class MainRouter @Inject constructor(
                     setItemsVisibility(isVisible = false)
                     setToolbarBackButtonVisibility(isVisible = true)
                 }
-                is SearchFragment ->  {
+                is SearchFragment -> {
                     setToolbarBackButtonVisibility(isVisible = false)
                     setItemsVisibility(isVisible = true)
                 }
@@ -147,5 +135,13 @@ class MainRouter @Inject constructor(
                 }
             }
         }
+    }
+
+    override fun navigateToEpisodeDetails(id: Int?) {
+        navigate(
+            fragment = EpisodeDetailsFragment.createInstance(id),
+            tag = EpisodeDetailsFragment.EPISODE_DETAILS_TAG,
+            addToBackStack = true
+        )
     }
 }

@@ -39,7 +39,7 @@ interface AppComponent : CharactersDeps, EpisodesDeps {
     @Component.Builder
     interface Builder {
         @BindsInstance
-        fun application(application: Application): Builder
+        fun context(application: App): Builder
         fun build(): AppComponent
     }
 

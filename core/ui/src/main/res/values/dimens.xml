@@ -22,6 +22,6 @@
     <dimen name="padding_3">12dp</dimen>
     <dimen name="padding_4">16dp</dimen>
 
-
+    <dimen name="details_item_height">72dp</dimen>
 
 </resources>

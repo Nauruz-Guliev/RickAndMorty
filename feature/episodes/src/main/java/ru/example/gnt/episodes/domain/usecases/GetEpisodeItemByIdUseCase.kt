@@ -1,15 +1,16 @@
 package ru.example.gnt.episodes.domain.usecases
 
-import kotlinx.coroutines.flow.Flow
-import ru.example.gnt.common.utils.RetrofitResult
+import ru.example.gnt.common.utils.DataResource
+import ru.example.gnt.episodes.data.EpisodeDetailsRepositoryImpl
 import ru.example.gnt.episodes.domain.model.EpisodeDetailsItem
-import ru.example.gnt.episodes.domain.repository.EpisodesRepository
+import ru.example.gnt.episodes.domain.repository.EpisodeDetailsRepository
+import ru.example.gnt.episodes.domain.repository.EpisodeListRepository
 import javax.inject.Inject
 
-internal class GetEpisodeItemByIdUseCase @Inject constructor(
-    private val repository: EpisodesRepository
+class GetEpisodeItemByIdUseCase @Inject constructor(
+    private val repository: EpisodeDetailsRepository
 ) {
-    suspend operator fun invoke(id: Int): Flow<RetrofitResult<EpisodeDetailsItem>?> {
+    suspend operator fun invoke(id: Int): DataResource<EpisodeDetailsItem> {
         return repository.getEpisodeListItemById(id)
     }
 }

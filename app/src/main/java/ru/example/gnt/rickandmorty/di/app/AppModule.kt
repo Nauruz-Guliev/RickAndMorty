@@ -1,12 +1,13 @@
 package ru.example.gnt.rickandmorty.di.app
 
-import android.app.Application
 import android.content.Context
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
-import ru.example.gnt.common.di.scope.ApplicationScope
+import ru.example.gnt.rickandmorty.App
 
 @Module
-class AppModule {
+abstract class AppModule {
+    @Binds
+    abstract fun provideContext(app: App): Context
 
 }

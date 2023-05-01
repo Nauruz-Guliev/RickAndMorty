@@ -8,5 +8,5 @@ import ru.example.gnt.episodes.domain.model.EpisodeFilterModel
 data class EpisodesState(
     val filter: EpisodeFilterModel = EpisodeFilterModel(),
     val search: String? = null,
-    val episodesFlow: Flow<PagingData<EpisodeListItem>>? = null
+    val episodesFlow: Flow<PagingData<EpisodeListItem>>? = null,
 )

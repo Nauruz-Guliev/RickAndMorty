@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="empty_database_result">Empty database result</string>
+    <string name="unable_to_parse_error">Unable to parse data.</string>
+    <string name="data_access_error">Unable to retrieve the data</string>
+    <string name="connection_error">Error occurred while connecting</string>
+    <string name="no_internet_connection_error">You are not connected to the internet</string>
+
 </resources>

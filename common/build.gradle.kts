@@ -38,6 +38,9 @@ dependencies {
     implementation(libs.androidx.paging)
     implementation(libs.bundles.retrofit)
 
+    implementation(libs.gson)
+    implementation(libs.bundles.okHttp)
+
 
     //libraries
     implementation(libs.bundles.dagger.impl)

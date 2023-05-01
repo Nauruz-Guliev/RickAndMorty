@@ -13,7 +13,6 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import ru.example.gnt.characters.domain.usecases.GetCharacterById;
 import ru.example.gnt.characters.presentation.list.model.CharactersUiModel;
-import ru.example.gnt.common.model.Resource;
 import ru.example.gnt.common.model.UiState;
 
 
@@ -48,7 +47,7 @@ public class CharacterDetailsViewModel extends ViewModel {
 
             @Override
             public void onError(@NonNull Throwable e) {
-                state.setValue(new UiState.Error(new Resource.String(ru.example.gnt.ui.R.string.network_error, null)));
+                state.setValue(new UiState.Error(e));
             }
 
             @Override

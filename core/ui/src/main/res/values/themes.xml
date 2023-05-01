@@ -11,6 +11,15 @@
         <item name="android:textSize">@dimen/text_size_3</item>
     </style>
 
+    <style name="TextViewDetailsStyle" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/text_size_4</item>
+        <item name="android:padding">@dimen/padding_4</item>
+        <item name="android:textColor">@color/black_100</item>
+    </style>
+
+
     <style name="roundedImageViewRounded">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>

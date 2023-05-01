@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_rm_main"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/TextViewDetailsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/details_item_height"
+            android:layout_marginVertical="@dimen/margin_2"
+            android:background="@color/material_dynamic_primary100"
+            tools:text="@string/episode" />
+
+        <TextView
+            android:id="@+id/tv_air_date"
+            style="@style/TextViewDetailsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/details_item_height"
+            android:layout_marginBottom="@dimen/margin_2"
+            android:background="@color/material_dynamic_primary100"
+            tools:text="@string/episode" />
+
+
+        <TextView
+            android:id="@+id/tv_episode_code"
+            style="@style/TextViewDetailsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/details_item_height"
+            android:layout_marginBottom="@dimen/margin_2"
+            android:background="@color/material_dynamic_primary100"
+            tools:text="@string/episode" />
+
+        <TextView
+            android:id="@+id/tv_created"
+            style="@style/TextViewDetailsStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/details_item_height"
+            android:layout_marginBottom="@dimen/margin_2"
+            android:background="@color/material_dynamic_primary100"
+            tools:text="@string/episode" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_gravity="center"
+        android:layout_width="80dp"
+        android:layout_height="80dp"/>
+</FrameLayout>

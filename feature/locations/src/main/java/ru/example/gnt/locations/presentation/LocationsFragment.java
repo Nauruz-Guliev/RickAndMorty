@@ -13,8 +13,6 @@ import ru.example.gnt.locations.databinding.LocationsFragmentBinding;
 public class LocationsFragment extends Fragment {
 
     public final static String LOCATIONS_FRAGMENT_TAG = "LOCATIONS_FRAGMENT_TAG";
-
-
     public static LocationsFragment createInstance() {
         return new LocationsFragment();
     }

@@ -13,7 +13,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import ru.example.gnt.characters.di.provider.CharactersDepsStore
 import ru.example.gnt.characters.presentation.detials.CharacterDetailsFragment
 import ru.example.gnt.characters.presentation.list.CharactersFragment
+import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
 import ru.example.gnt.common.base.interfaces.RootFragment
+import ru.example.gnt.common.base.interfaces.ToggleActivity
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.utils.extensions.hideKeyboard
@@ -27,7 +29,8 @@ import ru.example.gnt.rickandmorty.navigation.MainRouter
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedListener {
+class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedListener,
+    ToggleActivity {
 
     private lateinit var activityComponent: ActivityComponent
     private lateinit var binding: ActivityMainBinding
@@ -40,6 +43,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
     private var buttonState: Boolean = false
 
     private var searchFragment: SearchFragment? = null
+    private var toggleFragment: LayoutBackDropManager? = null
     private var searchCloseButton: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,13 +58,13 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
 
     private fun initBottomNav() {
         binding.bottomNav.setOnItemSelectedListener { item ->
+            setFragmentExpanded()
             when (item.itemId) {
                 ru.example.gnt.ui.R.id.characters -> {
                     mainRouter.openCharactersScreen()
                 }
                 ru.example.gnt.ui.R.id.episodes -> {
                     mainRouter.openEpisodesScreen()
-
                 }
                 ru.example.gnt.ui.R.id.locations -> {
                     mainRouter.openLocationScreen()
@@ -80,19 +84,23 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         with(binding.btnFilter) {
             setOnClickListener {
                 (searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView).callOnClick()
-                when (mainRouter.toggleDropDown()) {
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                        searchView?.isVisible = false
-                        setImageDrawable(ru.example.gnt.ui.R.drawable.cross_svgrepo_com)
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        searchView?.isVisible = true
-                        setImageDrawable(ru.example.gnt.ui.R.drawable.baseline_filter_list_24)
-                    }
+                when (toggleFragment?.toggle()) {
+                    BottomSheetBehavior.STATE_EXPANDED -> setFragmentCollapsed()
+                    else -> setFragmentExpanded()
                 }
             }
         }
         binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+    }
+
+    private fun setFragmentCollapsed() {
+        searchView?.isVisible = false
+        binding.btnFilter.setImageDrawable(ru.example.gnt.ui.R.drawable.cross_svgrepo_com)
+    }
+
+    private fun setFragmentExpanded() {
+        searchView?.isVisible = true
+        binding.btnFilter.setImageDrawable(ru.example.gnt.ui.R.drawable.baseline_filter_list_24)
     }
 
     fun setToolbarBackButtonVisibility(isVisible: Boolean) {
@@ -187,4 +195,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         }
     }
 
+    override fun registerToggleFragment(fragment: LayoutBackDropManager) {
+        toggleFragment = fragment
+    }
 }

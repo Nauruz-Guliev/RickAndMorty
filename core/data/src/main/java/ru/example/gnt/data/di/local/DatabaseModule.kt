@@ -16,9 +16,9 @@ class DatabaseModule {
 
     @Provides
     @ApplicationScope
-    fun provideDatabase(application: Application): RickAndMortyDatabase {
+    fun provideDatabase(context: Context): RickAndMortyDatabase {
         return Room.databaseBuilder(
-            application,
+            context,
             RickAndMortyDatabase::class.java,
             DB_NAME
         )
@@ -43,12 +43,6 @@ class DatabaseModule {
     @ApplicationScope
     fun provideLocationsDao(database: RickAndMortyDatabase) : LocationsDao {
         return database.getLocationDao()
-    }
-
-    @Provides
-    @ApplicationScope
-    fun provideContext(app: Application): Context {
-        return app
     }
 
     private companion object {

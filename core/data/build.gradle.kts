@@ -65,6 +65,7 @@ dependencies {
     //paging
     implementation(libs.room.paging)
 
+    implementation(libs.bundles.okHttp)
 
 
     testImplementation(libs.junit)

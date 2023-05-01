@@ -1,6 +1,7 @@
 package ru.example.gnt.data.remote.service
 
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -23,13 +24,13 @@ interface EpisodeService {
      * example "episode/1,2,3,4,5,6,...,800" etc..
      */
     @GET("${EPISODE_END_POINT}/{ids}")
-    fun getEpisodesInRange(@Path("ids") ids: String): Call<List<EpisodesResponseModel.Result>>
+    suspend fun getEpisodesInRange(@Path("ids") ids: String): Call<List<EpisodesResponseModel.Result>>
 
     @GET(EPISODE_END_POINT)
-    fun getFilteredEpisodes(
+    suspend fun getFilteredEpisodes(
         @Query("name") name: String? = null,
         @Query("episode") code: String? = null,
-    ): Call<EpisodesResponseModel>
+    ): EpisodesResponseModel
 
     companion object {
         const val EPISODE_END_POINT: String = "episode"

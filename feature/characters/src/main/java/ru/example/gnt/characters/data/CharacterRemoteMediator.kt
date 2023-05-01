@@ -24,7 +24,8 @@ import ru.example.gnt.data.remote.service.CharacterService
 class CharacterRemoteMediator @AssistedInject constructor(
     private val characterDao: CharacterDao,
     private val service: CharacterService,
-    @Assisted private val filterModel: CharactersFilterModel?,
+    @Assisted
+    private val filterModel: CharactersFilterModel?,
     private val context: Context,
     private val characterMapper: CharacterEntityResponseMapper
 

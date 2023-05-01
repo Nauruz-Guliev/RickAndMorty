@@ -9,14 +9,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import ru.example.gnt.episodes.EpisodesRouter
 import ru.example.gnt.episodes.domain.usecases.GetEpisodeFilteredListUseCase
-import ru.example.gnt.episodes.domain.usecases.GetEpisodeItemByIdUseCase
 import ru.example.gnt.episodes.presentation.episode_list.model.EpisodesState
 import javax.inject.Inject
 
 internal class EpisodeListViewModel @Inject constructor(
-    private val getEpisodeItemByIdUseCase: GetEpisodeItemByIdUseCase,
     private val getEpisodeFilteredListUseCase: GetEpisodeFilteredListUseCase,
-    private val router: EpisodesRouter
+    private val router: EpisodesRouter,
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<EpisodesState> = MutableStateFlow(EpisodesState())
@@ -41,15 +39,19 @@ internal class EpisodeListViewModel @Inject constructor(
             this.name = name
             this.episode = episode
         }
+        loadEpisodes()
+    }
+
+    private fun loadEpisodes() {
         viewModelScope.launch {
-            loadEpisodes()
+            _state.value = _state.value.copy(
+                episodesFlow = getEpisodeFilteredListUseCase(_state.value.filter).distinctUntilChanged()
+                    .cachedIn(viewModelScope)
+            )
         }
     }
 
-    private suspend fun loadEpisodes() {
-        _state.value = _state.value.copy(
-            episodesFlow = getEpisodeFilteredListUseCase(_state.value.filter).distinctUntilChanged()
-                .cachedIn(viewModelScope)
-        )
+    fun navigateToEpisodeDetails(id: Int?) {
+        router.navigateToEpisodeDetails(id)
     }
 }

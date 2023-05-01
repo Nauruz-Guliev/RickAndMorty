@@ -19,6 +19,11 @@ abstract class BaseFragment<VB : ViewBinding>(
     protected var _binding: VB? = null
     protected val binding: VB by lazy { _binding!! }
 
+    protected var coordinatorLayout: CoordinatorLayout? = null
+
+    protected var sheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,7 +32,20 @@ abstract class BaseFragment<VB : ViewBinding>(
 
         _binding = bindingInflater.invoke(layoutInflater)
         return binding.root
+    }
 
+    protected fun setUpCoordinatorLayout(
+        id: Int,
+        coordinatorLayout: CoordinatorLayout
+    ): CoordinatorLayout {
+        _binding = bindingInflater.invoke(layoutInflater)
+        val contentLayout: LinearLayout = coordinatorLayout.findViewById(id)
+        sheetBehavior = BottomSheetBehavior.from(contentLayout)
+        sheetBehavior?.isFitToContents = false
+        sheetBehavior?.isHideable = false
+        sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        this.coordinatorLayout = coordinatorLayout
+        return coordinatorLayout
     }
 
     override fun onDestroy() {

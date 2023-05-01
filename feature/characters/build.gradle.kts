@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.androidx.paging)
     implementation(libs.androidx.swiperefresh)
 
+    implementation(libs.bundles.okHttp)
+
     //tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
