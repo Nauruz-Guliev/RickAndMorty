@@ -2,16 +2,15 @@ package ru.example.gnt.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.squareup.moshi.Json
 
 @Entity(tableName = "location")
 data class LocationEntity(
     @PrimaryKey
     val id: Int,
-    val created: String,
+    val created: String?,
     val dimension: String,
     val name: String,
-    val residents: List<String>,
-    val url: String,
+    val residents: List<String>?,
+    val url: String?,
     val type: String,
 )

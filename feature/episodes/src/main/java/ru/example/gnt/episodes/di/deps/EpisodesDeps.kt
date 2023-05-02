@@ -10,6 +10,6 @@ interface EpisodesDeps {
     val urlIdExtractor: UrlIdExtractor
     val episodeMapper: EpisodeEntityResponseMapper
     val episodeService: EpisodeService
-    val episodeDao: EpisodesDao
+    val episodesDao: EpisodesDao
     val context: Context
 }

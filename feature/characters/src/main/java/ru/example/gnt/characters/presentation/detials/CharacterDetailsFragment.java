@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -65,6 +67,7 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
 
             } else if(value instanceof  UiState.Success) {
                 hideLoading();
+                showMainLayout();
                 setValues(((UiState.Success<CharactersUiModel.Single>) value).getData());
             } else if (value instanceof UiState.Empty) {
                 hideLoading();
@@ -75,17 +78,24 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
 
         viewModel.getState().observe(getViewLifecycleOwner(), observer);
     }
+
+    private void showMainLayout() {
+        binding.mainLayout.setVisibility(View.VISIBLE);
+    }
     private void hideLoading() {
         binding.progressIndicator.setVisibility(View.GONE);
     }
 
     private void setValues(CharactersUiModel.Single item) {
-        binding.layoutAdditionalInfo.setVisibility(View.VISIBLE);
+        binding.tvStatus.setText(item.getStatus().getGet());
         binding.tvGender.setText(item.getGender().getN());
         binding.tvName.setText(item.getName());
         binding.tvOrigin.setText(item.getOrigin().getName());
         binding.tvSpecies.setText(item.getSpecies());
         binding.tvType.setText(item.getType());
+        Glide.with(requireContext())
+                .load(item.getImage())
+                .into(binding.ivAvatar);
     }
 
     @Override

@@ -14,7 +14,8 @@ import ru.example.gnt.common.di.scope.ScreenScope
 import ru.example.gnt.episodes.EpisodesRouter
 import ru.example.gnt.episodes.presentation.episode_details.EpisodeDetailsFragment
 import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
-import ru.example.gnt.locations.presentation.LocationsFragment
+import ru.example.gnt.locations.LocationsRouter
+import ru.example.gnt.locations.presentation.list.LocationListFragment
 import ru.example.gnt.rickandmorty.MainActivity
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ class MainRouter @Inject constructor(
     private val fragmentManager: FragmentManager,
     @IdRes private val mainContainerId: Int,
     private val context: Context
-) : CharactersRouter, EpisodesRouter, FragmentManager.OnBackStackChangedListener {
+) : CharactersRouter, EpisodesRouter, LocationsRouter, FragmentManager.OnBackStackChangedListener {
 
     init {
         fragmentManager.addOnBackStackChangedListener(this)
@@ -52,8 +53,8 @@ class MainRouter @Inject constructor(
 
     fun openLocationScreen() {
         navigate(
-            fragment = LocationsFragment.createInstance(),
-            tag = LocationsFragment.LOCATIONS_FRAGMENT_TAG,
+            fragment = LocationListFragment.createInstance(),
+            tag = LocationListFragment.LOCATION_LIST_FRAGMENT_TAG,
             addToBackStack = true
         )
     }
@@ -141,6 +142,18 @@ class MainRouter @Inject constructor(
         navigate(
             fragment = EpisodeDetailsFragment.createInstance(id),
             tag = EpisodeDetailsFragment.EPISODE_DETAILS_TAG,
+            addToBackStack = true
+        )
+    }
+
+    override fun navigateToLocationDetails(id: Int?) {
+
+    }
+
+    override fun navigateToLocationList() {
+        navigate(
+            fragment = LocationListFragment.createInstance(),
+            tag = LocationListFragment.LOCATION_LIST_FRAGMENT_TAG,
             addToBackStack = true
         )
     }

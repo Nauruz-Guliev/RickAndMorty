@@ -2,6 +2,6 @@ package ru.example.gnt.characters.di
 
 import ru.example.gnt.characters.CharactersRouter
 
-interface CharactersRouterDeps {
+interface CharactersRouterDependency {
     val charactersRouter: CharactersRouter
 }

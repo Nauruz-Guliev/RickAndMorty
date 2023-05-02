@@ -4,7 +4,7 @@ import dagger.Component
 import ru.example.gnt.common.di.scope.ScreenScope
 import ru.example.gnt.episodes.di.modules.RepositoryModule
 import ru.example.gnt.episodes.di.modules.ViewModelModule
-import ru.example.gnt.episodes.di.deps.EpisodesRouterDeps
+import ru.example.gnt.episodes.di.deps.EpisodesRouterDependency
 import ru.example.gnt.episodes.di.deps.EpisodesDeps
 import ru.example.gnt.episodes.presentation.episode_details.EpisodeDetailsFragment
 import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
@@ -16,7 +16,7 @@ import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
     ],
     dependencies = [
         EpisodesDeps::class,
-        EpisodesRouterDeps::class
+        EpisodesRouterDependency::class
     ]
 )
 @ScreenScope
@@ -26,7 +26,7 @@ internal interface EpisodesComponent {
     @Component.Builder
     interface Builder {
         fun mainDeps(deps: EpisodesDeps): Builder
-        fun routerDeps(deps: EpisodesRouterDeps): Builder
+        fun routerDeps(deps: EpisodesRouterDependency): Builder
         fun build(): EpisodesComponent
     }
 }

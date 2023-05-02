@@ -5,6 +5,7 @@ import io.reactivex.rxjava3.core.Observable
 import kotlinx.coroutines.flow.Flow
 import ru.example.gnt.characters.presentation.list.model.CharactersFilterModel
 import ru.example.gnt.characters.presentation.list.model.CharactersUiModel
+import ru.example.gnt.common.model.episodes.EpisodeListItem
 
 interface CharactersRepository {
     /*
@@ -16,4 +17,6 @@ interface CharactersRepository {
     */
     fun getCharacterById(id: Int) : Observable<CharactersUiModel.Single>
     suspend fun getCharacters(filterModel: CharactersFilterModel) :  Flow<PagingData<CharactersUiModel.Single>>
+
+    suspend fun getEpisodeList(ids: List<String>) : List<EpisodeListItem>
 }

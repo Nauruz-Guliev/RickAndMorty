@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 
 data class LocationsResponseModel(
     @Json(name = "info")
-    val info: Info,
+    val info: Info? = null,
     @Json(name = "results")
     val results: List<Result?>
 ) {
@@ -22,7 +22,7 @@ data class LocationsResponseModel(
 
     data class Result(
         @Json(name = "created")
-        val created: String, // 2017-11-10T12:42:04.162Z
+        val created: String? = null, // 2017-11-10T12:42:04.162Z
         @Json(name = "dimension")
         val dimension: String, // Dimension C-137
         @Json(name = "id")
@@ -30,10 +30,10 @@ data class LocationsResponseModel(
         @Json(name = "name")
         val name: String, // Earth (C-137)
         @Json(name = "residents")
-        val residents: List<String>,
+        val residents: List<String>? = null,
         @Json(name = "type")
         val type: String, // Planet
         @Json(name = "url")
-        val url: String // https://rickandmortyapi.com/api/location/1
+        val url: String? = null // https://rickandmortyapi.com/api/location/1
     )
 }

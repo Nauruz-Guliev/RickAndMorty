@@ -22,9 +22,10 @@ import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.setImageDrawable
 import ru.example.gnt.episodes.di.deps.EpisodesDepsStore
 import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
+import ru.example.gnt.locations.di.LocationDependencyStore
 import ru.example.gnt.rickandmorty.databinding.ActivityMainBinding
-import ru.example.gnt.rickandmorty.di.main.ActivityComponent
-import ru.example.gnt.rickandmorty.di.main.DaggerActivityComponent
+import ru.example.gnt.rickandmorty.di.activity.ActivityComponent
+import ru.example.gnt.rickandmorty.di.activity.DaggerActivityComponent
 import ru.example.gnt.rickandmorty.navigation.MainRouter
 import javax.inject.Inject
 
@@ -157,8 +158,9 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                 .fragmentManager(supportFragmentManager)
                 .context(this)
                 .build()
-        CharactersDepsStore.charactersRouterDeps = activityComponent
+        CharactersDepsStore.charactersRouterDependency = activityComponent
         EpisodesDepsStore.routerDeps = activityComponent
+        LocationDependencyStore.locationsRouterDependency = activityComponent
         activityComponent.inject(mainActivity = this)
     }
 

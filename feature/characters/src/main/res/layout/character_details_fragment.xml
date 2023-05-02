@@ -1,135 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:layoutDescription="@xml/character_details_fragment_scene2">
 
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/progress_indicator"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:indeterminate="true"
-        android:alpha="0.1"
-        app:trackThickness="40dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:indicatorColor="@color/brown_rm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:scaleType="center"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_avatar"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:elevation="1dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
-        app:strokeWidth="@dimen/margin_1" />
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/layout_main_info"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:animateLayoutChanges="true"
-        android:layout_height="wrap_content"
-        android:background="@color/blue_rm"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView">
-
-        <TextView
-            android:id="@+id/tv_status"
-            style="@style/TextViewSecondaryText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="68dp"
-            android:gravity="center"
-            android:text="Alive" />
-
-        <TextView
-            android:id="@+id/tv_name"
-            style="@style/TextViewTitle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/name_empty"
-            android:textSize="@dimen/text_size_7" />
-
-        <TextView
-
-            android:id="@+id/tv_species"
-            style="@style/TextViewSecondaryText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/margin_2"
-            android:gravity="center"
-            android:text="@string/human" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/layout_additional_info"
-        android:animateLayoutChanges="true"
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="@color/blue_rm_main"
         android:orientation="vertical"
+        android:paddingBottom="@dimen/padding_2"
+        >
+
+        <!--
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_indicator"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:indeterminate="true"
+            android:alpha="0.1"
+            app:trackThickness="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:indicatorColor="@color/brown_rm"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+            -->
+
+        <!--
+
+
+
+             -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/main_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/margin_4"
+                    android:elevation="1dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView"
+                    app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+                    app:strokeWidth="@dimen/margin_1" />
+
+
+                <TextView
+                    android:id="@+id/tv_status"
+                    style="@style/TextViewDetailsStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_1"
+                    tools:text="Alive" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    style="@style/TextViewDetailsStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/name_empty"
+                    android:textSize="@dimen/text_size_7" />
+
+                <TextView
+                    android:id="@+id/tv_species"
+                    style="@style/TextViewDetailsStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_2"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_1"
+                    android:text="@string/human" />
+
+
+                <TextView
+                    android:id="@+id/tv_gender"
+                    style="@style/TextViewDetailsStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_2"
+                    android:text="@string/gender" />
+
+                <TextView
+
+                    android:id="@+id/tv_origin"
+                    style="@style/TextViewDetailsStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_2"
+                    android:text="@string/origin" />
+
+                <TextView
+                    android:id="@+id/tv_type"
+                    style="@style/TextViewDetailsStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_2"
+                    android:text="@string/type" />
+            </LinearLayout>
+        </ScrollView>
+
+
+        <ProgressBar
+            android:id="@+id/progressIndicator"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue_rm_main"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_main_info">
-
-        <TextView
-
-            style="@style/TextViewTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_4"
-            android:text="@string/information"
-            android:textColor="@color/gray_100" />
-
-        <TextView
-
-            android:id="@+id/tv_gender"
-            style="@style/TextViewSecondaryText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_4"
-            android:background="@drawable/text_lines"
-            android:text="@string/gender" />
-
-        <TextView
-
-            android:id="@+id/tv_origin"
-            style="@style/TextViewSecondaryText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_4"
-            android:background="@drawable/text_lines"
-            android:text="@string/origin" />
-
-        <TextView
-
-            android:id="@+id/tv_type"
-            style="@style/TextViewSecondaryText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_4"
-            android:background="@drawable/text_lines"
-            android:text="@string/type" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/frameLayout"
+        tools:listitem="@layout/character_item" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.motion.widget.MotionLayout>

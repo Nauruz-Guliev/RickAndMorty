@@ -2,6 +2,7 @@ package ru.example.gnt.data.di
 
 import dagger.Module
 import dagger.Provides
+import ru.example.gnt.common.utils.ApiListQueryGenerator
 import ru.example.gnt.common.utils.UrlIdExtractor
 import ru.example.gnt.data.di.qualifiers.BaseUrl
 import ru.example.gnt.data.mapper.CharacterEntityResponseMapper
@@ -24,6 +25,11 @@ class DataUtilityModule {
     @Provides
     fun provideUrlIdExtractor(): UrlIdExtractor {
         return UrlIdExtractor()
+    }
+
+    @Provides
+    fun provideApiQueryGenerator(): ApiListQueryGenerator {
+        return ApiListQueryGenerator();
     }
 
     @Provides

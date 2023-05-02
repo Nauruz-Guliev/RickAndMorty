@@ -1,4 +1,4 @@
-package ru.example.gnt.rickandmorty.di.main
+package ru.example.gnt.rickandmorty.di.activity
 
 import android.content.Context
 import androidx.annotation.IdRes
@@ -6,24 +6,25 @@ import androidx.fragment.app.FragmentManager
 import dagger.BindsInstance
 import dagger.Component
 import ru.example.gnt.characters.CharactersRouter
-import ru.example.gnt.characters.di.CharactersRouterDeps
+import ru.example.gnt.characters.di.CharactersRouterDependency
 import ru.example.gnt.common.di.scope.ScreenScope
 import ru.example.gnt.episodes.EpisodesRouter
-import ru.example.gnt.episodes.di.deps.EpisodesRouterDeps
+import ru.example.gnt.episodes.di.deps.EpisodesRouterDependency
+import ru.example.gnt.locations.LocationsRouter
+import ru.example.gnt.locations.di.LocationsRouterDependency
 import ru.example.gnt.rickandmorty.MainActivity
-import ru.example.gnt.rickandmorty.di.RouterModule
 
 @Component(
     modules = [
-        ActivityModule::class,
         RouterModule::class
     ]
 )
 @ScreenScope
-interface ActivityComponent : CharactersRouterDeps, EpisodesRouterDeps {
-
+interface ActivityComponent : LocationsRouterDependency, CharactersRouterDependency,
+    EpisodesRouterDependency {
+    override val locationsRouter: LocationsRouter
     override val charactersRouter: CharactersRouter
-    override val router: EpisodesRouter
+    override val episodesRouter: EpisodesRouter
 
     @Component.Builder
     interface Builder {
@@ -31,7 +32,8 @@ interface ActivityComponent : CharactersRouterDeps, EpisodesRouterDeps {
         fun fragmentManager(fragmentManager: FragmentManager): Builder
 
         @BindsInstance
-        fun context(context: Context) : Builder
+        fun context(context: Context): Builder
+
         @BindsInstance
         fun mainContainerId(@IdRes containerId: Int): Builder
 

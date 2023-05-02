@@ -6,5 +6,6 @@ import android.widget.ImageView
 interface CharactersRouter {
     fun openCharactersScreen()
     fun openCharacterDetails(id: Int)
+    fun navigateToLocationDetails(id: Int?)
     fun navigateBackToCharacters()
 }

@@ -6,72 +6,66 @@ import kotlinx.coroutines.flow.*
 import retrofit2.Call
 import retrofit2.awaitResponse
 import ru.example.gnt.common.R
-import ru.example.gnt.common.exceptions.*
+import ru.example.gnt.common.exceptions.AppException
+import ru.example.gnt.common.exceptions.BackendException
+import ru.example.gnt.common.exceptions.DataAccessException
+import ru.example.gnt.common.exceptions.ParseException
 import ru.example.gnt.common.model.Resource
-import ru.example.gnt.common.utils.DataResource
 import java.io.IOException
 
-inline fun <ResultType, RequestType> networkResource(
+inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: suspend () -> Flow<ResultType>,
     crossinline fetch: suspend () -> Call<RequestType>,
     noinline saveFetchResult: (suspend (RequestType) -> Unit),
     crossinline shouldFetch: () -> Boolean = { true }
 ) = flow {
-    val flow: Flow<DataResource<ResultType>> = if (shouldFetch()) {
-
+    val flow: Flow<Result<ResultType>> = if (shouldFetch()) {
         val remoteData = fetch().awaitResponse()
         try {
             if (remoteData.isSuccessful) {
                 saveFetchResult(remoteData.body()!!)
-
-                query().map { DataResource.Success(it) }
+                query().map { Result.success(it) }
             } else {
                 query().map {
-                    DataResource.Error(
-                        message = BackendException(remoteData.code()),
-                        it
+                    Result.failure(
+                        BackendException(remoteData.code()),
                     )
                 }
             }
         } catch (e: AppException) {
-            query().map { DataResource.Error(e, it) }
+            flowOf(Result.failure(e))
         } catch (e: JsonDataException) {
-            query().map {
-                DataResource.Error(
-                    message = ParseException(
+            flowOf(
+                Result.failure(
+                    ParseException(
                         e,
                         resource = Resource.String(R.string.unable_to_parse_error)
-                    ),
-                    it
+                    )
                 )
-            }
+            )
         } catch (e: JsonEncodingException) {
-            query().map {
-                DataResource.Error(
-                    message = ParseException(
+            flowOf(
+                Result.failure(
+                    ParseException(
                         e,
                         resource = Resource.String(R.string.unable_to_parse_error)
-                    ),
-                    it
+                    )
                 )
-            }
+            )
         } catch (e: IOException) {
-            query().map {
-                DataResource.Error(
-                    message = ConnectionException(e, Resource.String(R.string.connection_error)),
-                    it
-                )
-            }
+            query().map { Result.success(it) }
         } catch (e: Exception) {
-            query().map {
-                DataResource.Error(
-                    message = DataAccessException(e, Resource.String(R.string.data_access_error)),
-                    it
+            flowOf(
+                Result.failure(
+                    DataAccessException(
+                        e,
+                        Resource.String(R.string.data_access_error)
+                    )
                 )
-            }
+            )
         }
     } else {
-        query().map { DataResource.Success(it) }
+        query().map { Result.success(it) }
     }
     emitAll(flow)
 }

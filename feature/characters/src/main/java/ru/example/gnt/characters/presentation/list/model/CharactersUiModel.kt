@@ -4,6 +4,7 @@ package ru.example.gnt.characters.presentation.list.model
 import ru.example.gnt.common.base.BaseClass
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
+import ru.example.gnt.common.model.episodes.EpisodeListItem
 
 
 data class CharactersUiModel(
@@ -12,7 +13,7 @@ data class CharactersUiModel(
 
     data class Single(
         val created: String,
-        val episode: List<String>? = null,
+        val episode: List<EpisodeListItem>? = null,
         val gender: CharacterGenderEnum? = null,
         override val id: Int,
         val image: String,

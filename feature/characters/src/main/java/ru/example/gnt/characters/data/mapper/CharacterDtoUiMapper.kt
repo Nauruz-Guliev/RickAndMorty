@@ -1,16 +1,21 @@
 package ru.example.gnt.characters.data.mapper
 
 import ru.example.gnt.common.base.BaseMapper
-import ru.example.gnt.data.remote.model.CharactersResponseModel
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
+import ru.example.gnt.common.utils.UrlIdExtractor
+import ru.example.gnt.data.remote.model.CharactersResponseModel
+import javax.inject.Inject
 
-object CharacterDtoUiMapper :
+class CharacterDtoUiMapper
+@Inject constructor(
+    private val urlIdExtractor: UrlIdExtractor
+) :
     BaseMapper<CharactersResponseModel.Result, ru.example.gnt.characters.presentation.list.model.CharactersUiModel.Single> {
     override fun mapTo(model: CharactersResponseModel.Result): ru.example.gnt.characters.presentation.list.model.CharactersUiModel.Single =
         ru.example.gnt.characters.presentation.list.model.CharactersUiModel.Single(
             created = model.created,
-            episode = model.episode,
+            episode = null,
             gender = CharacterGenderEnum.find(model.gender ?: "unknown")
                 ?: CharacterGenderEnum.UNKNOWN,
             id = model.id,
@@ -34,7 +39,7 @@ object CharacterDtoUiMapper :
     override fun mapFrom(model: ru.example.gnt.characters.presentation.list.model.CharactersUiModel.Single): CharactersResponseModel.Result =
         CharactersResponseModel.Result(
             created = model.created,
-            episode = model.episode,
+            episode = null,
             gender = model.gender?.n,
             id = model.id,
             image = model.image,

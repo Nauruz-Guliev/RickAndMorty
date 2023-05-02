@@ -9,9 +9,9 @@ data class EpisodeEntity (
     @PrimaryKey
     val id: Int,
     val airDate: String,
-    val characters: List<String>,
-    val created: String,
+    val characters: List<String>?,
+    val created: String?,
     val episode: String,
     val name: String,
-    val url: String
+    val url: String?
 )

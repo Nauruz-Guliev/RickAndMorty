@@ -20,7 +20,7 @@ class LocationEntityResponseMapper @Inject constructor(
         name = model.name,
         url = model.url,
         type = model.type,
-        residents = model.residents.map(urlIdExtractor::extract)
+        residents = model.residents?.map(urlIdExtractor::extract)
     )
 
     override fun mapFrom(model: LocationEntity): LocationsResponseModel.Result =
@@ -31,7 +31,7 @@ class LocationEntityResponseMapper @Inject constructor(
             type = model.type,
             url = model.url,
             dimension = model.dimension,
-            residents = model.residents.map {
+            residents = model.residents?.map {
                 "${baseUrl}character/$it"
             }
         )

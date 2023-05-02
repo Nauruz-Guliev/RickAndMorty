@@ -12,14 +12,14 @@ interface EpisodesDepsProvider {
     val deps: EpisodesDeps
 
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
-    val routerDeps: EpisodesRouterDeps
+    val routerDeps: EpisodesRouterDependency
 
     companion object : EpisodesDepsProvider by EpisodesDepsStore
 }
 
 object EpisodesDepsStore : EpisodesDepsProvider {
     override var deps: EpisodesDeps by Delegates.notNull()
-    override var routerDeps: EpisodesRouterDeps by Delegates.notNull()
+    override var routerDeps: EpisodesRouterDependency by Delegates.notNull()
 }
 
 internal class EpisodesComponentViewModel : ViewModel() {

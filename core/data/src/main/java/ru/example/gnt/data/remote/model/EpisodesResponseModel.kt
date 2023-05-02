@@ -23,9 +23,9 @@ data class EpisodesResponseModel(
         @Json(name = "air_date")
         val airDate: String, // December 2, 2013
         @Json(name = "characters")
-        val characters: List<String>,
+        val characters: List<String>? = null,
         @Json(name = "created")
-        val created: String, // 2017-11-10T12:56:33.798Z
+        val created: String? = null, // 2017-11-10T12:56:33.798Z
         @Json(name = "episode")
         val episode: String, // S01E01
         @Json(name = "id")
@@ -33,6 +33,6 @@ data class EpisodesResponseModel(
         @Json(name = "name")
         val name: String, // Pilot
         @Json(name = "url")
-        val url: String // https://rickandmortyapi.com/api/episode/1
+        val url: String? = null  // https://rickandmortyapi.com/api/episode/1
     )
 }

@@ -21,9 +21,7 @@ class CharacterUiEntityMapper @Inject constructor(
             url = model.url,
             status = CharacterStatusEnum.find(model.status),
             gender = CharacterGenderEnum.find(model.gender),
-            episode = model.episode.map {
-                "https://rickandmortyapi.com/api/location/$it"
-            }
+            episode = null
         )
     }
 

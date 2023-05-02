@@ -9,6 +9,6 @@ data class EpisodeDetailsItem(
     val airDate: String,
     val episode: String,
     val characters: List<CharacterListItem>? = null,
-    val url: String,
-    val created: String,
+    val url: String?,
+    val created: String?,
 ) : BaseClass(id, name)

@@ -19,7 +19,7 @@ class EpisodeEntityResponseMapper @Inject constructor(
         episode = model.episode,
         name = model.name,
         url = model.url,
-        characters = model.characters.map(urlIdExtractor::extract)
+        characters = model.characters?.map(urlIdExtractor::extract)
     )
 
     override fun mapFrom(model: EpisodeEntity): EpisodesResponseModel.Result =
@@ -30,7 +30,7 @@ class EpisodeEntityResponseMapper @Inject constructor(
             episode = model.episode,
             name = model.name,
             url = model.url,
-            characters = model.characters.map {
+            characters = model.characters?.map {
                 "${baseUrl}character/$it"
             }
         )

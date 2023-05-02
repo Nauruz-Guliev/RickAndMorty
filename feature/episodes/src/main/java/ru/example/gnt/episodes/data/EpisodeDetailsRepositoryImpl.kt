@@ -1,14 +1,12 @@
 package ru.example.gnt.episodes.data
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import ru.example.gnt.common.exceptions.DataAccessException
 import ru.example.gnt.common.model.Resource
-import ru.example.gnt.common.utils.DataResource
-import ru.example.gnt.common.utils.extensions.networkResource
+import ru.example.gnt.common.utils.extensions.networkBoundResource
 import ru.example.gnt.data.local.dao.EpisodesDao
 import ru.example.gnt.data.local.entity.EpisodeEntity
 import ru.example.gnt.data.mapper.EpisodeEntityResponseMapper
@@ -26,9 +24,9 @@ class EpisodeDetailsRepositoryImpl @Inject constructor(
     private val episodesService: EpisodeService,
 ) : EpisodeDetailsRepository {
 
-    override suspend fun getEpisodeListItemById(id: Int): DataResource<EpisodeDetailsItem> = withContext(Dispatchers.IO){
+    override suspend fun getEpisodeListItemById(id: Int): Result<EpisodeDetailsItem> = withContext(Dispatchers.IO){
         return@withContext try {
-            networkResource(
+            networkBoundResource(
                 query = {
                     flowOf(entityUiDetailsMapper.mapTo(episodesDao.getEpisodeById(id) as EpisodeEntity))
                 },
@@ -40,11 +38,7 @@ class EpisodeDetailsRepositoryImpl @Inject constructor(
                 }
             ).first()
         } catch (ex: Exception) {
-            Log.d("ERROR", ex.message.toString())
-            DataResource.Error(
-                message = DataAccessException(resource = Resource.String(R.string.unknown_data_access_error)),
-                data = null
-            )
+            Result.failure(DataAccessException(resource = Resource.String(R.string.unknown_data_access_error)))
         }
     }
 }
