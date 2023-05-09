@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.room.runtime)
     implementation(libs.room.paging)
+    implementation(libs.room.rxjava)
     kapt(libs.room.compiler)
     annotationProcessor(libs.room.compiler)
 

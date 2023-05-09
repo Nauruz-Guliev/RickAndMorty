@@ -2,17 +2,18 @@ package ru.example.gnt.data.local.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
+import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.flow.Flow
 import ru.example.gnt.data.local.entity.CharacterEntity
 
 @Dao
-interface CharacterDao {
+interface CharactersDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveCharacters(characters: List<CharacterEntity>)
 
     @Query("SELECT * FROM character WHERE id= :id")
-    suspend fun getCharacterById(id: Int): CharacterEntity?
+    fun getCharacterById(id: Int): Single<CharacterEntity>
 
     @Query("DELETE FROM character WHERE id=:id")
     suspend fun deleteCharacterById(id: Int): Int
@@ -22,6 +23,9 @@ interface CharacterDao {
 
     @Query("SELECT * FROM character")
     fun getCharacters(): PagingSource<Int, CharacterEntity>
+
+    @Query("SELECT * FROM character WHERE id IN (:ids)")
+    suspend fun getCharacters(ids: List<String>?): List<CharacterEntity>
 
     @Query("SELECT * FROM character LIMIT :pageSize OFFSET :pageIndex")
     suspend fun getCharactersInRage(pageSize: Int, pageIndex: Int): List<CharacterEntity>
@@ -94,7 +98,7 @@ interface CharacterDao {
         status: String?,
         limit: Int?,
         offset: Int?
-    ): List<CharacterEntity>
+    ): Flow<List<CharacterEntity>>
 
 
     suspend fun save(character: CharacterEntity) {

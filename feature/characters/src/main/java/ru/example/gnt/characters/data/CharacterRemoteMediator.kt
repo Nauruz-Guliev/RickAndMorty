@@ -1,6 +1,6 @@
 package ru.example.gnt.characters.data
 
-import android.content.Context
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -8,100 +8,80 @@ import androidx.paging.RemoteMediator
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import retrofit2.*
-import ru.example.gnt.characters.R
 import ru.example.gnt.characters.presentation.list.model.CharactersFilterModel
-import ru.example.gnt.common.exceptions.NetworkConnectionException
-import ru.example.gnt.common.exceptions.NetworkException
-import ru.example.gnt.common.isNetworkOn
+import ru.example.gnt.common.exceptions.ConnectionException
+import ru.example.gnt.common.exceptions.DataAccessException
 import ru.example.gnt.common.model.Resource
-import ru.example.gnt.data.local.dao.CharacterDao
+import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.data.local.entity.CharacterEntity
 import ru.example.gnt.data.mapper.CharacterEntityResponseMapper
 import ru.example.gnt.data.remote.service.CharacterService
 
 @ExperimentalPagingApi
 class CharacterRemoteMediator @AssistedInject constructor(
-    private val characterDao: CharacterDao,
+    private val charactersDao: CharactersDao,
     private val service: CharacterService,
     @Assisted
     private val filterModel: CharactersFilterModel?,
-    private val context: Context,
     private val characterMapper: CharacterEntityResponseMapper
-
 ) : RemoteMediator<Int, CharacterEntity>() {
 
     private var pageIndex = 0
-
-    var limit = 0
-        private set
-    var offset = 0
-        private set
+    private var limit = 0
+    private var offset = 0
 
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, CharacterEntity>
-    ): MediatorResult {
+    ): MediatorResult = withContext(Dispatchers.IO) {
         pageIndex = getPageIndex(loadType)
-            ?: return MediatorResult.Success(endOfPaginationReached = true)
+            ?: return@withContext MediatorResult.Success(endOfPaginationReached = true)
+
         limit = state.config.pageSize
         offset = pageIndex * limit
 
-        fetchLaunches(limit = limit, offset = offset)
-            .onFailure {
-                return MediatorResult.Error(it)
-            }
-            .onSuccess { characters ->
-                if (loadType == LoadType.REFRESH) {
-                    characterDao.refresh(
-                        characters = characters ?: listOf(),
-                        name = filterModel?.name,
-                        species = filterModel?.species,
-                        type = filterModel?.type,
-                        gender = filterModel?.gender?.n,
-                        status = filterModel?.status?.get
-                    )
-                } else {
-                    characterDao.saveCharacters(characters ?: listOf())
-                }
-                return MediatorResult.Success(
-                    endOfPaginationReached = (characters ?: listOf()).size < limit
-                )
-            }
-        return MediatorResult.Error(NetworkException())
-    }
-
-
-    private suspend fun fetchLaunches(
-        limit: Int,
-        offset: Int
-    ): Result<List<CharacterEntity>?> {
-        return try {
-            if (context.isNetworkOn()) {
-                val response = service.getCharactersByPageFiltered(
+        return@withContext try {
+            val networkResult =
+                service.getCharactersByPageFiltered(
                     page = pageIndex.toString(),
                     name = filterModel?.name,
                     species = filterModel?.species,
                     type = filterModel?.type,
-                    status = filterModel?.status?.get,
-                    gender = filterModel?.gender?.n
+                    status = filterModel?.status?.value,
+                    gender = filterModel?.gender?.value
                 ).awaitResponse()
-                Result.success(response.body()?.results?.map(characterMapper::mapTo))
-            } else {
-                Result.success(
-                    characterDao.getCharactersFiltered(
-                        name = filterModel?.name,
-                        species = filterModel?.species,
-                        type = filterModel?.type,
-                        status = filterModel?.status?.get,
-                        gender = filterModel?.gender?.n,
-                        limit = limit,
-                        offset = offset
+            if (networkResult.isSuccessful) {
+                if (loadType == LoadType.REFRESH) {
+                    with(filterModel) {
+                        charactersDao.refresh(
+                            name = this?.name,
+                            species = this?.species,
+                            type = this?.type,
+                            status = this?.status?.value,
+                            gender = this?.gender?.value,
+                            characters = networkResult.body()!!.results!!.map(characterMapper::mapTo)
+                        )
+                    }
+                } else {
+                    charactersDao.saveCharacters(
+                        networkResult.body()!!.results!!.map(
+                            characterMapper::mapTo
+                        )
                     )
-                )
+                }
+                MediatorResult.Success(endOfPaginationReached = (networkResult.body())!!.results!!.size < limit)
+            } else {
+                MediatorResult.Success(endOfPaginationReached = true)
             }
+        } catch (ex: ConnectionException) {
+            MediatorResult.Success(endOfPaginationReached = true)
         } catch (ex: Exception) {
-            Result.failure(NetworkConnectionException(resource = Resource.String(R.string.unknown_network_error)))
+            Log.d("RESPONSE", ex.message.toString())
+            MediatorResult.Error(DataAccessException(resource = Resource.String(ru.example.gnt.common.R.string.data_access_error)))
         }
     }
 

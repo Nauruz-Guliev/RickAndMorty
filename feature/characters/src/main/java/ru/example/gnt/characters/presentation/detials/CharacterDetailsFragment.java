@@ -19,11 +19,14 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
+import ru.example.gnt.characters.R;
 import ru.example.gnt.characters.databinding.CharacterDetailsFragmentBinding;
 import ru.example.gnt.characters.di.provider.CharactersComponentViewModel;
-import ru.example.gnt.common.model.UiState;
-import ru.example.gnt.characters.presentation.list.model.CharactersUiModel;
+import ru.example.gnt.characters.presentation.detials.recyclerview.EpisodeViewHolderEventListener;
+import ru.example.gnt.characters.presentation.detials.recyclerview.EpisodesAdapter;
+import ru.example.gnt.characters.presentation.detials.recyclerview.EpisodesDiffCallback;
 import ru.example.gnt.common.base.interfaces.DetailsFragment;
+import ru.example.gnt.common.model.UiState;
 
 
 public class CharacterDetailsFragment extends Fragment implements DetailsFragment {
@@ -61,14 +64,13 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
     }
 
     private void observeStates() {
-
         final Observer<UiState> observer = (Observer<UiState>) value -> {
             if(value instanceof UiState.Loading) {
-
+                binding.progressIndicator.setVisibility(ViewGroup.VISIBLE);
             } else if(value instanceof  UiState.Success) {
                 hideLoading();
                 showMainLayout();
-                setValues(((UiState.Success<CharactersUiModel.Single>) value).getData());
+                setValues(((UiState.Success<CharacterDetailsModel>) value).getData());
             } else if (value instanceof UiState.Empty) {
                 hideLoading();
             } else if (value instanceof UiState.Error) {
@@ -82,17 +84,41 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
     private void showMainLayout() {
         binding.mainLayout.setVisibility(View.VISIBLE);
     }
+
     private void hideLoading() {
         binding.progressIndicator.setVisibility(View.GONE);
     }
 
-    private void setValues(CharactersUiModel.Single item) {
-        binding.tvStatus.setText(item.getStatus().getGet());
-        binding.tvGender.setText(item.getGender().getN());
+    private void setValues(CharacterDetailsModel item) {
+        if (item.getStatus() != null) {
+            binding.tvStatus.setText(item.getStatus().getValue());
+        }
+        if (item.getGender() != null) {
+            binding.tvGender.setText(item.getGender().getValue());
+        }
+        if (item.getOrigin() != null) {
+            binding.tvOrigin.setVisibility(ViewGroup.VISIBLE);
+            binding.tvOrigin.setText(requireContext().getString(ru.example.gnt.ui.R.string.origin, item.getOrigin().getName()));
+        } else {
+            binding.tvOrigin.setVisibility(ViewGroup.GONE);
+        }
+        if (item.getLocation() != null) {
+            binding.tvLocation.setVisibility(ViewGroup.VISIBLE);
+            binding.tvLocation.setText(requireContext().getString(ru.example.gnt.ui.R.string.location, item.getLocation().getName()));
+        } else {
+            binding.tvLocation.setVisibility(ViewGroup.GONE);
+        }
+        EpisodesAdapter adapter = new EpisodesAdapter(new EpisodesDiffCallback(), id -> viewModel.itemClicked(id));
+        adapter.submitList(item.getEpisode());
+        binding.rvEpisodes.setAdapter(adapter);
         binding.tvName.setText(item.getName());
-        binding.tvOrigin.setText(item.getOrigin().getName());
         binding.tvSpecies.setText(item.getSpecies());
-        binding.tvType.setText(item.getType());
+        if(item.getType() != null && item.getType().length() > 0) {
+            binding.tvType.setVisibility(ViewGroup.VISIBLE);
+            binding.tvType.setText(item.getType());
+        } else {
+            binding.tvType.setVisibility(ViewGroup.GONE);
+        }
         Glide.with(requireContext())
                 .load(item.getImage())
                 .into(binding.ivAvatar);

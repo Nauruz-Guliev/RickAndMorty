@@ -3,4 +3,5 @@
     <string name="unknown_data_access_error">Unknown data access error occured.</string>
     <string name="name">Name</string>
     <string name="episode">Episode</string>
+    <string name="characters">Characters</string>
 </resources>

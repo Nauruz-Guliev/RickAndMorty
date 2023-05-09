@@ -1,5 +1,8 @@
 package ru.example.gnt.data.remote.service
 
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET
@@ -24,7 +27,7 @@ interface EpisodeService {
      * example "episode/1,2,3,4,5,6,...,800" etc..
      */
     @GET("${EPISODE_END_POINT}/{ids}")
-    suspend fun getEpisodesInRange(@Path("ids") ids: String): Call<List<EpisodesResponseModel.Result>>
+    fun getEpisodesInRange(@Path("ids") ids: String): Call<List<EpisodesResponseModel.Result>>
 
     @GET(EPISODE_END_POINT)
     suspend fun getFilteredEpisodes(

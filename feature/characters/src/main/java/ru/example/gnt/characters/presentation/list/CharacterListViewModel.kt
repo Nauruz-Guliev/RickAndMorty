@@ -8,16 +8,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import ru.example.gnt.characters.CharactersRouter
-import ru.example.gnt.characters.domain.usecases.GetCharactersUseCase
+import ru.example.gnt.characters.domain.usecases.GetCharacterListUseCase
 import ru.example.gnt.characters.presentation.list.model.CharactersState
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 import javax.inject.Inject
 
 
-internal class CharactersViewModel @Inject constructor(
-    private val getCharactersUseCase: GetCharactersUseCase,
-    //  private val getFilteredCharacters: GetFilteredCharacters,
+internal class CharacterListViewModel @Inject constructor(
+    private val getCharacterListUseCase: GetCharacterListUseCase,
     private val navigator: CharactersRouter,
 ) : ViewModel() {
 
@@ -41,7 +40,7 @@ internal class CharactersViewModel @Inject constructor(
     }
 
     fun navigateToDetails(id: Int) {
-        navigator.openCharacterDetails(id)
+        navigator.navigateToCharacterDetails(id)
     }
 
     fun applyFilter(
@@ -65,7 +64,7 @@ internal class CharactersViewModel @Inject constructor(
 
     private suspend fun loadCharacters() {
         _uiState.value = _uiState.value.copy(
-            charactersFlow = getCharactersUseCase(_uiState.value.filter).distinctUntilChanged()
+            charactersFlow = getCharacterListUseCase(_uiState.value.filter).distinctUntilChanged()
                 .cachedIn(viewModelScope)
         )
     }

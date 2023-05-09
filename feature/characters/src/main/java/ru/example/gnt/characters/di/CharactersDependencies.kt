@@ -3,7 +3,7 @@ package ru.example.gnt.characters.di
 import android.content.Context
 import ru.example.gnt.common.utils.ApiListQueryGenerator
 import ru.example.gnt.common.utils.UrlIdExtractor
-import ru.example.gnt.data.local.dao.CharacterDao
+import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.data.local.dao.EpisodesDao
 import ru.example.gnt.data.local.dao.LocationsDao
 import ru.example.gnt.data.mapper.CharacterEntityResponseMapper
@@ -20,6 +20,6 @@ interface CharactersDependencies {
     val apiListQueryGenerator: ApiListQueryGenerator
     val locationsDao: LocationsDao
     val urlIdExtractor: UrlIdExtractor
-    val characterDao: CharacterDao
+    val charactersDao: CharactersDao
     val context: Context
 }

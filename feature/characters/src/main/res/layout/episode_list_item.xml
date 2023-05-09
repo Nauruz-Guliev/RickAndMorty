@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="200dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_6"
+    android:background="?android:attr/selectableItemBackground"
+    android:elevation="@dimen/margin_1"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/TextViewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingTop="@dimen/margin_6"
+            android:textSize="@dimen/text_size_3"
+            tools:text="Lawnmower Dog" />
+
+        <TextView
+            android:id="@+id/tv_episode"
+            style="@style/TextViewSecondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_6"
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="@dimen/margin_2"
+            tools:text="Lawnmower Dog" />
+
+        <TextView
+            android:id="@+id/tv_air_date"
+            style="@style/TextViewSecondaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_6"
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="@dimen/margin_2"
+            android:paddingBottom="@dimen/padding_2"
+            tools:text="Lawnmower Dog" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+
+

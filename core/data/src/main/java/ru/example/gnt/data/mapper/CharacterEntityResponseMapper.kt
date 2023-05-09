@@ -22,8 +22,9 @@ class CharacterEntityResponseMapper
             species = model.species,
             status = model.status ?: "unknown",
             type = model.type,
-            url = model.url,
-            episode = model.episode?.map(urlIdExtractor::extract) ?: listOf()
+            episode = model.episode?.map(urlIdExtractor::extract) ?: listOf(),
+            locationId = urlIdExtractor.extract(model.location?.url),
+            originId = urlIdExtractor.extract(model.origin?.url),
         )
 
     override fun mapFrom(model: CharacterEntity): CharactersResponseModel.Result =
@@ -36,8 +37,8 @@ class CharacterEntityResponseMapper
             species = model.species,
             status = model.status,
             type = model.type,
-            url = model.url,
-            episode = model.episode.map {
+            url = null,
+            episode = model.episode?.map {
                 "${baseUrl}location/$it"
             }
         )

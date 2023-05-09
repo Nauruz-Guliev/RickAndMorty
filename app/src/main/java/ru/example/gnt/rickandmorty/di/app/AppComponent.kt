@@ -9,7 +9,7 @@ import ru.example.gnt.common.utils.ApiListQueryGenerator
 import ru.example.gnt.common.utils.UrlIdExtractor
 import ru.example.gnt.data.di.local.DatabaseModule
 import ru.example.gnt.data.di.remote.NetworkModule
-import ru.example.gnt.data.local.dao.CharacterDao
+import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.data.local.dao.EpisodesDao
 import ru.example.gnt.data.local.dao.LocationsDao
 import ru.example.gnt.data.mapper.CharacterEntityResponseMapper
@@ -26,7 +26,7 @@ import ru.example.gnt.rickandmorty.App
 @ApplicationScope
 interface AppComponent : CharactersDependencies, EpisodesDeps, LocationDependencies {
     override val context: Context
-    override val characterDao: CharacterDao
+    override val charactersDao: CharactersDao
     override val characterMapper: CharacterEntityResponseMapper
     override val episodesDao: EpisodesDao
     override val episodeService: EpisodeService

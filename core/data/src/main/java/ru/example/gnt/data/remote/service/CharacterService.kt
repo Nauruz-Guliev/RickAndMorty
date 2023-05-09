@@ -1,6 +1,7 @@
 package ru.example.gnt.data.remote.service
 
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -19,7 +20,7 @@ interface CharacterService {
         ): Call<CharactersResponseModel>
 
     @GET("$CHARACTER_END_POINT/{id}")
-    fun getCharacterById(@Path("id") id: Int): Observable<CharactersResponseModel.Result>
+    fun getCharacterById(@Path("id") id: Int): Single<CharactersResponseModel.Result>
 
     /**@param ids Notice that all ids should be separated by comma
      * example "character/1,2,3,4,5,6,...,800" etc..

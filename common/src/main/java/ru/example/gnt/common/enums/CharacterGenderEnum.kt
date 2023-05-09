@@ -1,7 +1,7 @@
 package ru.example.gnt.common.enums
 
 enum class CharacterGenderEnum(
-    val n: String
+    val value: String
 ) {
     FEMALE("female"),
     MALE("male"),

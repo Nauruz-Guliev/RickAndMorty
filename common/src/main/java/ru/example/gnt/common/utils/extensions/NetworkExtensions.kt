@@ -17,6 +17,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: suspend () -> Flow<ResultType>,
     crossinline fetch: suspend () -> Call<RequestType>,
     noinline saveFetchResult: (suspend (RequestType) -> Unit),
+    noinline transformResult: (suspend (ResultType, RequestType) -> ResultType)? = null,
     crossinline shouldFetch: () -> Boolean = { true }
 ) = flow {
     val flow: Flow<Result<ResultType>> = if (shouldFetch()) {
@@ -24,7 +25,13 @@ inline fun <ResultType, RequestType> networkBoundResource(
         try {
             if (remoteData.isSuccessful) {
                 saveFetchResult(remoteData.body()!!)
-                query().map { Result.success(it) }
+                query().map {
+                    if (transformResult != null) {
+                        Result.success(transformResult(it, remoteData.body()!!))
+                    } else {
+                        Result.success(it)
+                    }
+                }
             } else {
                 query().map {
                     Result.failure(
@@ -69,4 +76,42 @@ inline fun <ResultType, RequestType> networkBoundResource(
     }
     emitAll(flow)
 }
+
+fun <T> wrapRetrofitError(block: () -> Unit, onNoConnectionAction: () -> Flow<T>): Flow<Result<T>> =
+    flow {
+        try {
+            block()
+        } catch (e: AppException) {
+            emit(Result.failure(e))
+        } catch (e: JsonDataException) {
+            emit(
+                Result.failure(
+                    ParseException(
+                        e,
+                        resource = Resource.String(R.string.unable_to_parse_error)
+                    )
+                )
+            )
+        } catch (e: JsonEncodingException) {
+            emit(
+                Result.failure(
+                    ParseException(
+                        e,
+                        resource = Resource.String(R.string.unable_to_parse_error)
+                    )
+                )
+            )
+        } catch (e: IOException) {
+            onNoConnectionAction().map { Result.success(it) }
+        } catch (e: Exception) {
+            emit(
+                Result.failure(
+                    DataAccessException(
+                        e,
+                        Resource.String(R.string.data_access_error)
+                    )
+                )
+            )
+        }
+    }
 

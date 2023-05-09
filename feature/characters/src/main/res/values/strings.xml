@@ -12,4 +12,5 @@
     <string name="not_connected_ui_message">You are not connected to internet</string>
     <string name="human">Human</string>
     <string name="name_empty">Name</string>
+    <string name="episodes">Episodes</string>
 </resources>

@@ -8,7 +8,7 @@ data class EpisodeDetailsItem(
     override val name: String,
     val airDate: String,
     val episode: String,
-    val characters: List<CharacterListItem>? = null,
+    var characters: List<CharacterListItem>? = null,
     val url: String?,
     val created: String?,
 ) : BaseClass(id, name)

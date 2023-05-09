@@ -3,6 +3,7 @@ package ru.example.gnt.data.local.dao
 import androidx.paging.PagingSource
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
+import ru.example.gnt.data.local.entity.CharacterEntity
 import ru.example.gnt.data.local.entity.EpisodeEntity
 
 @Dao
@@ -21,6 +22,9 @@ interface EpisodesDao {
 
     @Query("SELECT * FROM episode")
     fun getEpisodesPaged(): PagingSource<Int, EpisodeEntity>
+
+    @Query("SELECT * FROM episode WHERE id IN (:ids)")
+    suspend fun getEpisodes(ids: List<String>): List<EpisodeEntity>
 
     @Query("SELECT * FROM episode LIMIT :pageSize OFFSET :pageIndex")
     suspend fun getEpisodesInRage(pageSize: Int, pageIndex: Int): List<EpisodeEntity>

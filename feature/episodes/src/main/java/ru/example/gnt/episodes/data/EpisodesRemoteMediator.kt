@@ -13,7 +13,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
+import ru.example.gnt.common.exceptions.ConnectionException
 import ru.example.gnt.common.exceptions.DataAccessException
+import ru.example.gnt.common.isNetworkOn
 import ru.example.gnt.data.local.dao.EpisodesDao
 import ru.example.gnt.data.local.entity.EpisodeEntity
 import ru.example.gnt.data.remote.service.EpisodeService
@@ -70,6 +72,8 @@ class EpisodesRemoteMediator @AssistedInject constructor(
             } else {
                 MediatorResult.Success(endOfPaginationReached = true)
             }
+        } catch (ex : ConnectionException) {
+            MediatorResult.Success(endOfPaginationReached = true)
         } catch (ex: Exception) {
             MediatorResult.Error(DataAccessException())
         }

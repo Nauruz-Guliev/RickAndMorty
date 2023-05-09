@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import ru.example.gnt.characters.di.provider.CharactersDepsStore
 import ru.example.gnt.characters.presentation.detials.CharacterDetailsFragment
-import ru.example.gnt.characters.presentation.list.CharactersFragment
+import ru.example.gnt.characters.presentation.list.CharacterListFragment
 import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
 import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.interfaces.ToggleActivity
@@ -21,8 +21,11 @@ import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.setImageDrawable
 import ru.example.gnt.episodes.di.deps.EpisodesDepsStore
+import ru.example.gnt.episodes.presentation.episode_details.EpisodeDetailsFragment
 import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
 import ru.example.gnt.locations.di.LocationDependencyStore
+import ru.example.gnt.locations.presentation.details.LocationDetailsFragment
+import ru.example.gnt.locations.presentation.list.LocationListFragment
 import ru.example.gnt.rickandmorty.databinding.ActivityMainBinding
 import ru.example.gnt.rickandmorty.di.activity.ActivityComponent
 import ru.example.gnt.rickandmorty.di.activity.DaggerActivityComponent
@@ -71,6 +74,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                     mainRouter.openLocationScreen()
                 }
                 else -> {
+                    setItemsVisibility(false)
                 }
             }
             return@setOnItemSelectedListener true
@@ -188,11 +192,17 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
 
     override fun onBackStackChanged() {
         val fragment = mainRouter.getActiveFragment()
-        if (fragment is RootFragment) {
+        if (fragment != null) {
             when (fragment) {
-                is CharactersFragment -> checkBottomNavSelectedItemId(ru.example.gnt.ui.R.id.characters)
-                is CharacterDetailsFragment -> checkBottomNavSelectedItemId(ru.example.gnt.ui.R.id.characters)
-                is EpisodeListFragment -> checkBottomNavSelectedItemId(ru.example.gnt.ui.R.id.episodes)
+                is CharacterListFragment -> checkBottomNavSelectedItemId(
+                    ru.example.gnt.ui.R.id.characters
+                )
+                is EpisodeListFragment -> checkBottomNavSelectedItemId(
+                    ru.example.gnt.ui.R.id.episodes
+                )
+                is LocationListFragment -> checkBottomNavSelectedItemId(
+                    ru.example.gnt.ui.R.id.locations
+                )
             }
         }
     }

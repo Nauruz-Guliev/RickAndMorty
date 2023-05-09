@@ -10,22 +10,22 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import ru.example.gnt.characters.databinding.CharacterItemBinding
-import ru.example.gnt.characters.presentation.list.model.CharactersUiModel
+import ru.example.gnt.common.model.characters.CharacterListItem
 
 class CharactersViewHolder(
     private val binding: CharacterItemBinding,
     private val onItemClicked: ((id: Int) -> Unit)?
 ) : ViewHolder(binding.root) {
 
-    fun bind(item: CharactersUiModel.Single?) {
+    fun bind(item: CharacterListItem?) {
         if (item != null) {
             with(binding) {
                 setImage(item)
                 tvStatus.width = ivCharacter.maxWidth
                 tvName.text = item.name
-                tvGender.text = item.gender?.n
+                tvGender.text = item.gender?.value
                 tvSpecies.text = item.species
-                tvStatus.text = item.status?.get
+                tvStatus.text = item.status?.value
                 item.status?.color?.getValue(binding.root.context)?.defaultColor?.let {
                     tvStatus.setBackgroundColor(
                         it
@@ -38,7 +38,7 @@ class CharactersViewHolder(
         }
     }
 
-    private fun setImage(item: CharactersUiModel.Single) {
+    private fun setImage(item: CharacterListItem) {
         Glide.with(binding.root.context)
             .load(item.image)
             .addListener(object : RequestListener<Drawable> {

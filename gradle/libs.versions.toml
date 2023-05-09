@@ -57,6 +57,9 @@ rx-android = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxAndro
 rx-java = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxJava" }
 okHttp = {module = "com.squareup.okhttp3:okhttp", version.ref ="okHttp"}
 okHttp-logging = {module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okHttp"}
+room-rxjava = {module = "androidx.room:room-rxjava3", version.ref="room"}
+
+
 
 [bundles]
 dagger-impl = [

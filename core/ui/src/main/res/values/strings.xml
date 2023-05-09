@@ -15,7 +15,7 @@
 
     <string name="information">Information</string>
     <string name="gender">Gender : %1s</string>
-    <string name="origin">Origin %1s</string>
+    <string name="origin">Origin: %1s</string>
     <string name="type">Type %1s</string>
     <string name="status">Status</string>
     <string name="gender_empty">Gender</string>
@@ -27,4 +27,5 @@
     <string name="network_error_with_code">Encountered %1s error trying to retrieve the data.</string>
     <string name="unknown_network_exception">Unknown error occurred during remote data retrieval.</string>
     <string name="database_error">Error occurred during database call.</string>
+    <string name="location">Location: %1s</string>
 </resources>

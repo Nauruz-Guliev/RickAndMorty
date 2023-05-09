@@ -13,8 +13,8 @@ data class CharactersResponseModel(
     )
 
     data class Result(
-        val created: String, // 2017-11-04T18:48:46.250Z
-        val episode: List<String>? = null,
+        val created: String? = null, // 2017-11-04T18:48:46.250Z
+        var episode: List<String>? = null,
         val gender: String?, // Male
         val id: Int, // 1
         val image: String, // https://rickandmortyapi.com/api/character/avatar/1.jpeg
@@ -23,8 +23,8 @@ data class CharactersResponseModel(
         val origin: Origin? = null,
         val species: String, // Human
         val status: String?, // Alive
-        val type: String,
-        val url: String // https://rickandmortyapi.com/api/character/1
+        val type: String? = null,
+        val url: String? = null  // https://rickandmortyapi.com/api/character/1
     ) {
         data class Location(
             val name: String?, // Citadel of Ricks

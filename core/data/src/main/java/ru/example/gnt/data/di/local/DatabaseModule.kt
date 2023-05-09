@@ -1,12 +1,11 @@
 package ru.example.gnt.data.di.local
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import ru.example.gnt.data.local.RickAndMortyDatabase
-import ru.example.gnt.data.local.dao.CharacterDao
+import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.common.di.scope.ApplicationScope
 import ru.example.gnt.data.local.dao.EpisodesDao
 import ru.example.gnt.data.local.dao.LocationsDao
@@ -29,7 +28,7 @@ class DatabaseModule {
 
     @Provides
     @ApplicationScope
-    fun provideLaunchesDao(database: RickAndMortyDatabase): CharacterDao {
+    fun provideLaunchesDao(database: RickAndMortyDatabase): CharactersDao {
         return database.getCharacterDao()
     }
 

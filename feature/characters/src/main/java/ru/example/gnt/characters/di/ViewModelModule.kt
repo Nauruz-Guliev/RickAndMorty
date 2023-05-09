@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import ru.example.gnt.characters.presentation.list.CharactersViewModel
-import ru.example.gnt.common.di.scope.ApplicationScope
+import ru.example.gnt.characters.presentation.list.CharacterListViewModel
 import ru.example.gnt.common.di.scope.ScreenScope
 import ru.example.gnt.common.di.viewmodel.ViewModelFactory
 import ru.example.gnt.common.di.viewmodel.ViewModelKey
@@ -20,7 +19,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(CharactersViewModel::class)
-    internal abstract fun bindCharactersViewModel(viewModel: CharactersViewModel): ViewModel
+    @ViewModelKey(CharacterListViewModel::class)
+    internal abstract fun bindCharactersViewModel(viewModel: CharacterListViewModel): ViewModel
+
 
 }

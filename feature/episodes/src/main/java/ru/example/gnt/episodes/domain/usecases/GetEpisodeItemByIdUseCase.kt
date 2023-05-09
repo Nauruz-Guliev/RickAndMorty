@@ -8,6 +8,6 @@ class GetEpisodeItemByIdUseCase @Inject constructor(
     private val repository: EpisodeDetailsRepository
 ) {
     suspend operator fun invoke(id: Int): Result<EpisodeDetailsItem> {
-        return repository.getEpisodeListItemById(id)
+        return repository.getEpisodeDetailsItemById(id)
     }
 }

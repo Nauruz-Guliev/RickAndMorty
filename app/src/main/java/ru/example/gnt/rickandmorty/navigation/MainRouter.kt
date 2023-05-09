@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.presentation.detials.CharacterDetailsFragment
-import ru.example.gnt.characters.presentation.list.CharactersFragment
+import ru.example.gnt.characters.presentation.list.CharacterListFragment
 import ru.example.gnt.common.base.interfaces.DetailsFragment
 import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.search.SearchFragment
@@ -33,8 +33,8 @@ class MainRouter @Inject constructor(
 
     override fun openCharactersScreen() {
         navigate(
-            fragment = CharactersFragment.createInstance(),
-            tag = CharactersFragment.CHARACTERS_FRAGMENT_TAG,
+            fragment = CharacterListFragment.createInstance(),
+            tag = CharacterListFragment.CHARACTERS_FRAGMENT_TAG,
             addToBackStack = true,
         )
     }
@@ -59,7 +59,7 @@ class MainRouter @Inject constructor(
         )
     }
 
-    override fun openCharacterDetails(id: Int) {
+    override fun navigateToCharacterDetails(id: Int) {
 
         navigate(
             fragment = CharacterDetailsFragment.createInstance(id),
@@ -71,7 +71,7 @@ class MainRouter @Inject constructor(
 
     override fun navigateBackToCharacters() {
         fragmentManager.popBackStack(
-            CharactersFragment.CHARACTERS_FRAGMENT_TAG,
+            CharacterListFragment.CHARACTERS_FRAGMENT_TAG,
             FragmentManager.POP_BACK_STACK_INCLUSIVE
         )
     }

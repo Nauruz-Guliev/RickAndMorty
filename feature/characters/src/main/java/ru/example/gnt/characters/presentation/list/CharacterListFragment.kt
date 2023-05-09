@@ -5,16 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.annotation.IdRes
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
@@ -47,11 +44,11 @@ import ru.example.gnt.common.utils.extensions.showToastShort
 import javax.inject.Inject
 
 
-class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
+class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     CharactersFragmentBinding::inflate
 ), LayoutBackDropManager, SearchFragment, RootFragment {
     @Inject
-    internal lateinit var viewModel: CharactersViewModel
+    internal lateinit var viewModel: CharacterListViewModel
 
 
     private var adapter: CharactersAdapter? = null
@@ -285,7 +282,7 @@ class CharactersFragment : BaseFragment<CharactersFragmentBinding>(
         @IdRes
         var coordinatorContentId: Int? = null
 
-        fun createInstance() = CharactersFragment().apply {
+        fun createInstance() = CharacterListFragment().apply {
             //пока сюда передавать нечего
             arguments = Bundle()
         }

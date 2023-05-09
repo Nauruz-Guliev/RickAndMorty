@@ -9,12 +9,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.example.gnt.common.model.UiState
+import ru.example.gnt.episodes.EpisodesRouter
 import ru.example.gnt.episodes.domain.model.EpisodeDetailsItem
 import ru.example.gnt.episodes.domain.usecases.GetEpisodeItemByIdUseCase
 
 class EpisodeDetailsViewModel @AssistedInject constructor(
     @Assisted private val id: Int?,
-    private val getEpisodeItemByIdUseCase: GetEpisodeItemByIdUseCase
+    private val getEpisodeItemByIdUseCase: GetEpisodeItemByIdUseCase,
+    private val router: EpisodesRouter
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<UiState<EpisodeDetailsItem>> =
@@ -35,6 +37,11 @@ class EpisodeDetailsViewModel @AssistedInject constructor(
             } else {
                 UiState.Empty
             }
+        }
+    }
+    fun navigateToCharacterDetails(id: Int?) {
+        if(id != null) {
+            router.navigateToCharacterDetails(id)
         }
     }
 

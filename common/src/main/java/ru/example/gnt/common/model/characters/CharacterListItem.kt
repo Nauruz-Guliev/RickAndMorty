@@ -8,7 +8,7 @@ data class CharacterListItem(
     override val id: Int,
     override val name: String,
     val species: String,
-    val gender: CharacterGenderEnum,
-    val status: CharacterStatusEnum,
+    val gender: CharacterGenderEnum?,
+    val status: CharacterStatusEnum?,
     val image: String
 ) : BaseClass(id, name)

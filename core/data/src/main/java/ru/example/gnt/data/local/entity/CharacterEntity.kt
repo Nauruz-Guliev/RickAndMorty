@@ -9,13 +9,14 @@ import androidx.room.PrimaryKey
 data class CharacterEntity(
     @PrimaryKey
     val id: Int,
-    val created: String,
-    val gender: String,
+    val created: String?,
+    val gender: String?,
     val image: String,
     val name: String,
     val species: String,
-    val status: String,
-    val type: String,
-    val url: String,
-    val episode: List<String>,
+    val status: String?,
+    val type: String?,
+    val episode: List<String>?,
+    val locationId: String?,
+    val originId: String?
 )

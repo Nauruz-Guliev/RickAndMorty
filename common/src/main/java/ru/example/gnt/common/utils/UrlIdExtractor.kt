@@ -1,6 +1,5 @@
 package ru.example.gnt.common.utils
 
-import android.util.Log
 import ru.example.gnt.common.isValidUrl
 import javax.inject.Inject
 
@@ -17,11 +16,11 @@ class UrlIdExtractor @Inject constructor() {
      *
      * P.s можно улучшить регулярку
      */
-    fun extract(url: String): String {
-        if (!url.isValidUrl()) throw IllegalArgumentException("Given url is not valid!")
-
+    fun extract(url: String?): String {
+        if(url == null || url.isEmpty()) return ""
+        if (!url.isValidUrl()) throw IllegalArgumentException("Given url " + url +  "is not valid!")
         val regex = "[0-9]+".toRegex()
-        var result = regex.find(url)?.value
+        var result = url.let { regex.find(it)?.value }
         if (result != null) {
             if (result.startsWith("0") && result.length > 1) {
                 result = result.replaceFirst("0", "")

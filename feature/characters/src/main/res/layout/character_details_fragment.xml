@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/blue_rm_main"
     android:layout_height="match_parent"
     app:layoutDescription="@xml/character_details_fragment_scene2">
 
@@ -12,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:background="@color/blue_rm_main"
         android:orientation="vertical"
         android:paddingBottom="@dimen/padding_2"
         >
@@ -45,11 +45,10 @@
             <LinearLayout
                 android:id="@+id/main_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone"
                 tools:visibility="visible">
-
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_avatar"
@@ -78,11 +77,13 @@
                 <TextView
                     android:id="@+id/tv_name"
                     style="@style/TextViewDetailsStyle"
+                    android:paddingVertical="@dimen/margin_2"
+                    android:paddingHorizontal="@dimen/margin_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/name_empty"
-                    android:textSize="@dimen/text_size_7" />
+                    tools:text="@string/name_empty"
+                    android:textSize="@dimen/text_size_5" />
 
                 <TextView
                     android:id="@+id/tv_species"
@@ -92,7 +93,7 @@
                     android:layout_marginBottom="@dimen/margin_2"
                     android:gravity="center"
                     android:padding="@dimen/padding_1"
-                    android:text="@string/human" />
+                    tools:text="@string/human" />
 
 
                 <TextView
@@ -101,22 +102,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_2"
-                    android:text="@string/gender" />
+                    tools:text="@string/gender" />
 
                 <TextView
-
                     android:id="@+id/tv_origin"
                     style="@style/TextViewDetailsStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginTop="@dimen/margin_2"
-                    android:text="@string/origin" />
+                    tools:text="@string/origin" />
+
+                <TextView
+                    android:id="@+id/tv_location"
+                    style="@style/TextViewDetailsStyle"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_2"
+                    tools:text="@string/location" />
 
                 <TextView
                     android:id="@+id/tv_type"
                     style="@style/TextViewDetailsStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginTop="@dimen/margin_2"
                     android:text="@string/type" />
             </LinearLayout>
@@ -126,15 +137,18 @@
         <ProgressBar
             android:id="@+id/progressIndicator"
             android:layout_width="72dp"
+            android:indeterminateTint="@color/blue_rm"
             android:layout_height="72dp"
             android:layout_gravity="center" />
 
     </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/rv_episodes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:spanCount="2"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
         android:background="@color/blue_rm_main"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

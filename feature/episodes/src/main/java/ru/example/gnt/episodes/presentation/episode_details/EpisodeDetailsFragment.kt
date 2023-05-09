@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -20,12 +21,13 @@ import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.databinding.EpisodeDetailsFragmentBinding
 import ru.example.gnt.episodes.di.deps.EpisodesComponentViewModel
 import ru.example.gnt.episodes.domain.model.EpisodeDetailsItem
+import ru.example.gnt.episodes.presentation.episode_details.recyclerview.CharacterListAdapter
 import javax.inject.Inject
 
 class EpisodeDetailsFragment : BaseFragment<
         EpisodeDetailsFragmentBinding>(
     EpisodeDetailsFragmentBinding::inflate
-) , DetailsFragment{
+), DetailsFragment {
 
     @Inject
     lateinit var viewModelFactory: EpisodeDetailsViewModel.EpisodeDetailsViewModelFactory
@@ -84,7 +86,12 @@ class EpisodeDetailsFragment : BaseFragment<
             tvEpisodeCode.text = episodeDetailsItem.episode
             tvName.text = episodeDetailsItem.name
 
+            CharacterListAdapter(::onItemClicked, Glide.with(binding.root.context))
         }
+    }
+
+    private fun onItemClicked(id: Int) {
+        viewModel?.navigateToCharacterDetails(id)
     }
 
 
