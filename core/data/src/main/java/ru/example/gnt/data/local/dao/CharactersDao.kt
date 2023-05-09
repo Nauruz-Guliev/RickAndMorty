@@ -13,7 +13,7 @@ interface CharactersDao {
     suspend fun saveCharacters(characters: List<CharacterEntity>)
 
     @Query("SELECT * FROM character WHERE id= :id")
-    fun getCharacterById(id: Int): Single<CharacterEntity>
+    fun getCharacterById(id: Int): CharacterEntity
 
     @Query("DELETE FROM character WHERE id=:id")
     suspend fun deleteCharacterById(id: Int): Int
@@ -25,7 +25,7 @@ interface CharactersDao {
     fun getCharacters(): PagingSource<Int, CharacterEntity>
 
     @Query("SELECT * FROM character WHERE id IN (:ids)")
-    suspend fun getCharacters(ids: List<String>?): List<CharacterEntity>
+    fun getCharacters(ids: List<String>?): List<CharacterEntity>
 
     @Query("SELECT * FROM character LIMIT :pageSize OFFSET :pageIndex")
     suspend fun getCharactersInRage(pageSize: Int, pageIndex: Int): List<CharacterEntity>

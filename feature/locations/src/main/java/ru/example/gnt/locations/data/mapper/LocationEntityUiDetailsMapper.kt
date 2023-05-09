@@ -18,7 +18,7 @@ class LocationEntityUiDetailsMapper
             dimension = dimension,
             url = url,
             created = created,
-            residents = residents?.map(urlIdExtractor::extract)
+            residents = null
         )
     }
 
@@ -31,7 +31,7 @@ class LocationEntityUiDetailsMapper
             url = url,
             created = created,
             residents = residents?.map {
-                "https://rickandmortyapi.com/api/location/$it"
+                "https://rickandmortyapi.com/api/location/${it.id}"
             }
         )
     }

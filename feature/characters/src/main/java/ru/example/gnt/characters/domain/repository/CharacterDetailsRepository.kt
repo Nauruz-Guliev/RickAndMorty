@@ -8,7 +8,7 @@ import ru.example.gnt.common.model.episodes.EpisodeListItem
 
 interface CharacterDetailsRepository {
 
-    fun getCharacterById(id: Int) : Single<CharacterDetailsModel>
+    fun getCharacterById(id: Int) : Observable<CharacterDetailsModel>
 
     fun getEpisodeList(ids: List<String>) : List<EpisodeListItem>
 

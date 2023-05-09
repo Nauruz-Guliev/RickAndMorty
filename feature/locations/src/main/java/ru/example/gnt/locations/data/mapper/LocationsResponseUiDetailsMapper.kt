@@ -19,7 +19,7 @@ class LocationsResponseUiDetailsMapper @Inject constructor(
             url = url,
             created = created,
             type = type,
-            residents = residents?.map(urlIdExtractor::extract)
+            residents = null
         )
     }
 
@@ -32,7 +32,7 @@ class LocationsResponseUiDetailsMapper @Inject constructor(
             created = created,
             type = type,
             residents = residents?.map {
-                "https://rickandmortyapi.com/api/location/$it"
+                "https://rickandmortyapi.com/api/location/${it.id}"
             }
         )
     }

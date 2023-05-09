@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.example.gnt.common.model.episodes.EpisodeListItem
 import ru.example.gnt.data.local.dao.EpisodesDao
-import ru.example.gnt.episodes.data.mapper.EpisodeEntityUiListMapper
+import ru.example.gnt.data.mapper.EpisodeEntityUiListMapper
 import ru.example.gnt.episodes.domain.model.EpisodeFilterModel
 import ru.example.gnt.episodes.domain.repository.EpisodeListRepository
 import javax.inject.Inject

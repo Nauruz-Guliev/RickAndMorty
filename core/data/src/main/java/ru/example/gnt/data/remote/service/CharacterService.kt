@@ -1,5 +1,6 @@
 package ru.example.gnt.data.remote.service
 
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import retrofit2.Call

@@ -31,7 +31,7 @@ class MainRouter @Inject constructor(
         fragmentManager.addOnBackStackChangedListener(this)
     }
 
-    override fun openCharactersScreen() {
+    fun openCharactersScreen() {
         navigate(
             fragment = CharacterListFragment.createInstance(),
             tag = CharacterListFragment.CHARACTERS_FRAGMENT_TAG,
@@ -60,7 +60,6 @@ class MainRouter @Inject constructor(
     }
 
     override fun navigateToCharacterDetails(id: Int) {
-
         navigate(
             fragment = CharacterDetailsFragment.createInstance(id),
             tag = CharacterDetailsFragment.CHARACTER_DETAILS_FRAGMENT_TAG,
@@ -93,9 +92,9 @@ class MainRouter @Inject constructor(
     ) {
         checkFragment(fragment)
         if (fragment is RootFragment && fragmentManager.findFragmentByTag(tag) != null) {
-            fragmentManager.popBackStack(
-                tag, 0
-            )
+            val index = getIndex(tag)
+            fragmentManager.popBackStack(tag, 0)
+
         } else {
             val transaction = fragmentManager.beginTransaction().replace(
                 mainContainerId,
@@ -133,6 +132,7 @@ class MainRouter @Inject constructor(
                     setItemsVisibility(isVisible = true)
                 }
                 else -> {
+
                 }
             }
         }
@@ -144,6 +144,16 @@ class MainRouter @Inject constructor(
             tag = EpisodeDetailsFragment.EPISODE_DETAILS_TAG,
             addToBackStack = true
         )
+    }
+
+    private fun getIndex(tagName: String): Int {
+        val manager: FragmentManager = fragmentManager
+        for (i in 0 until manager.backStackEntryCount) {
+            if (manager.getBackStackEntryAt(i).name.equals(tagName, ignoreCase = true)) {
+                return i
+            }
+        }
+        return -1
     }
 
     override fun navigateToLocationDetails(id: Int?) {

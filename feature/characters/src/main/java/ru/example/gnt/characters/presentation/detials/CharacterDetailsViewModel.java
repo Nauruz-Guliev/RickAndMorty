@@ -11,7 +11,7 @@ import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.exceptions.CompositeException;
 import ru.example.gnt.characters.CharactersRouter;
 import ru.example.gnt.characters.domain.usecases.GetCharacterById;
 import ru.example.gnt.common.model.UiState;
@@ -24,6 +24,10 @@ public class CharacterDetailsViewModel extends ViewModel {
 
     private Disposable disposable;
     private CharactersRouter router;
+    private GetCharacterById getCharacterById;
+    private int characterId;
+    private Scheduler scheduler;
+
 
     @AssistedInject
     public CharacterDetailsViewModel(@RxIOSchedulerQualifier
@@ -34,7 +38,14 @@ public class CharacterDetailsViewModel extends ViewModel {
                                      CharactersRouter router) {
         state.setValue(UiState.Loading.INSTANCE);
         this.router = router;
-        disposable = characterById.invoke(id)
+        this.scheduler = scheduler;
+        this.getCharacterById = characterById;
+        this.characterId = id;
+        loadData();
+    }
+
+    public void loadData() {
+        disposable = getCharacterById.invoke(characterId)
                 .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -43,15 +54,25 @@ public class CharacterDetailsViewModel extends ViewModel {
                             state.setValue(new UiState.Success<>(characterDetailsModel));
                         },
                         throwable -> {// onError
-                            Log.e("ERROR", "onError: " + throwable);
+                            if (throwable instanceof CompositeException) {
+                                ((CompositeException) throwable).getExceptions().forEach((error) -> {
+                                    Log.e("ERROR", "onCompositeError: " + error.getLocalizedMessage() + " " + error.getClass());
+                                });
+                            }
+                            Log.e("ERROR", "onError: " + throwable.getLocalizedMessage() + " " + throwable);
                             state.setValue(new UiState.Error(throwable));
                         }
                 )
         ;
     }
 
-    public void itemClicked(int id) {
+
+    public void navigateToEpisodeDetails(int id) {
         router.navigateToEpisodeDetails(id);
+    }
+
+    public void navigateToLocationDetails(int id) {
+        router.navigateToLocationDetails(id);
     }
 
     @Override

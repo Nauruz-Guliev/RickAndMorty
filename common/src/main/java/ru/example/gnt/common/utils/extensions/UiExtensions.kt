@@ -11,6 +11,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.snackbar.Snackbar
@@ -103,4 +105,13 @@ fun <T : Enum<*>> ChipGroup.createChip(enum: T): Chip {
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun <T : ViewHolder> T.divideTwoTabsEqually(): T {
+    val holder = (this.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+        width = itemView.context.resources.displayMetrics.widthPixels / 2
+    }.also {
+        this.itemView.layoutParams = it
+    }
+    return this
 }

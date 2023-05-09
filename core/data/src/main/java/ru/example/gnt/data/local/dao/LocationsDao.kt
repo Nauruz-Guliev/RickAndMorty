@@ -2,6 +2,8 @@ package ru.example.gnt.data.local.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
+import io.reactivex.rxjava3.core.Maybe
+import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.flow.Flow
 import ru.example.gnt.data.local.entity.LocationEntity
 
@@ -11,14 +13,19 @@ interface LocationsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveLocations(locations: List<LocationEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun saveLocationBlocking(locations: List<LocationEntity>)
+
     @Query("SELECT * FROM location WHERE id= :id")
-    suspend fun getLocationById(id: Int): LocationEntity?
+    fun getLocationById(id: Int): Single<LocationEntity>
 
     @Query("DELETE FROM location WHERE id=:id")
     suspend fun deleteLocationById(id: Int): Int
 
     @Query("SELECT * FROM location")
     fun getAllLocations(): Flow<List<LocationEntity>>
+    @Query("SELECT * FROM location WHERE id IN (:ids)")
+    fun getLocations(ids: List<String>): List<LocationEntity>
 
     @Query("SELECT * FROM location")
     fun getLocationsPaged(): PagingSource<Int, LocationEntity>

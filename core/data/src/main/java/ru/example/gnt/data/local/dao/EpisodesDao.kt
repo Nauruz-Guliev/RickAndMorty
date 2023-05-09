@@ -24,7 +24,7 @@ interface EpisodesDao {
     fun getEpisodesPaged(): PagingSource<Int, EpisodeEntity>
 
     @Query("SELECT * FROM episode WHERE id IN (:ids)")
-    suspend fun getEpisodes(ids: List<String>): List<EpisodeEntity>
+    fun getEpisodes(ids: List<String>): List<EpisodeEntity>
 
     @Query("SELECT * FROM episode LIMIT :pageSize OFFSET :pageIndex")
     suspend fun getEpisodesInRage(pageSize: Int, pageIndex: Int): List<EpisodeEntity>

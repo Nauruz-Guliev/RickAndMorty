@@ -2,9 +2,10 @@ package ru.example.gnt.episodes.presentation.episode_details
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
@@ -18,10 +19,12 @@ import ru.example.gnt.common.base.BaseFragment
 import ru.example.gnt.common.base.interfaces.DetailsFragment
 import ru.example.gnt.common.model.UiState
 import ru.example.gnt.common.utils.extensions.showToastShort
+import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.databinding.EpisodeDetailsFragmentBinding
 import ru.example.gnt.episodes.di.deps.EpisodesComponentViewModel
 import ru.example.gnt.episodes.domain.model.EpisodeDetailsItem
 import ru.example.gnt.episodes.presentation.episode_details.recyclerview.CharacterListAdapter
+import ru.example.gnt.episodes.presentation.episode_list.paging_rv.EpisodeListAdapter
 import javax.inject.Inject
 
 class EpisodeDetailsFragment : BaseFragment<
@@ -43,7 +46,6 @@ class EpisodeDetailsFragment : BaseFragment<
         super.onCreate(savedInstanceState)
         val id = arguments?.getInt(EPISODE_ID_ARG)
         if (id != null) {
-            Log.d("NAVIGATION", id.toString())
             viewModel = viewModelFactory.create(id)
         }
     }
@@ -51,6 +53,21 @@ class EpisodeDetailsFragment : BaseFragment<
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeStates()
+        refreshListener()
+        observeMotionLayoutStates()
+    }
+
+    private fun observeMotionLayoutStates() {
+        binding.constraintLayout.setTransitionListener(object : MotionLayout.TransitionListener {
+            override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
+                if (motionLayout != null) {
+                    binding.swipeRefresh.isEnabled = motionLayout.currentState == R.id.start
+                }
+            }
+            override fun onTransitionTrigger(motionLayout: MotionLayout?, triggerId: Int, positive: Boolean, progress: Float) {}
+            override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) {}
+            override fun onTransitionChange(motionLayout: MotionLayout?, startId: Int, endId: Int, progress: Float) {}
+        })
     }
 
     private fun observeStates() {
@@ -59,17 +76,19 @@ class EpisodeDetailsFragment : BaseFragment<
                 ?.collectLatest { state ->
                     with(binding) {
                         when (state) {
-                            is UiState.Success -> initViews(state.data)
+                            is UiState.Success -> {
+                                setRefreshing(false)
+                                initViews(state.data)
+                            }
                             is UiState.Loading -> {
-                                mainLayout.isVisible = false
+                                setRefreshing(true)
                             }
                             is UiState.Error -> {
-                                mainLayout.isVisible = false
+                                setRefreshing(false)
                                 context.showToastShort(state.message)
                             }
                             is UiState.Empty -> {
-                                mainLayout.isVisible = false
-                                progressBar.isVisible = false
+                                setRefreshing(false)
                             }
                         }
                     }
@@ -77,16 +96,40 @@ class EpisodeDetailsFragment : BaseFragment<
         }
     }
 
+    private fun setRefreshing(isRefreshing: Boolean) {
+        binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    private fun refreshListener() {
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel?.loadEpisode()
+        }
+    }
+
     private fun initViews(episodeDetailsItem: EpisodeDetailsItem) {
         with(binding) {
-            mainLayout.isVisible = true
-            progressBar.isVisible = false
+            tvAirDate.isVisible = true
             tvAirDate.text = episodeDetailsItem.airDate
-            tvCreated.text = episodeDetailsItem.created
-            tvEpisodeCode.text = episodeDetailsItem.episode
-            tvName.text = episodeDetailsItem.name
 
-            CharacterListAdapter(::onItemClicked, Glide.with(binding.root.context))
+            tvCreated.text = episodeDetailsItem.created
+            tvCreated.isVisible = true
+
+            tvEpisodeCode.text = episodeDetailsItem.episode
+            tvEpisodeCode.isVisible = true
+
+            tvName.text = episodeDetailsItem.name
+            tvName.isVisible = true
+
+            rvCharacters.adapter =
+                CharacterListAdapter(::onItemClicked, Glide.with(binding.root)).apply {
+                    submitList(episodeDetailsItem.characters)
+                }
+        }
+    }
+
+    private fun setLayoutsVisibility(isVisible: Boolean) {
+        binding.root.children.forEach {
+            it.isVisible = isVisible
         }
     }
 

@@ -4,14 +4,13 @@ import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.JsonEncodingException
 import kotlinx.coroutines.flow.*
 import retrofit2.Call
+import retrofit2.HttpException
 import retrofit2.awaitResponse
 import ru.example.gnt.common.R
-import ru.example.gnt.common.exceptions.AppException
-import ru.example.gnt.common.exceptions.BackendException
-import ru.example.gnt.common.exceptions.DataAccessException
-import ru.example.gnt.common.exceptions.ParseException
+import ru.example.gnt.common.exceptions.*
 import ru.example.gnt.common.model.Resource
 import java.io.IOException
+import java.net.UnknownHostException
 
 inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: suspend () -> Flow<ResultType>,
@@ -59,6 +58,15 @@ inline fun <ResultType, RequestType> networkBoundResource(
                     )
                 )
             )
+        } catch (e: HttpException) {
+            query().map {
+                Result.failure(
+                    NetworkException(
+                        code = e.code(),
+                        cause = e,
+                    )
+                )
+            }
         } catch (e: IOException) {
             query().map { Result.success(it) }
         } catch (e: Exception) {
@@ -77,41 +85,44 @@ inline fun <ResultType, RequestType> networkBoundResource(
     emitAll(flow)
 }
 
-fun <T> wrapRetrofitError(block: () -> Unit, onNoConnectionAction: () -> Flow<T>): Flow<Result<T>> =
-    flow {
-        try {
-            block()
-        } catch (e: AppException) {
-            emit(Result.failure(e))
-        } catch (e: JsonDataException) {
-            emit(
-                Result.failure(
-                    ParseException(
-                        e,
-                        resource = Resource.String(R.string.unable_to_parse_error)
-                    )
-                )
-            )
-        } catch (e: JsonEncodingException) {
-            emit(
-                Result.failure(
-                    ParseException(
-                        e,
-                        resource = Resource.String(R.string.unable_to_parse_error)
-                    )
-                )
-            )
-        } catch (e: IOException) {
-            onNoConnectionAction().map { Result.success(it) }
-        } catch (e: Exception) {
-            emit(
-                Result.failure(
-                    DataAccessException(
-                        e,
-                        Resource.String(R.string.data_access_error)
-                    )
-                )
-            )
-        }
+fun <T> wrapRetrofitError(block: () -> T): T {
+    return try {
+        block()
+    } catch (e: AppException) {
+        throw e
+    } catch (e: JsonDataException) {
+        throw ParseException(
+            e,
+            resource = Resource.String(R.string.unable_to_parse_error)
+        )
+    } catch (e: JsonEncodingException) {
+        throw ParseException(
+            e,
+            resource = Resource.String(R.string.unable_to_parse_error)
+        )
+    } catch (e: HttpException) {
+        throw NetworkException(
+            code = e.code(),
+            cause = e,
+        )
+    } catch (e: ConnectionException) {
+        throw e
+    } catch (ex: java.net.UnknownHostException) {
+        throw ConnectionException(
+            cause = ex,
+            resource = Resource.String(R.string.connection_error)
+        )
+
+    } catch (e: IOException) {
+        throw ConnectionException(
+            cause = e,
+            resource = Resource.String(R.string.connection_error)
+        )
+    } catch (e: Exception) {
+        throw DataAccessException(
+            cause = e,
+            resource = Resource.String(R.string.data_access_error)
+        )
     }
+}
 

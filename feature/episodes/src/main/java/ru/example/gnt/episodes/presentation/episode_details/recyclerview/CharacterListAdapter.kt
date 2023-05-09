@@ -3,7 +3,6 @@ package ru.example.gnt.episodes.presentation.episode_details.recyclerview
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import ru.example.gnt.common.model.characters.CharacterListItem
 

@@ -80,7 +80,6 @@ class CharacterRemoteMediator @AssistedInject constructor(
         } catch (ex: ConnectionException) {
             MediatorResult.Success(endOfPaginationReached = true)
         } catch (ex: Exception) {
-            Log.d("RESPONSE", ex.message.toString())
             MediatorResult.Error(DataAccessException(resource = Resource.String(ru.example.gnt.common.R.string.data_access_error)))
         }
     }

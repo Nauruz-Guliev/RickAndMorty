@@ -6,6 +6,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.repeatOnLifecycle
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonDataException

@@ -1,4 +1,4 @@
-package ru.example.gnt.episodes.data.mapper
+package ru.example.gnt.data.mapper
 
 import ru.example.gnt.common.base.BaseMapper
 import ru.example.gnt.common.model.episodes.EpisodeListItem

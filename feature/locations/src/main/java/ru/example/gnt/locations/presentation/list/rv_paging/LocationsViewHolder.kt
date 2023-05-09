@@ -3,9 +3,8 @@ package ru.example.gnt.locations.presentation.list.rv_paging
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.locations.LocationListItem
+import ru.example.gnt.common.utils.extensions.divideTwoTabsEqually
 import ru.example.gnt.locations.databinding.LocationItemBinding
 
 class EpisodeListViewHolder(
@@ -27,21 +26,13 @@ class EpisodeListViewHolder(
         operator fun invoke(
             parent: ViewGroup,
             onItemClicked: (id: Int?) -> Unit
-        ): EpisodeListViewHolder {
-            val holder = EpisodeListViewHolder(
-                binding = LocationItemBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                ),
-                onItemClicked = onItemClicked
-            )
-            (holder.binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
-                width = parent.context.resources.displayMetrics.widthPixels / 2
-            }.also {
-                holder.binding.root.layoutParams = it
-            }
-            return holder
-        }
+        ) = EpisodeListViewHolder(
+            binding = LocationItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ),
+            onItemClicked = onItemClicked
+        ).divideTwoTabsEqually()
     }
 }

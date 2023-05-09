@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.map
 import ru.example.gnt.common.model.locations.LocationListItem
 import ru.example.gnt.data.local.dao.LocationsDao
 import ru.example.gnt.locations.data.LocationsRemoteMediator
-import ru.example.gnt.locations.data.mapper.LocationEntityUiListMapper
+import ru.example.gnt.data.mapper.LocationEntityUiListMapper
 import ru.example.gnt.locations.domain.repository.LocationListRepository
 import ru.example.gnt.locations.presentation.list.LocationListFilterModel
 import javax.inject.Inject
