@@ -2,6 +2,7 @@ package ru.example.gnt.characters.presentation.list
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputLayout
+import io.reactivex.rxjava3.core.Scheduler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -32,10 +35,9 @@ import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
-import ru.example.gnt.common.exceptions.NetworkConnectionException
-import ru.example.gnt.common.flowWithLifecycle
-import ru.example.gnt.common.internetCapabilitiesCallback
-import ru.example.gnt.common.isNetworkOn
+import ru.example.gnt.common.exceptions.ApplicationException
+import ru.example.gnt.common.utils.extensions.flowWithLifecycle
+import ru.example.gnt.common.utils.extensions.internetCapabilitiesCallback
 import ru.example.gnt.common.utils.CustomLoadStateAdapter
 import ru.example.gnt.common.utils.TryAgainAction
 import ru.example.gnt.common.utils.extensions.createChip
@@ -47,13 +49,10 @@ import javax.inject.Inject
 class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     CharactersFragmentBinding::inflate
 ), LayoutBackDropManager, SearchFragment, RootFragment {
+
     @Inject
     internal lateinit var viewModel: CharacterListViewModel
-
     private var adapter: CharactersAdapter? = null
-
-    private var footerAdapter: CustomLoadStateAdapter? = null
-
     private var searchQuery: String? = null
 
 
@@ -63,9 +62,6 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
         super.onAttach(context)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onResume() {
         super.onResume()
@@ -81,7 +77,6 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     ): View {
         _binding = CharactersFragmentBinding.inflate(layoutInflater)
         setUpCoordinatorLayout(R.id.contentLayout, binding.coordinatorLayout)
-        setUpUiState()
         return binding.coordinatorLayout
     }
 
@@ -91,11 +86,11 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
         initCoordinatorLayout()
         initChipGroup()
         initSwipeRefreshLayout()
-
-        observeStates()
+        observeDataStates()
         observeInternetConnectionChanges()
-        setUpUiState()
+        setUpInfoTextView()
     }
+
     private fun initSwipeRefreshLayout() {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.applyFilter()
@@ -105,12 +100,9 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
 
     private fun initRecyclerView() {
         adapter = CharactersAdapter(viewModel::navigateToDetails)
-
         val tryAgainAction: TryAgainAction = { adapter?.retry() }
-
-        footerAdapter = CustomLoadStateAdapter(tryAgainAction)
-
-        val loadStateAdapter = adapter?.withLoadStateFooter(footerAdapter!!)
+        val footerAdapter = CustomLoadStateAdapter(tryAgainAction)
+        val loadStateAdapter = adapter?.withLoadStateFooter(footerAdapter)
         lifecycleScope.launch {
             binding.rvCharacters.apply {
                 adapter = loadStateAdapter
@@ -121,7 +113,7 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     }
 
     @OptIn(FlowPreview::class)
-    private fun observeStates() {
+    private fun observeDataStates() {
         lifecycleScope.launch {
             adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)
                 ?.debounce(400)?.collectLatest { state ->
@@ -129,32 +121,35 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
                     val isEmpty = (adapter?.snapshot()?.items?.size ?: 0) <= 0
                     binding.loadingStateLayout.tryAgainButton.setOnClickListener(::handleFilterReset)
                     when (val res = state.source.refresh) {
-                        is LoadState.Error -> handleErrorState(res.error)
-                        is LoadState.Loading -> { context.showToastShort(isEmpty) }
-                        is LoadState.NotLoading -> handleNotLoadingState(isEmpty)
+                        is LoadState.Error -> {
+                            binding.swipeRefresh.isRefreshing = false
+                            handleErrorState(res.error)
+                        }
+                        is LoadState.Loading -> {
+                            binding.swipeRefresh.isRefreshing = true
+                        }
+                        is LoadState.NotLoading -> {
+                            handleNotLoadingState(isEmpty)
+                            binding.swipeRefresh.isRefreshing = false
+                        }
                     }
                 }
         }
     }
 
-    private fun handleErrorState(ex: Throwable) {
-        var i = 0
-        when (ex) {
-            is NetworkConnectionException -> {
-
-            }
-        }
-    }
 
     private fun handleNotLoadingState(isEmpty: Boolean) {
         with(binding) {
             with(loadingStateLayout) {
                 messageTextView.apply {
                     isVisible = isEmpty
-                    text = getString(R.string.no_filter_results)
+                    text =
+                        if (viewModel.isFilterOn() && isInternetOn) getString(R.string.no_filter_results) else getString(
+                            R.string.no_internet_connection
+                        )
                 }
                 tryAgainButton.apply {
-                    isVisible = isEmpty
+                    isVisible = isEmpty && viewModel.isFilterOn()
                     text = getString(R.string.clear_filter)
                 }
             }
@@ -178,6 +173,7 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
                 adapter?.submitData(pagingData)
             }
     }
+
 
     private fun initChipGroup() {
         with(binding.filterLayout) {
@@ -207,23 +203,15 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     }
 
     private fun observeInternetConnectionChanges() {
-        lifecycleScope.launch {
-            context?.internetCapabilitiesCallback()?.flowWithLifecycle(lifecycle)?.collectLatest {
-                isInternetOn = context?.isNetworkOn() ?: it
-                setUpUiState()
-                when (it) {
-                    true -> {
-
-                    }
-                    false -> {
-
-                    }
-                }
+        lifecycleScope.launch(Dispatchers.Main) {
+            networkState.collectLatest {
+                context.showToastShort(it)
+                setUpInfoTextView()
             }
         }
     }
 
-    private fun setUpUiState() {
+    private fun setUpInfoTextView() {
         binding.tvInfo.text =
             if (isInternetOn) getString(ru.example.gnt.ui.R.string.characters_welcome_message)
             else getString(R.string.not_connected_ui_message)

@@ -1,4 +1,4 @@
-package ru.example.gnt.common
+package ru.example.gnt.common.utils.extensions
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -6,18 +6,12 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.repeatOnLifecycle
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonDataException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.scan
-import ru.example.gnt.common.exceptions.AppException
-import ru.example.gnt.common.exceptions.ParseException
-import ru.example.gnt.common.model.Resource
 
 fun String.cutLastOccurence(textToDrop: String): String {
     return if(this.endsWith(textToDrop)) {

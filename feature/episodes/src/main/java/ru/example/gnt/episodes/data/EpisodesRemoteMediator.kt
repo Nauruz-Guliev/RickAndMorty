@@ -1,7 +1,6 @@
 package ru.example.gnt.episodes.data
 
 import android.content.Context
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -13,9 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
-import ru.example.gnt.common.exceptions.ConnectionException
-import ru.example.gnt.common.exceptions.DataAccessException
-import ru.example.gnt.common.isNetworkOn
+import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.data.local.dao.EpisodesDao
 import ru.example.gnt.data.local.entity.EpisodeEntity
 import ru.example.gnt.data.remote.service.EpisodeService
@@ -26,7 +23,6 @@ import ru.example.gnt.episodes.domain.model.EpisodeFilterModel
 class EpisodesRemoteMediator @AssistedInject constructor(
     private val episodesDao: EpisodesDao,
     private val episodesService: EpisodeService,
-    private val context: Context,
     @Assisted
     private val filterModel: EpisodeFilterModel,
     private val responseInfoEntityMapper: EpisodeResponseInfoEntityMapper
@@ -72,10 +68,10 @@ class EpisodesRemoteMediator @AssistedInject constructor(
             } else {
                 MediatorResult.Success(endOfPaginationReached = true)
             }
-        } catch (ex : ConnectionException) {
+        } catch (ex : ApplicationException.ConnectionException) {
             MediatorResult.Success(endOfPaginationReached = true)
         } catch (ex: Exception) {
-            MediatorResult.Error(DataAccessException())
+            MediatorResult.Error(ApplicationException.DataAccessException())
         }
     }
 

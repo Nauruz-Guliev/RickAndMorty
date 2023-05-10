@@ -1,6 +1,6 @@
 package ru.example.gnt.common.utils
 
-import ru.example.gnt.common.isValidUrl
+import ru.example.gnt.common.utils.extensions.isValidUrl
 import javax.inject.Inject
 
 class UrlIdExtractor @Inject constructor() {

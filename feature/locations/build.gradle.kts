@@ -1,7 +1,6 @@
 plugins {
     id(libs.plugins.android.library.get().pluginId).apply(true)
     id(libs.plugins.kotlin.android.get().pluginId).apply(true)
-
     id(libs.plugins.kotlin.kapt.get().pluginId).apply(true)
 }
 
@@ -47,7 +46,7 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
 
-    kaptAndroidTest("androidx.databinding:databinding-compiler:8.0.0")
+    kaptAndroidTest(libs.androidx.databinding.compiler)
 
 
     //libraries

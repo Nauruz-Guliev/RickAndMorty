@@ -1,14 +1,13 @@
 package ru.example.gnt.characters.data
 
-import android.util.Log
 import io.reactivex.rxjava3.core.Observable
 import ru.example.gnt.characters.data.mapper.CharacterEntityUiDetailsMapper
 import ru.example.gnt.characters.data.mapper.CharacterResponseUiDetailsMapper
 import ru.example.gnt.characters.domain.repository.CharacterDetailsRepository
 import ru.example.gnt.characters.presentation.detials.CharacterDetailsModel
+import ru.example.gnt.common.R
 import ru.example.gnt.common.base.BaseMapper
-import ru.example.gnt.common.exceptions.AppException
-import ru.example.gnt.common.exceptions.DataAccessException
+import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.episodes.EpisodeListItem
 import ru.example.gnt.common.model.locations.LocationListItem
@@ -79,9 +78,9 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
                     }
                 }
                 else -> {
-                    throw DataAccessException(
+                    throw ApplicationException.DataAccessException(
                         exception,
-                        Resource.String(ru.example.gnt.common.R.string.data_access_error)
+                        Resource.String(R.string.data_access_error)
                     )
                 }
             }

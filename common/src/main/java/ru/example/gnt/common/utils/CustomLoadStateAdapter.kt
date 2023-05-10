@@ -7,7 +7,7 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import ru.example.gnt.common.isNetworkOn
+import ru.example.gnt.common.utils.extensions.isNetworkOn
 import ru.example.gnt.ui.databinding.LoadStateLayoutBinding
 
 typealias TryAgainAction = () -> Unit

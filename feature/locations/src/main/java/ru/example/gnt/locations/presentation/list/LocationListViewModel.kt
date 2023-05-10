@@ -57,4 +57,8 @@ class LocationListViewModel @Inject constructor(
             this.name = null
         }
     }
+
+    fun isFilterOff(): Boolean = with(_state.value.filter){
+        dimension == null && type == null && name == null
+    }
 }

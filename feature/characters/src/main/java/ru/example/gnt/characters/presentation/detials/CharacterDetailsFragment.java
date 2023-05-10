@@ -1,14 +1,11 @@
 package ru.example.gnt.characters.presentation.detials;
 
-import static ru.example.gnt.common.UtilityExtensionsKt.isNetworkOn;
+import static ru.example.gnt.common.utils.extensions.UtilityExtensionsKt.isNetworkOn;
 import static ru.example.gnt.common.utils.extensions.UiExtensionsKt.showToastShort;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkRequest;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +29,8 @@ import ru.example.gnt.characters.di.provider.CharactersComponentViewModel;
 import ru.example.gnt.characters.presentation.detials.recyclerview.EpisodesAdapter;
 import ru.example.gnt.characters.presentation.detials.recyclerview.EpisodesDiffCallback;
 import ru.example.gnt.common.base.interfaces.DetailsFragment;
+import ru.example.gnt.common.exceptions.ApplicationException;
+import ru.example.gnt.common.model.Resource;
 import ru.example.gnt.common.model.UiState;
 
 
@@ -40,7 +39,6 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
     @NotNull
     public static final String CHARACTER_DETAILS_FRAGMENT_TAG = "CHARACTER_DETAILS_FRAGMENT_TAG";
     private static final String CHARACTER_ID_ARG = "CHARACTER_ID_ARG";
-
     @Inject
     public CharacterDetailsViewModelFactory viewModelFactory;
 
@@ -71,20 +69,9 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // observeNetworkState();
         observeDataStates();
         initSwipeRefreshListener();
         observeMotionLayoutStates();
-       // observeNetworkState();
-    }
-
-    private void observeNetworkState() {
-        NetworkRequest networkRequest = new NetworkRequest.Builder()
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .build();
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) requireActivity().getSystemService(ConnectivityManager.class);
-        connectivityManager.requestNetwork(networkRequest, networkCallback);
     }
 
     private void initSwipeRefreshListener() {
@@ -125,21 +112,35 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
     }
 
     private void observeDataStates() {
-        final Observer<UiState> observer = (Observer<UiState>) value -> {
+        final Observer<UiState<?>> observer = (Observer<UiState<?>>) value -> {
             if (value instanceof UiState.Loading) {
                 binding.swipeRefresh.setRefreshing(true);
+
             } else if (value instanceof UiState.Success) {
                 showMainLayout();
                 binding.swipeRefresh.setRefreshing(false);
                 setValues(((UiState.Success<CharacterDetailsModel>) value).getData());
+
             } else if (value instanceof UiState.Empty) {
                 binding.swipeRefresh.setRefreshing(false);
+
             } else if (value instanceof UiState.Error) {
+                handleErrors(((UiState.Error) value).getMessage());
                 binding.swipeRefresh.setRefreshing(false);
             }
         };
-
         viewModel.getState().observe(getViewLifecycleOwner(), observer);
+    }
+
+    private void handleErrors(Throwable ex) {
+        if(ex instanceof ApplicationException) {
+            Resource.String resource = ((ApplicationException) ex).getResource();
+            if(resource != null) {
+                showToastShort(requireContext(), resource.getValue(requireContext()));
+            }
+        } else {
+            Log.e("ERROR", ex.getLocalizedMessage(), ex);
+        }
     }
 
     private void showMainLayout() {
@@ -155,10 +156,10 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
             binding.tvStatus.setVisibility(View.GONE);
         }
         if (item.getGender() != null) {
-            binding.tvStatus.setVisibility(View.VISIBLE);
+            binding.tvGender.setVisibility(View.VISIBLE);
             binding.tvGender.setText(item.getGender().getValue());
         } else {
-            binding.tvStatus.setVisibility(View.GONE);
+            binding.tvGender.setVisibility(View.GONE);
         }
         if (item.getOrigin() != null) {
             binding.tvOrigin.setVisibility(ViewGroup.VISIBLE);
@@ -178,6 +179,12 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
         } else {
             binding.tvLocation.setVisibility(ViewGroup.GONE);
         }
+        if (item.getType() != null && item.getType().length() > 0) {
+            binding.tvType.setVisibility(ViewGroup.VISIBLE);
+            binding.tvType.setText(item.getType());
+        } else {
+            binding.tvType.setVisibility(ViewGroup.GONE);
+        }
         EpisodesAdapter adapter = new EpisodesAdapter(new EpisodesDiffCallback(), id -> viewModel.navigateToEpisodeDetails(id));
         adapter.submitList(item.getEpisode());
         binding.rvEpisodes.setAdapter(adapter);
@@ -185,31 +192,12 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
         binding.tvName.setVisibility(View.VISIBLE);
         binding.tvSpecies.setText(item.getSpecies());
         binding.tvSpecies.setVisibility(View.VISIBLE);
-        if (item.getType() != null && item.getType().length() > 0) {
-            binding.tvType.setVisibility(ViewGroup.VISIBLE);
-            binding.tvType.setText(item.getType());
-        } else {
-            binding.tvType.setVisibility(ViewGroup.GONE);
-        }
         binding.ivAvatar.setVisibility(ViewGroup.VISIBLE);
         Glide.with(requireContext())
                 .load(item.getImage())
                 .into(binding.ivAvatar);
     }
 
-    private final ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
-        @Override
-        public void onAvailable(@NonNull Network network) {
-            binding.tvNetwork.setVisibility(View.GONE);
-            super.onAvailable(network);
-        }
-
-        @Override
-        public void onLost(@NonNull Network network) {
-            binding.tvNetwork.setVisibility(View.VISIBLE);
-            super.onLost(network);
-        }
-    };
 
     @Override
     public void onDestroy() {

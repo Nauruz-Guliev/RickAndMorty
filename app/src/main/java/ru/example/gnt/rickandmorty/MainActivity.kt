@@ -157,8 +157,10 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
             }
 
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null) {
+                if (query != null && query.isNotEmpty()) {
                     searchFragment?.doSearch(query)
+                } else {
+                    closeSearchInterface()
                 }
                 hideKeyboard(binding.root)
                 return true

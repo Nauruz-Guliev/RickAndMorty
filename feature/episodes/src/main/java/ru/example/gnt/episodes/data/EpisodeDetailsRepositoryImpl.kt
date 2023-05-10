@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
 import ru.example.gnt.common.di.qualifiers.IoDispatcher
-import ru.example.gnt.common.exceptions.DataAccessException
+import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.characters.CharacterListItem
 import ru.example.gnt.common.utils.ApiListQueryGenerator
@@ -66,7 +66,7 @@ class EpisodeDetailsRepositoryImpl @Inject constructor(
                     }
                 ).first()
             } catch (ex: Exception) {
-                Result.failure(DataAccessException(resource = Resource.String(R.string.unknown_data_access_error)))
+                Result.failure(ApplicationException.DataAccessException(resource = Resource.String(R.string.unknown_data_access_error)))
             }
         }
 
@@ -88,7 +88,7 @@ class EpisodeDetailsRepositoryImpl @Inject constructor(
         } catch (ex: IOException) {
             characterDao.getCharacters(ids).map(characterEntityUiListItemMapper::mapTo)
         } catch (ex: Exception) {
-            throw DataAccessException(
+            throw ApplicationException.DataAccessException(
                 cause = ex,
                 resource = Resource.String(R.string.unknown_data_access_error)
             )

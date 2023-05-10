@@ -1,7 +1,7 @@
 package ru.example.gnt.common.enums
 
 import org.jetbrains.annotations.NotNull
-import ru.example.gnt.common.cutLastOccurence
+import ru.example.gnt.common.utils.extensions.cutLastOccurence
 
 /*
 Утилитный класс для нахождения подходящего enum'a

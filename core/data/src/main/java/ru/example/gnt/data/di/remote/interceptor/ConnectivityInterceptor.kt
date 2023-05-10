@@ -3,17 +3,9 @@ package ru.example.gnt.data.di.remote.interceptor
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
-import android.os.Build
-import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
-import ru.example.gnt.common.exceptions.ConnectionException
-import ru.example.gnt.common.isNetworkOn
-import ru.example.gnt.common.model.Resource
-import ru.example.gnt.common.utils.extensions.showToastShort
-import ru.example.gnt.data.R
+import ru.example.gnt.common.exceptions.ApplicationException
 import javax.inject.Inject
 
 class ConnectivityInterceptor @Inject constructor(
@@ -48,7 +40,7 @@ class ConnectivityInterceptor @Inject constructor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         return if (!isConnected) {
-            throw ConnectionException()
+            throw ApplicationException.ConnectionException()
         } else {
             chain.proceed(chain.request())
         }

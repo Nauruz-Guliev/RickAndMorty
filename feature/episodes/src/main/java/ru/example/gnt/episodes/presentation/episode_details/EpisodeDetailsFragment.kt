@@ -127,11 +127,6 @@ class EpisodeDetailsFragment : BaseFragment<
         }
     }
 
-    private fun setLayoutsVisibility(isVisible: Boolean) {
-        binding.root.children.forEach {
-            it.isVisible = isVisible
-        }
-    }
 
     private fun onItemClicked(id: Int) {
         viewModel?.navigateToCharacterDetails(id)

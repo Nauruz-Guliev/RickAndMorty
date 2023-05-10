@@ -1,6 +1,6 @@
 package ru.example.gnt.locations.presentation.details;
 
-import static ru.example.gnt.common.UtilityExtensionsKt.isNetworkOn;
+import static ru.example.gnt.common.utils.extensions.UtilityExtensionsKt.isNetworkOn;
 import static ru.example.gnt.common.utils.extensions.UiExtensionsKt.showToastShort;
 
 import android.content.Context;
@@ -31,9 +31,7 @@ import ru.example.gnt.locations.presentation.details.recyclerview.CharacterDiffC
 import ru.example.gnt.locations.presentation.details.recyclerview.CharacterListAdapter;
 
 public class LocationDetailsFragment extends Fragment implements DetailsFragment {
-
     private LocationDetailsFragmentBinding binding = null;
-
     @NotNull
     public static final String LOCATION_DETAILS_FRAGMENT_TAG = "LOCATION_DETAILS_FRAGMENT_TAG";
 
@@ -76,7 +74,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     }
 
     private void observeDataStates() {
-        final Observer<UiState> observer = (Observer<UiState>) value -> {
+        final Observer<UiState<?>> observer = (Observer<UiState<?>>) value -> {
             if (value instanceof UiState.Loading) {
                 binding.swipeRefresh.setRefreshing(true);
             } else if (value instanceof UiState.Success) {
@@ -90,7 +88,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
             }
         };
 
-        viewModel.getState().observe(getViewLifecycleOwner(), observer);
+        viewModel.getState().observe(getViewLifecycleOwner(),  observer);
     }
 
     private void showMainLayout() {
@@ -109,7 +107,6 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
 
     private void setValues(LocationDetailsModel item) {
-        item.getName();
         binding.tvName.setVisibility(View.VISIBLE);
         binding.tvName.setText(item.getName());
         if (item.getCreated() != null) {
@@ -119,7 +116,6 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
             binding.tvCreated.setVisibility(View.GONE);
         }
         binding.tvType.setVisibility(ViewGroup.VISIBLE);
-
         CharacterListAdapter adapter = new CharacterListAdapter(new CharacterDiffCallback(), id -> {
             viewModel.navigateToCharacterDetails(id);
         }, Glide.with(binding.getRoot()));

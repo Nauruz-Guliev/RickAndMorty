@@ -10,7 +10,7 @@ import javax.inject.Inject
 class GetLocationFilteredListUseCase @Inject constructor(
     private val repository: LocationListRepository
 ) {
-    suspend operator fun invoke(filterModel: LocationListFilterModel): Flow<PagingData<LocationListItem>> {
+    operator fun invoke(filterModel: LocationListFilterModel): Flow<PagingData<LocationListItem>> {
         return repository.getLocationFilteredList(filterModel)
     }
 }

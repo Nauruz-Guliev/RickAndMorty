@@ -8,9 +8,9 @@ import retrofit2.HttpException
 import retrofit2.awaitResponse
 import ru.example.gnt.common.R
 import ru.example.gnt.common.exceptions.*
+import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
 import java.io.IOException
-import java.net.UnknownHostException
 
 inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: suspend () -> Flow<ResultType>,
@@ -34,16 +34,16 @@ inline fun <ResultType, RequestType> networkBoundResource(
             } else {
                 query().map {
                     Result.failure(
-                        BackendException(remoteData.code()),
+                        ApplicationException.BackendException(remoteData.code()),
                     )
                 }
             }
-        } catch (e: AppException) {
+        } catch (e: ApplicationException) {
             flowOf(Result.failure(e))
         } catch (e: JsonDataException) {
             flowOf(
                 Result.failure(
-                    ParseException(
+                    ApplicationException.ParseException(
                         e,
                         resource = Resource.String(R.string.unable_to_parse_error)
                     )
@@ -52,7 +52,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
         } catch (e: JsonEncodingException) {
             flowOf(
                 Result.failure(
-                    ParseException(
+                    ApplicationException.ParseException(
                         e,
                         resource = Resource.String(R.string.unable_to_parse_error)
                     )
@@ -61,7 +61,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
         } catch (e: HttpException) {
             query().map {
                 Result.failure(
-                    NetworkException(
+                    ApplicationException.BackendException(
                         code = e.code(),
                         cause = e,
                     )
@@ -72,7 +72,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
         } catch (e: Exception) {
             flowOf(
                 Result.failure(
-                    DataAccessException(
+                    ApplicationException.DataAccessException(
                         e,
                         Resource.String(R.string.data_access_error)
                     )
@@ -88,38 +88,38 @@ inline fun <ResultType, RequestType> networkBoundResource(
 fun <T> wrapRetrofitError(block: () -> T): T {
     return try {
         block()
-    } catch (e: AppException) {
+    } catch (e: ApplicationException) {
         throw e
     } catch (e: JsonDataException) {
-        throw ParseException(
+        throw ApplicationException.ParseException(
             e,
             resource = Resource.String(R.string.unable_to_parse_error)
         )
     } catch (e: JsonEncodingException) {
-        throw ParseException(
+        throw ApplicationException.ParseException(
             e,
             resource = Resource.String(R.string.unable_to_parse_error)
         )
     } catch (e: HttpException) {
-        throw NetworkException(
+        throw ApplicationException.BackendException(
             code = e.code(),
             cause = e,
         )
-    } catch (e: ConnectionException) {
+    } catch (e: ApplicationException.ConnectionException) {
         throw e
     } catch (ex: java.net.UnknownHostException) {
-        throw ConnectionException(
+        throw ApplicationException.ConnectionException(
             cause = ex,
             resource = Resource.String(R.string.connection_error)
         )
 
     } catch (e: IOException) {
-        throw ConnectionException(
+        throw ApplicationException.ConnectionException(
             cause = e,
             resource = Resource.String(R.string.connection_error)
         )
     } catch (e: Exception) {
-        throw DataAccessException(
+        throw ApplicationException.DataAccessException(
             cause = e,
             resource = Resource.String(R.string.data_access_error)
         )

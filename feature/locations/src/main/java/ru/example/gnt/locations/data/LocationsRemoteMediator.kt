@@ -10,10 +10,9 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
-import ru.example.gnt.common.exceptions.DataAccessException
+import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.data.local.dao.LocationsDao
 import ru.example.gnt.data.local.entity.LocationEntity
-import ru.example.gnt.data.mapper.LocationEntityResponseMapper
 import ru.example.gnt.data.remote.service.LocationService
 import ru.example.gnt.locations.data.mapper.LocationResponseInfoEntityMapper
 import ru.example.gnt.locations.presentation.list.LocationListFilterModel
@@ -70,7 +69,7 @@ class LocationsRemoteMediator @AssistedInject constructor(
                 MediatorResult.Success(endOfPaginationReached = true)
             }
         } catch (ex: Exception) {
-            MediatorResult.Error(DataAccessException())
+            MediatorResult.Error(ApplicationException.DataAccessException())
         }
     }
 

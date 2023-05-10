@@ -1,6 +1,6 @@
 package ru.example.gnt.common.utils
 
-import ru.example.gnt.common.cutLastOccurence
+import ru.example.gnt.common.utils.extensions.cutLastOccurence
 import javax.inject.Inject
 
 class ApiListQueryGenerator @Inject constructor() {

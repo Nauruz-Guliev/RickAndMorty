@@ -23,7 +23,6 @@ internal class CharacterListViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<CharactersState> = MutableStateFlow(CharactersState())
     val uiState = _uiState.asStateFlow()
 
-
     init {
         applyFilter()
     }
@@ -59,6 +58,12 @@ internal class CharacterListViewModel @Inject constructor(
         }
         viewModelScope.launch {
             loadCharacters()
+        }
+    }
+
+    fun isFilterOn(): Boolean {
+        with(_uiState.value.filter) {
+            return type == null && status == null && species == null && gender == null && name == null
         }
     }
 

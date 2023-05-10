@@ -1,8 +1,8 @@
 package ru.example.gnt.locations.data.repository
 
 import io.reactivex.rxjava3.core.Single
-import ru.example.gnt.common.exceptions.AppException
-import ru.example.gnt.common.exceptions.DataAccessException
+import ru.example.gnt.common.R
+import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.characters.CharacterListItem
 import ru.example.gnt.common.utils.ApiListQueryGenerator
@@ -62,11 +62,11 @@ class LocationDetailsRepositoryImpl @Inject constructor(
                         residents = getCharacterList(location.residents ?: listOf())
                     }
                 }
-                is AppException -> throw exception
+                is ApplicationException -> throw exception
                 else -> {
-                    throw DataAccessException(
+                    throw ApplicationException.DataAccessException(
                         exception,
-                        Resource.String(ru.example.gnt.common.R.string.data_access_error)
+                        Resource.String(R.string.data_access_error)
                     )
                 }
             }

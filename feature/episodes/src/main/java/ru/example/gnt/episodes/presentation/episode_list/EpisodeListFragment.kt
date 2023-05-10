@@ -39,11 +39,7 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
 ), LayoutBackDropManager, SearchFragment, RootFragment {
 
     private var adapter: EpisodeListAdapter? = null
-
-    private var footerAdapter: CustomLoadStateAdapter? = null
-
     private var searchQuery: String? = null
-
     @Inject
     internal lateinit var episodesViewModel: EpisodeListViewModel
     override fun onAttach(context: Context) {
@@ -52,15 +48,12 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
         super.onAttach(context)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onResume() {
         super.onResume()
         (requireActivity() as? SearchActivity)?.registerSearchFragment(this)
         (requireActivity() as? ToggleActivity)?.registerToggleFragment(this)
         searchQuery?.let { (requireActivity() as? SearchActivity)?.setSearchText(it) }
+        setExpanded()
     }
 
 
@@ -93,13 +86,9 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
 
     private fun initRecyclerView() {
         adapter = EpisodeListAdapter(::onItemClicked)
-
         val tryAgainAction: TryAgainAction = { adapter?.retry() }
-
-        footerAdapter = CustomLoadStateAdapter(tryAgainAction)
-
+        val footerAdapter = CustomLoadStateAdapter(tryAgainAction)
         val loadStateAdapter = adapter?.withLoadStateFooter(footerAdapter!!)
-
         lifecycleScope.launch {
             binding.rvEpisodes.apply {
                 adapter = loadStateAdapter
@@ -120,15 +109,34 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
                     when (val res = state.source.refresh) {
                         is LoadState.Error -> {
                             binding.swipeRefresh.isRefreshing = false
+                            handleErrorState(res.error)
                         }
                         is LoadState.Loading -> {
                             binding.swipeRefresh.isRefreshing = true
                         }
                         is LoadState.NotLoading -> {
+                            handleNotLoadingState(isEmpty)
                             binding.swipeRefresh.isRefreshing = false
                         }
                     }
                 }
+        }
+    }
+
+    private fun handleNotLoadingState(isEmpty: Boolean) {
+        with(binding) {
+            with(loadingStateLayout) {
+                messageTextView.apply {
+                    isVisible = isEmpty
+                    text = if(episodesViewModel.isFilterOn() && isInternetOn) getString(R.string.no_filter_results) else getString(R.string.no_internet_connection)
+                }
+                tryAgainButton.apply {
+                    isVisible = isEmpty && episodesViewModel.isFilterOn()
+                    text = getString(R.string.clear_filter)
+                }
+            }
+            swipeRefresh.isVisible = !isEmpty
+            swipeRefresh.isEnabled = !isEmpty
         }
     }
 
@@ -180,6 +188,12 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
         }
         context?.hideKeyboard(binding.root)
         return state
+    }
+
+    private fun setUpInfoTextView() {
+        binding.tvInformational.text =
+            if (isInternetOn) getString(ru.example.gnt.ui.R.string.characters_welcome_message)
+            else getString(R.string.not_connected_ui_message)
     }
 
     override fun setExpanded() {

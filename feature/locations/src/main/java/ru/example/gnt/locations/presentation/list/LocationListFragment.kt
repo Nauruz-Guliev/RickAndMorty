@@ -25,7 +25,7 @@ import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.interfaces.ToggleActivity
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
-import ru.example.gnt.common.flowWithLifecycle
+import ru.example.gnt.common.utils.extensions.flowWithLifecycle
 import ru.example.gnt.common.utils.CustomLoadStateAdapter
 import ru.example.gnt.common.utils.TryAgainAction
 import ru.example.gnt.common.utils.extensions.hideKeyboard
@@ -38,16 +38,10 @@ import javax.inject.Inject
 class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
     LocationListFragmentBinding::inflate
 ), LayoutBackDropManager, SearchFragment, RootFragment {
-
     private var adapter: LocationListAdapter? = null
-
-    private var footerAdapter: CustomLoadStateAdapter? = null
-
     private var searchQuery: String? = null
-
     @Inject
     internal lateinit var locationsViewModel: LocationListViewModel
-
 
     override fun onAttach(context: Context) {
         ViewModelProvider(this).get<LocationsComponentViewModel>()
@@ -72,8 +66,6 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
     }
 
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
@@ -94,13 +86,9 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
 
     private fun initRecyclerView() {
         adapter = LocationListAdapter(::onItemClicked)
-
         val tryAgainAction: TryAgainAction = { adapter?.retry() }
-
-        footerAdapter = CustomLoadStateAdapter(tryAgainAction)
-
-        val loadStateAdapter = adapter?.withLoadStateFooter(footerAdapter!!)
-
+        val footerAdapter = CustomLoadStateAdapter(tryAgainAction)
+        val loadStateAdapter = adapter?.withLoadStateFooter(footerAdapter)
         lifecycleScope.launch {
             binding.rvLocations.apply {
                 adapter = loadStateAdapter
@@ -121,11 +109,13 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
                     when (val res = state.source.refresh) {
                         is LoadState.Error -> {
                             binding.swipeRefresh.isRefreshing = false
+                            handleErrorState(res.error)
                         }
                         is LoadState.Loading -> {
                             binding.swipeRefresh.isRefreshing = true
                         }
                         is LoadState.NotLoading -> {
+                            handleNotLoadingState(isEmpty)
                             binding.swipeRefresh.isRefreshing = false
                         }
                     }
@@ -133,6 +123,22 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         }
     }
 
+    private fun handleNotLoadingState(isEmpty: Boolean) {
+        with(binding) {
+            with(loadingStateLayout) {
+                messageTextView.apply {
+                    isVisible = isEmpty
+                    text = if(!locationsViewModel.isFilterOff() && isInternetOn) getString(R.string.no_filter_results) else getString(R.string.no_internet_connection)
+                }
+                tryAgainButton.apply {
+                    isVisible = isEmpty && !locationsViewModel.isFilterOff()
+                    text = getString(R.string.clear_filter)
+                }
+            }
+            swipeRefresh.isVisible = !isEmpty
+            swipeRefresh.isEnabled = !isEmpty
+        }
+    }
     private suspend fun observeLocations() {
         locationsViewModel.state.value.locationsFlow?.flowWithLifecycle(lifecycle)
             ?.collectLatest { pagingData ->
@@ -156,9 +162,12 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         }
     }
 
-    private suspend fun observeEpisodes() {
-
+    private fun setUpInfoTextView() {
+        binding.tvInformational.text =
+            if (isInternetOn) getString(ru.example.gnt.ui.R.string.characters_welcome_message)
+            else getString(R.string.not_connected_ui_message)
     }
+
 
     override fun doSearch(searchQuery: String?) {
         binding.swipeRefresh.isEnabled = false
@@ -194,7 +203,11 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
 
     private fun setUpUiFilterValues() {
         with(binding.filterLayout) {
-            locationsViewModel.applyFilter()
+            locationsViewModel.applyFilter(
+                name = etName.text.toString(),
+                dimension = etDimension.text.toString(),
+                type = etType.text.toString()
+            )
         }
     }
 

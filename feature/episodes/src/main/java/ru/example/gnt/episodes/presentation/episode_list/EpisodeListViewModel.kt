@@ -54,4 +54,10 @@ internal class EpisodeListViewModel @Inject constructor(
     fun navigateToEpisodeDetails(id: Int?) {
         router.navigateToEpisodeDetails(id)
     }
+
+    fun isFilterOn(): Boolean =
+        with(_state.value.filter) {
+            name == null && episode == null
+        }
+
 }

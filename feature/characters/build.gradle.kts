@@ -47,7 +47,7 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
 
-    kaptAndroidTest("androidx.databinding:databinding-compiler:8.0.0")
+    kaptAndroidTest(libs.androidx.databinding.compiler)
 
 
     //libraries

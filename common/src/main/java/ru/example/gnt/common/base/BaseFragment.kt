@@ -1,6 +1,7 @@
 package ru.example.gnt.common.base
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +12,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ru.example.gnt.common.flowWithLifecycle
-import ru.example.gnt.common.internetCapabilitiesCallback
-import ru.example.gnt.common.isNetworkOn
+import ru.example.gnt.common.exceptions.ApplicationException
+import ru.example.gnt.common.utils.extensions.flowWithLifecycle
+import ru.example.gnt.common.utils.extensions.internetCapabilitiesCallback
+import ru.example.gnt.common.utils.extensions.isNetworkOn
+import ru.example.gnt.common.utils.extensions.showToastShort
 
 abstract class BaseFragment<VB : ViewBinding>(
     private val bindingInflater: (inflater: LayoutInflater) -> VB,
@@ -28,7 +32,8 @@ abstract class BaseFragment<VB : ViewBinding>(
     protected var coordinatorLayout: CoordinatorLayout? = null
 
     protected var sheetBehavior: BottomSheetBehavior<LinearLayout>? = null
-    protected var isInternetOn = false
+    protected var isInternetOn = true
+    protected var networkState = MutableStateFlow(isInternetOn)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,9 +64,24 @@ abstract class BaseFragment<VB : ViewBinding>(
         lifecycleScope.launch {
             context?.internetCapabilitiesCallback()?.flowWithLifecycle(lifecycle)?.collectLatest {
                 isInternetOn = context?.isNetworkOn() ?: it
+                networkState.emit(isInternetOn)
             }
         }
     }
+
+    protected fun handleErrorState(ex: Throwable) {
+        when (ex) {
+            is ApplicationException -> {
+                val message = ex.resource?.getValue(requireContext())
+                if (message != null)
+                    context.showToastShort(message)
+            }
+            else -> {
+                Log.e("ERROR", ex.message.toString())
+            }
+        }
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

@@ -1,6 +1,5 @@
 package ru.example.gnt.characters.data
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -9,12 +8,11 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import retrofit2.*
 import ru.example.gnt.characters.presentation.list.model.CharactersFilterModel
-import ru.example.gnt.common.exceptions.ConnectionException
-import ru.example.gnt.common.exceptions.DataAccessException
+import ru.example.gnt.common.R
+import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.data.local.entity.CharacterEntity
@@ -77,10 +75,16 @@ class CharacterRemoteMediator @AssistedInject constructor(
             } else {
                 MediatorResult.Success(endOfPaginationReached = true)
             }
-        } catch (ex: ConnectionException) {
+        } catch (ex: ApplicationException.ConnectionException) {
             MediatorResult.Success(endOfPaginationReached = true)
         } catch (ex: Exception) {
-            MediatorResult.Error(DataAccessException(resource = Resource.String(ru.example.gnt.common.R.string.data_access_error)))
+            MediatorResult.Error(
+                ApplicationException.DataAccessException(
+                    resource = Resource.String(
+                        R.string.data_access_error
+                    )
+                )
+            )
         }
     }
 
