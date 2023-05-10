@@ -30,6 +30,7 @@ public class CharacterViewHolder extends RecyclerView.ViewHolder {
             listener.onItemClicked(item.getId());
         });
         glide.load(item.getImage()).into(binding.ivCharacter);
+
     }
 
 }

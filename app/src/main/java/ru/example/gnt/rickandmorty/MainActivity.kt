@@ -3,6 +3,7 @@ package ru.example.gnt.rickandmorty
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.Menu
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -13,18 +14,18 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import ru.example.gnt.characters.di.provider.CharactersDepsStore
 import ru.example.gnt.characters.presentation.detials.CharacterDetailsFragment
 import ru.example.gnt.characters.presentation.list.CharacterListFragment
+import ru.example.gnt.common.base.interfaces.DetailsFragment
 import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
-import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.interfaces.ToggleActivity
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.setImageDrawable
+import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.di.deps.EpisodesDepsStore
 import ru.example.gnt.episodes.presentation.episode_details.EpisodeDetailsFragment
 import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
 import ru.example.gnt.locations.di.LocationDependencyStore
-import ru.example.gnt.locations.presentation.details.LocationDetailsFragment
 import ru.example.gnt.locations.presentation.list.LocationListFragment
 import ru.example.gnt.rickandmorty.databinding.ActivityMainBinding
 import ru.example.gnt.rickandmorty.di.activity.ActivityComponent
@@ -58,6 +59,18 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         setContentView(binding.root)
         initBottomNav()
         supportFragmentManager.addOnBackStackChangedListener(this)
+
+        /*
+        val selectedItemId = savedInstanceState?.getInt(ACTIVE_TAB_ID)
+        val lastActiveFragmentTag = savedInstanceState?.getString(ACTIVE_FRAGMENT_TAG)
+        if (selectedItemId != null) {
+            binding.bottomNav.selectedItemId = selectedItemId
+            showToastShort(selectedItemId)
+            if (lastActiveFragmentTag != null) {
+                mainRouter.popBackStack(lastActiveFragmentTag)
+            }
+        }
+         */
     }
 
     private fun initBottomNav() {
@@ -66,12 +79,18 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
             when (item.itemId) {
                 ru.example.gnt.ui.R.id.characters -> {
                     mainRouter.openCharactersScreen()
+                    mainRouter.currentActiveTag = CharacterListFragment.CHARACTERS_FRAGMENT_TAG
+                    setMainScreenMode()
                 }
                 ru.example.gnt.ui.R.id.episodes -> {
                     mainRouter.openEpisodesScreen()
+                    mainRouter.currentActiveTag = EpisodeListFragment.EPISODES_FRAGMENT_TAG
+                    setMainScreenMode()
                 }
                 ru.example.gnt.ui.R.id.locations -> {
                     mainRouter.openLocationScreen()
+                    setMainScreenMode()
+                    mainRouter.currentActiveTag = LocationListFragment.LOCATION_LIST_FRAGMENT_TAG
                 }
                 else -> {
                     setItemsVisibility(false)
@@ -108,7 +127,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         binding.btnFilter.setImageDrawable(ru.example.gnt.ui.R.drawable.baseline_filter_list_24)
     }
 
-    fun setToolbarBackButtonVisibility(isVisible: Boolean) {
+    private fun setToolbarBackButtonVisibility(isVisible: Boolean) {
         supportActionBar?.setDisplayHomeAsUpEnabled(isVisible)
         supportActionBar?.setDisplayShowHomeEnabled(isVisible)
     }
@@ -148,7 +167,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         return true
     }
 
-    fun setItemsVisibility(isVisible: Boolean) {
+    private fun setItemsVisibility(isVisible: Boolean) {
         with(binding) {
             btnFilter.isVisible = isVisible
             toolbar.menu?.findItem(ru.example.gnt.ui.R.id.search)?.isVisible = isVisible
@@ -190,24 +209,51 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState.putInt(ACTIVE_TAB_ID, binding.bottomNav.selectedItemId)
+        outState.putString(ACTIVE_FRAGMENT_TAG, mainRouter.currentActiveTag)
+    }
+
     override fun onBackStackChanged() {
         val fragment = mainRouter.getActiveFragment()
         if (fragment != null) {
             when (fragment) {
-                is CharacterListFragment -> checkBottomNavSelectedItemId(
-                    ru.example.gnt.ui.R.id.characters
-                )
-                is EpisodeListFragment -> checkBottomNavSelectedItemId(
-                    ru.example.gnt.ui.R.id.episodes
-                )
-                is LocationListFragment -> checkBottomNavSelectedItemId(
-                    ru.example.gnt.ui.R.id.locations
-                )
+                is CharacterListFragment -> {
+                    checkBottomNavSelectedItemId(
+                        ru.example.gnt.ui.R.id.characters
+                    )
+                }
+                is EpisodeListFragment -> {
+                    checkBottomNavSelectedItemId(
+                        ru.example.gnt.ui.R.id.episodes
+                    )
+                }
+                is LocationListFragment -> {
+                    checkBottomNavSelectedItemId(
+                        ru.example.gnt.ui.R.id.locations
+                    )
+                }
+                is DetailsFragment -> {
+                    setItemsVisibility(isVisible = false)
+                    setToolbarBackButtonVisibility(isVisible = true)
+                }
             }
         }
     }
 
+    private fun setMainScreenMode() {
+        setToolbarBackButtonVisibility(isVisible = false)
+        setItemsVisibility(isVisible = true)
+    }
+
+
     override fun registerToggleFragment(fragment: LayoutBackDropManager) {
         toggleFragment = fragment
+    }
+
+    companion object {
+        const val ACTIVE_TAB_ID = "ACTIVE_TAB_ID"
+        const val ACTIVE_FRAGMENT_TAG = "ACTIVE_FRAGMENT_TAG"
     }
 }

@@ -7,16 +7,15 @@ import androidx.fragment.app.FragmentManager
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.presentation.detials.CharacterDetailsFragment
 import ru.example.gnt.characters.presentation.list.CharacterListFragment
-import ru.example.gnt.common.base.interfaces.DetailsFragment
 import ru.example.gnt.common.base.interfaces.RootFragment
-import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.di.scope.ScreenScope
+import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.EpisodesRouter
 import ru.example.gnt.episodes.presentation.episode_details.EpisodeDetailsFragment
 import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
 import ru.example.gnt.locations.LocationsRouter
+import ru.example.gnt.locations.presentation.details.LocationDetailsFragment
 import ru.example.gnt.locations.presentation.list.LocationListFragment
-import ru.example.gnt.rickandmorty.MainActivity
 import javax.inject.Inject
 
 
@@ -24,13 +23,9 @@ import javax.inject.Inject
 class MainRouter @Inject constructor(
     private val fragmentManager: FragmentManager,
     @IdRes private val mainContainerId: Int,
-    private val context: Context
-) : CharactersRouter, EpisodesRouter, LocationsRouter, FragmentManager.OnBackStackChangedListener {
+) : CharactersRouter, EpisodesRouter, LocationsRouter {
 
-    init {
-        fragmentManager.addOnBackStackChangedListener(this)
-    }
-
+    var currentActiveTag: String? = null
     fun openCharactersScreen() {
         navigate(
             fragment = CharacterListFragment.createInstance(),
@@ -68,12 +63,6 @@ class MainRouter @Inject constructor(
     }
 
 
-    override fun navigateBackToCharacters() {
-        fragmentManager.popBackStack(
-            CharacterListFragment.CHARACTERS_FRAGMENT_TAG,
-            FragmentManager.POP_BACK_STACK_INCLUSIVE
-        )
-    }
     fun getActiveFragment(): Fragment? {
         val f = fragmentManager.fragments.lastOrNull()
         return if (f?.isVisible == true) {
@@ -90,11 +79,9 @@ class MainRouter @Inject constructor(
         tag: String,
         addToBackStack: Boolean = true,
     ) {
-        checkFragment(fragment)
+        this.currentActiveTag = tag
         if (fragment is RootFragment && fragmentManager.findFragmentByTag(tag) != null) {
-            val index = getIndex(tag)
-            fragmentManager.popBackStack(tag, 0)
-
+            popBackStack(tag)
         } else {
             val transaction = fragmentManager.beginTransaction().replace(
                 mainContainerId,
@@ -111,31 +98,11 @@ class MainRouter @Inject constructor(
                 androidx.appcompat.R.anim.abc_popup_exit
             )
             transaction.setReorderingAllowed(true)
-            transaction.commit()
+            transaction.commitAllowingStateLoss()
         }
     }
-
-
-    override fun onBackStackChanged() {
-        getActiveFragment()?.let { checkFragment(it) }
-    }
-
-    private fun checkFragment(fragment: Fragment) {
-        (context as MainActivity?)?.apply {
-            when (fragment) {
-                is DetailsFragment -> {
-                    setItemsVisibility(isVisible = false)
-                    setToolbarBackButtonVisibility(isVisible = true)
-                }
-                is SearchFragment -> {
-                    setToolbarBackButtonVisibility(isVisible = false)
-                    setItemsVisibility(isVisible = true)
-                }
-                else -> {
-
-                }
-            }
-        }
+    fun popBackStack(tag: String) {
+        fragmentManager.popBackStack(tag, 0)
     }
 
     override fun navigateToEpisodeDetails(id: Int?) {
@@ -156,8 +123,12 @@ class MainRouter @Inject constructor(
         return -1
     }
 
-    override fun navigateToLocationDetails(id: Int?) {
-
+    override fun navigateToLocationDetails(id: Int) {
+        navigate(
+            fragment = LocationDetailsFragment.createInstance(id),
+            tag = LocationDetailsFragment.LOCATION_DETAILS_FRAGMENT_TAG,
+            addToBackStack = true
+        )
     }
 
     override fun navigateToLocationList() {

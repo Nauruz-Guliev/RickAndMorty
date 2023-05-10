@@ -6,14 +6,14 @@ import androidx.recyclerview.widget.DiffUtil
 import ru.example.gnt.common.model.locations.LocationListItem
 
 class LocationListAdapter(
-    private val onItemClicked: (id: Int?) -> Unit
+    private val onItemClicked: (id: Int) -> Unit
 ) : PagingDataAdapter<LocationListItem, EpisodeListViewHolder>(DiffCallback) {
 
     override fun onBindViewHolder(holder: EpisodeListViewHolder, position: Int) =
         holder.bind(getItem(position))
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EpisodeListViewHolder =
-        EpisodeListViewHolder(parent, onItemClicked)
+        EpisodeListViewHolder(parent = parent, onItemClicked = onItemClicked)
 
     object DiffCallback : DiffUtil.ItemCallback<LocationListItem>() {
         override fun areItemsTheSame(

@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/margin_2"
         app:startIconTint="@color/blue_rm"
-        app:startIconDrawable="@drawable/mask_for_relaxation_svgrepo_com"
+        app:startIconDrawable="@drawable/brand_second_life_svgrepo_com"
         android:layout_marginHorizontal="@dimen/margin_4"
         android:layout_height="wrap_content">
 
@@ -61,7 +61,6 @@
             android:layout_height="wrap_content"
             android:hint="" />
     </com.google.android.material.textfield.TextInputLayout>
-
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

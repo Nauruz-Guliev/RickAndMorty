@@ -9,7 +9,7 @@ import ru.example.gnt.locations.databinding.LocationItemBinding
 
 class EpisodeListViewHolder(
     private val binding: LocationItemBinding,
-    private val onItemClicked: (id: Int?) -> Unit
+    private val onItemClicked: (id: Int) -> Unit
 ) : RecyclerView.ViewHolder(
     binding.root
 ) {
@@ -18,14 +18,14 @@ class EpisodeListViewHolder(
         tvType.text = item?.type
         tvName.text = item?.name
         root.setOnClickListener {
-            onItemClicked.invoke(item?.id)
+            onItemClicked.invoke(item!!.id)
         }
     }
 
     companion object {
         operator fun invoke(
             parent: ViewGroup,
-            onItemClicked: (id: Int?) -> Unit
+            onItemClicked: (id: Int) -> Unit
         ) = EpisodeListViewHolder(
             binding = LocationItemBinding.inflate(
                 LayoutInflater.from(parent.context),

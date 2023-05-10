@@ -88,7 +88,7 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         }
     }
 
-    private fun onItemClicked(id: Int?) {
+    private fun onItemClicked(id: Int) {
         locationsViewModel.navigateToDetailsFragment(id)
     }
 

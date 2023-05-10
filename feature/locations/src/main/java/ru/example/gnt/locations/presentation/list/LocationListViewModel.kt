@@ -46,7 +46,7 @@ class LocationListViewModel @Inject constructor(
         loadLocations()
     }
 
-    fun navigateToDetailsFragment(id: Int?) {
+    fun navigateToDetailsFragment(id: Int) {
         router.navigateToLocationDetails(id)
     }
 

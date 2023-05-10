@@ -122,7 +122,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
         CharacterListAdapter adapter = new CharacterListAdapter(new CharacterDiffCallback(), id -> {
             viewModel.navigateToCharacterDetails(id);
-        });
+        }, Glide.with(binding.getRoot()));
         adapter.submitList(item.getResidents());
         binding.rvCharacters.setAdapter(adapter);
     }

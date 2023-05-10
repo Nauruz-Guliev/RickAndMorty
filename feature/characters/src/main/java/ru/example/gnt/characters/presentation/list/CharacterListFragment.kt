@@ -50,14 +50,12 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     @Inject
     internal lateinit var viewModel: CharacterListViewModel
 
-
     private var adapter: CharactersAdapter? = null
 
     private var footerAdapter: CustomLoadStateAdapter? = null
 
-    private var isInternetOn: Boolean = false
-
     private var searchQuery: String? = null
+
 
     override fun onAttach(context: Context) {
         ViewModelProvider(this).get<CharactersComponentViewModel>()
@@ -67,7 +65,6 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isInternetOn = requireContext().isNetworkOn()
     }
 
     override fun onResume() {

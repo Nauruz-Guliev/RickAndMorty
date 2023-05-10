@@ -8,8 +8,14 @@ import android.widget.LinearLayout
 import androidx.annotation.IdRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import ru.example.gnt.common.flowWithLifecycle
+import ru.example.gnt.common.internetCapabilitiesCallback
+import ru.example.gnt.common.isNetworkOn
 
 abstract class BaseFragment<VB : ViewBinding>(
     private val bindingInflater: (inflater: LayoutInflater) -> VB,
@@ -22,15 +28,15 @@ abstract class BaseFragment<VB : ViewBinding>(
     protected var coordinatorLayout: CoordinatorLayout? = null
 
     protected var sheetBehavior: BottomSheetBehavior<LinearLayout>? = null
-
+    protected var isInternetOn = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = bindingInflater.invoke(layoutInflater)
+        isInternetOn = requireContext().isNetworkOn()
         return binding.root
     }
 
@@ -46,6 +52,15 @@ abstract class BaseFragment<VB : ViewBinding>(
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         this.coordinatorLayout = coordinatorLayout
         return coordinatorLayout
+    }
+
+
+    private fun observeInternetConnectionChanges() {
+        lifecycleScope.launch {
+            context?.internetCapabilitiesCallback()?.flowWithLifecycle(lifecycle)?.collectLatest {
+                isInternetOn = context?.isNetworkOn() ?: it
+            }
+        }
     }
 
     override fun onDestroy() {

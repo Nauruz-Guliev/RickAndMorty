@@ -18,9 +18,10 @@ public class CharacterListAdapter extends ListAdapter<CharacterListItem, Charact
     private CharacterViewHolderEventListener listener;
     private RequestManager glide;
 
-    public CharacterListAdapter(@NonNull DiffUtil.ItemCallback<CharacterListItem> diffCallback, CharacterViewHolderEventListener listener) {
+    public CharacterListAdapter(@NonNull DiffUtil.ItemCallback<CharacterListItem> diffCallback, CharacterViewHolderEventListener listener, RequestManager glide) {
         super(diffCallback);
         this.listener = listener;
+        this.glide = glide;
     }
 
     @NonNull

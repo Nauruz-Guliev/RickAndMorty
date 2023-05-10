@@ -1,6 +1,5 @@
 package ru.example.gnt.characters.presentation.detials;
 
-import static ru.example.gnt.common.UtilityExtensionsKt.internetCapabilitiesCallback;
 import static ru.example.gnt.common.UtilityExtensionsKt.isNetworkOn;
 import static ru.example.gnt.common.utils.extensions.UiExtensionsKt.showToastShort;
 
