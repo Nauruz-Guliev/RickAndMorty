@@ -69,7 +69,7 @@ class LocationDetailsRepositoryImpl @Inject constructor(
                 else -> {
                     throw ApplicationException.DataAccessException(
                         exception,
-                        Resource.String(R.string.data_access_error)
+                        Resource.String(ru.example.gnt.ui.R.string.data_access_error)
                     )
                 }
             }

@@ -85,7 +85,7 @@ class CharacterRemoteMediator @AssistedInject constructor(
             MediatorResult.Error(
                 ApplicationException.DataAccessException(
                     resource = Resource.String(
-                        R.string.data_access_error
+                        ru.example.gnt.ui.R.string.data_access_error
                     )
                 )
             )

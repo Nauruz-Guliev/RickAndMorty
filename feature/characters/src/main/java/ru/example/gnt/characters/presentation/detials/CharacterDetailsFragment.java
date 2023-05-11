@@ -78,7 +78,7 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
         binding.swipeRefresh.setOnRefreshListener(() -> {
             viewModel.loadData();
             if (!isNetworkOn(requireContext())) {
-                showToastShort(requireContext(), getString(ru.example.gnt.common.R.string.no_internet_connection_error));
+                showToastShort(requireContext(), getString(ru.example.gnt.ui.R.string.no_internet_connection_error));
             }
         });
 
