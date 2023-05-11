@@ -4,6 +4,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.text.TextUtils
 import android.view.Menu
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +13,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import ru.example.gnt.characters.di.provider.CharactersDepsStore
-import ru.example.gnt.characters.presentation.detials.CharacterDetailsFragment
 import ru.example.gnt.characters.presentation.list.CharacterListFragment
 import ru.example.gnt.common.base.interfaces.DetailsFragment
 import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
@@ -21,9 +21,7 @@ import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.setImageDrawable
-import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.di.deps.EpisodesDepsStore
-import ru.example.gnt.episodes.presentation.episode_details.EpisodeDetailsFragment
 import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
 import ru.example.gnt.locations.di.LocationDependencyStore
 import ru.example.gnt.locations.presentation.list.LocationListFragment
@@ -153,16 +151,10 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
-                return false
+                searchFragment?.doSearch(newText)
+                return true
             }
-
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null && query.isNotEmpty()) {
-                    searchFragment?.doSearch(query)
-                } else {
-                    closeSearchInterface()
-                }
-                hideKeyboard(binding.root)
                 return true
             }
         })
@@ -218,6 +210,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
     }
 
     override fun onBackStackChanged() {
+        hideKeyboard(binding.root)
         val fragment = mainRouter.getActiveFragment()
         if (fragment != null) {
             when (fragment) {
@@ -225,16 +218,19 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                     checkBottomNavSelectedItemId(
                         ru.example.gnt.ui.R.id.characters
                     )
+                    setMainScreenMode()
                 }
                 is EpisodeListFragment -> {
                     checkBottomNavSelectedItemId(
                         ru.example.gnt.ui.R.id.episodes
                     )
+                    setMainScreenMode()
                 }
                 is LocationListFragment -> {
                     checkBottomNavSelectedItemId(
                         ru.example.gnt.ui.R.id.locations
                     )
+                    setMainScreenMode()
                 }
                 is DetailsFragment -> {
                     setItemsVisibility(isVisible = false)

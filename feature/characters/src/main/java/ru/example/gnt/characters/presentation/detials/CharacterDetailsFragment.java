@@ -78,7 +78,7 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
         binding.swipeRefresh.setOnRefreshListener(() -> {
             viewModel.loadData();
             if (!isNetworkOn(requireContext())) {
-                showToastShort(requireContext(), getString(R.string.no_internet_connection));
+                showToastShort(requireContext(), getString(ru.example.gnt.common.R.string.no_internet_connection_error));
             }
         });
 
@@ -125,7 +125,7 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
                 binding.swipeRefresh.setRefreshing(false);
 
             } else if (value instanceof UiState.Error) {
-                handleErrors(((UiState.Error) value).getMessage());
+                handleErrors(((UiState.Error) value).getError());
                 binding.swipeRefresh.setRefreshing(false);
             }
         };

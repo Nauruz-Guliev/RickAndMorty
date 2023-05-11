@@ -21,11 +21,32 @@
     <string name="gender_empty">Gender</string>
     <string name="search">Search</string>
     <string name="try_again">Try again</string>
-    <string name="load_error">Failed to load</string>
 
     <string name="network_empty_result_error">Empty result received.</string>
     <string name="network_error_with_code">Encountered %1s error trying to retrieve the data.</string>
     <string name="unknown_network_exception">Unknown error occurred during remote data retrieval.</string>
     <string name="database_error">Error occurred during database call.</string>
     <string name="location">Location: %1s</string>
+
+
+    <string name="species">Species</string>
+    <string name="name">Name</string>
+    <string name="type_empty">Type</string>
+    <string name="results_amount">Results: %1s</string>
+    <string name="no_filter_results">No matching results.</string>
+    <string name="clear_filter">Clear filter</string>
+    <string name="no_internet_connection">No internet connection.</string>
+    <string name="unknown_resource_error">Call to unknown resource</string>
+    <string name="unknown_network_error">Unknown network error</string>
+    <string name="not_connected_ui_message">You are not connected to internet</string>
+    <string name="human">Human</string>
+    <string name="name_empty">Name</string>
+
+    <string name="unknown_data_access_error">Unknown data access error occurred.</string>
+    <string name="episode">Episode</string>
+
+    <string name="no_result_exception">No data found in local storage</string>
+
+    <string name="no_data_available_error">No data available</string>
+
 </resources>

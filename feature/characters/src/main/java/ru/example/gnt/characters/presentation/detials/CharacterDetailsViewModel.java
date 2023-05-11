@@ -23,10 +23,10 @@ public class CharacterDetailsViewModel extends ViewModel {
     private final MutableLiveData<UiState<?>> state = new MutableLiveData<UiState<?>>(UiState.Empty.INSTANCE);
 
     private Disposable disposable;
-    private CharactersRouter router;
-    private GetCharacterById getCharacterById;
-    private int characterId;
-    private Scheduler scheduler;
+    private final CharactersRouter router;
+    private final GetCharacterById getCharacterById;
+    private final int characterId;
+    private final Scheduler scheduler;
 
 
     @AssistedInject

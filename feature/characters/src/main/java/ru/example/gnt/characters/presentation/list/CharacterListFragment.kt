@@ -10,6 +10,7 @@ import androidx.annotation.IdRes
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -36,7 +37,6 @@ import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 import ru.example.gnt.common.exceptions.ApplicationException
-import ru.example.gnt.common.utils.extensions.flowWithLifecycle
 import ru.example.gnt.common.utils.extensions.internetCapabilitiesCallback
 import ru.example.gnt.common.utils.CustomLoadStateAdapter
 import ru.example.gnt.common.utils.TryAgainAction
@@ -144,13 +144,13 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
                 messageTextView.apply {
                     isVisible = isEmpty
                     text =
-                        if (viewModel.isFilterOn() && isInternetOn) getString(R.string.no_filter_results) else getString(
-                            R.string.no_internet_connection
+                        if (viewModel.isFilterOn() && isInternetOn) getString(ru.example.gnt.ui.R.string.no_filter_results) else getString(
+                            ru.example.gnt.ui.R.string.no_internet_connection
                         )
                 }
                 tryAgainButton.apply {
                     isVisible = isEmpty && viewModel.isFilterOn()
-                    text = getString(R.string.clear_filter)
+                    text = getString(ru.example.gnt.ui.R.string.clear_filter)
                 }
             }
             swipeRefresh.isVisible = !isEmpty
@@ -205,7 +205,6 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     private fun observeInternetConnectionChanges() {
         lifecycleScope.launch(Dispatchers.Main) {
             networkState.collectLatest {
-                context.showToastShort(it)
                 setUpInfoTextView()
             }
         }
@@ -214,7 +213,7 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     private fun setUpInfoTextView() {
         binding.tvInfo.text =
             if (isInternetOn) getString(ru.example.gnt.ui.R.string.characters_welcome_message)
-            else getString(R.string.not_connected_ui_message)
+            else getString(ru.example.gnt.ui.R.string.not_connected_ui_message)
     }
 
 

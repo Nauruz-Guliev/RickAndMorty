@@ -1,8 +1,10 @@
 package ru.example.gnt.episodes.data
 
+import io.reactivex.rxjava3.core.Scheduler
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
 import ru.example.gnt.common.di.qualifiers.IoDispatcher
@@ -12,16 +14,16 @@ import ru.example.gnt.common.model.characters.CharacterListItem
 import ru.example.gnt.common.utils.ApiListQueryGenerator
 import ru.example.gnt.common.utils.UrlIdExtractor
 import ru.example.gnt.common.utils.extensions.networkBoundResource
-import ru.example.gnt.common.utils.extensions.wrapRetrofitError
+import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorRegular
+import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorSuspending
+import ru.example.gnt.data.di.qualifiers.RxIOSchedulerQualifier
 import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.data.local.dao.EpisodesDao
-import ru.example.gnt.data.local.entity.EpisodeEntity
 import ru.example.gnt.data.mapper.CharacterEntityUiListItemMapper
 import ru.example.gnt.data.mapper.CharacterResponseUiListItemMapper
 import ru.example.gnt.data.mapper.EpisodeEntityResponseMapper
 import ru.example.gnt.data.remote.service.CharacterService
 import ru.example.gnt.data.remote.service.EpisodeService
-import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.data.mapper.EpisodeEntityUiDetailsMapper
 import ru.example.gnt.episodes.domain.model.EpisodeDetailsItem
 import ru.example.gnt.episodes.domain.repository.EpisodeDetailsRepository
@@ -43,30 +45,32 @@ class EpisodeDetailsRepositoryImpl @Inject constructor(
     //utility
     private val urlIdExtractor: UrlIdExtractor,
     private val queryGenerator: ApiListQueryGenerator,
-    @IoDispatcher private val coroutineDispatcher: CoroutineDispatcher
+    @IoDispatcher private val coroutineDispatcher: CoroutineDispatcher,
+    @RxIOSchedulerQualifier private val scheduler: Scheduler
 ) : EpisodeDetailsRepository {
-    override suspend fun getEpisodeDetailsItemById(id: Int): Result<EpisodeDetailsItem> =
+    override suspend fun getEpisodeDetailsItemById(id: Int): Flow<Result<EpisodeDetailsItem>> =
         withContext(coroutineDispatcher) {
-            return@withContext try {
-                networkBoundResource(
-                    query = {
-                        flowOf(entityUiDetailsMapper.mapTo(episodesDao.getEpisodeById(id) as EpisodeEntity))
-                    },
-                    fetch = {
-                        wrapRetrofitError { episodesService.getEpisodeById(id) }
-                    },
-                    saveFetchResult = {
-                        episodesDao.save(episodeEntityResponseMapper.mapTo(it))
-                    },
-                    transformResult = { resultType, requestType ->
-                        resultType.apply {
-                            characters =
-                                getCharacters(requestType.characters?.map(urlIdExtractor::extract))
-                        }
+            networkBoundResource(
+                query = {
+                    flowOf(episodesDao.getEpisodeById(id))
+                },
+                fetch = {
+                    episodesService.getEpisodeById(id)
+                },
+                saveFetchResult = {
+                    episodesDao.save(episodeEntityResponseMapper.mapTo(it))
+                }
+            ).map { result ->
+                result.map { episodeEntity ->
+                    if (episodeEntity == null) throw ApplicationException.EmptyResultException(
+                        resource = Resource.String(
+                            ru.example.gnt.ui.R.string.no_data_available_error
+                        )
+                    )
+                    entityUiDetailsMapper.mapTo(episodeEntity).apply {
+                        characters = getCharacters(episodeEntity.characters)
                     }
-                ).first()
-            } catch (ex: Exception) {
-                Result.failure(ApplicationException.DataAccessException(resource = Resource.String(R.string.unknown_data_access_error)))
+                }
             }
         }
 
@@ -75,22 +79,26 @@ class EpisodeDetailsRepositoryImpl @Inject constructor(
             if (ids == null) return null
             if (ids.size == 1) {
                 listOf(
-                    characterResponseUiListItemMapper.mapTo(
-                        characterService.getCharacterById(
-                            Integer.valueOf(ids[0])
-                        ).blockingGet()
-                    )
+                    wrapRetrofitErrorRegular {
+                        characterResponseUiListItemMapper.mapTo(
+                            characterService.getCharacterById(
+                                Integer.valueOf(ids[0])
+                            ).blockingGet()
+                        )
+                    }
                 )
             } else {
-                characterService.getCharactersInRange(queryGenerator.generate(ids)).awaitResponse()
-                    .body()!!.map(characterResponseUiListItemMapper::mapTo)
+                wrapRetrofitErrorSuspending {
+                    characterService.getCharactersInRange(queryGenerator.generate(ids))
+                        .awaitResponse().body()?.map(characterResponseUiListItemMapper::mapTo)
+                }
             }
         } catch (ex: IOException) {
-            characterDao.getCharacters(ids).map(characterEntityUiListItemMapper::mapTo)
+            characterDao.getCharacters(ids).subscribeOn(scheduler).blockingGet()?.map(characterEntityUiListItemMapper::mapTo)
         } catch (ex: Exception) {
             throw ApplicationException.DataAccessException(
                 cause = ex,
-                resource = Resource.String(R.string.unknown_data_access_error)
+                resource = Resource.String(ru.example.gnt.ui.R.string.unknown_data_access_error)
             )
         }
     }

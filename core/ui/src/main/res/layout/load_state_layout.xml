@@ -23,7 +23,7 @@
         android:id="@+id/messageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/load_error"
+        android:text="@string/network_error"
         android:visibility="gone"
 
         tools:visibility="visible" />

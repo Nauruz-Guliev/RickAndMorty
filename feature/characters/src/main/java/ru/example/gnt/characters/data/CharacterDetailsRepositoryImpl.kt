@@ -13,7 +13,7 @@ import ru.example.gnt.common.model.episodes.EpisodeListItem
 import ru.example.gnt.common.model.locations.LocationListItem
 import ru.example.gnt.common.utils.ApiListQueryGenerator
 import ru.example.gnt.common.utils.UrlIdExtractor
-import ru.example.gnt.common.utils.extensions.wrapRetrofitError
+import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorRegular
 import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.data.local.dao.EpisodesDao
 import ru.example.gnt.data.local.dao.LocationsDao
@@ -60,7 +60,6 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
                     mapper = characterResponseUiDetailsMapper
                 )
             )
-            emitter.onComplete()
         }.onErrorReturn { exception ->
             when (exception) {
                 is IOException, is RuntimeException -> {
@@ -106,22 +105,20 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
     override fun getEpisodeList(ids: List<String>): List<EpisodeListItem> {
         return try {
             return if (ids.size > 1) {
-                wrapRetrofitError {
+                wrapRetrofitErrorRegular {
                     episodeService.getEpisodesInRange(apiListQueryGenerator.generate(ids))
                         .execute().body()
                         ?.map(episodeUiListItemMapper::mapTo) ?: listOf()
                 }
             } else {
-                wrapRetrofitError {
-                    listOf(
-                        episodeUiListItemMapper.mapTo(
-                            episodeService.getEpisodeById(
-                                Integer.valueOf(
-                                    ids[0]
-                                )
-                            ).execute().body()!!
-                        )
-                    )
+                return wrapRetrofitErrorRegular {
+                    val episode =
+                        episodeService.getEpisodeById(Integer.valueOf(ids[0])).execute().body()
+                    if (episode != null) {
+                        listOf(episodeUiListItemMapper.mapTo(episode))
+                    } else {
+                        listOf()
+                    }
                 }
             }
         } catch (ex: IOException) {
@@ -132,14 +129,13 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
     private fun getLocationById(id: String?): LocationListItem? {
         if (id == "" || id == null) return null
         return try {
-            return wrapRetrofitError {
-                locationResponseUiListItemMapper.mapTo(
-                    locationService.getLocation(
-                        Integer.valueOf(
-                            id
-                        )
-                    ).execute().body()!!
-                )
+            return wrapRetrofitErrorRegular {
+                val location = locationService.getLocation(Integer.valueOf(id)).execute().body()
+                if (location != null) {
+                    locationResponseUiListItemMapper.mapTo(location)
+                } else {
+                    null
+                }
             }
         } catch (ex: IOException) {
             locationsDao.getLocations(listOf(id)).map(locationEntityUiListMapper::mapTo)[0]

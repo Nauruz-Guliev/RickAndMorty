@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.os.bundleOf
-import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.flowWithLifecycle
@@ -18,13 +17,11 @@ import kotlinx.coroutines.launch
 import ru.example.gnt.common.base.BaseFragment
 import ru.example.gnt.common.base.interfaces.DetailsFragment
 import ru.example.gnt.common.model.UiState
-import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.databinding.EpisodeDetailsFragmentBinding
 import ru.example.gnt.episodes.di.deps.EpisodesComponentViewModel
 import ru.example.gnt.episodes.domain.model.EpisodeDetailsItem
 import ru.example.gnt.episodes.presentation.episode_details.recyclerview.CharacterListAdapter
-import ru.example.gnt.episodes.presentation.episode_list.paging_rv.EpisodeListAdapter
 import javax.inject.Inject
 
 class EpisodeDetailsFragment : BaseFragment<
@@ -85,7 +82,7 @@ class EpisodeDetailsFragment : BaseFragment<
                             }
                             is UiState.Error -> {
                                 setRefreshing(false)
-                                context.showToastShort(state.message)
+                                handleErrorState(state.error)
                             }
                             is UiState.Empty -> {
                                 setRefreshing(false)

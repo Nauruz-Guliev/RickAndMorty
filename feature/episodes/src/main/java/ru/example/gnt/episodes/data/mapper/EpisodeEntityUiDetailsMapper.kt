@@ -15,7 +15,7 @@ class EpisodeEntityUiDetailsMapper
                 airDate = airDate,
                 episode = episode,
                 url = url,
-                created = created
+                created = created,
             )
         }
 

@@ -21,6 +21,7 @@ fun String.cutLastOccurence(textToDrop: String): String {
     }
 }
 
+/*
 fun <T> Flow<T>.flowWithLifecycle(
     lifecycle: Lifecycle,
     minActiveState: Lifecycle.State = Lifecycle.State.STARTED
@@ -32,6 +33,8 @@ fun <T> Flow<T>.flowWithLifecycle(
     }
     close()
 }
+
+ */
 
 @ExperimentalCoroutinesApi
 fun <T> Flow<T>.scan(count: Int): Flow<List<T?>> {

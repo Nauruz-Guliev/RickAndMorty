@@ -1,13 +1,17 @@
 package ru.example.gnt.locations.data.repository
 
+import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.core.Single
+import retrofit2.awaitResponse
 import ru.example.gnt.common.R
 import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.characters.CharacterListItem
 import ru.example.gnt.common.utils.ApiListQueryGenerator
 import ru.example.gnt.common.utils.UrlIdExtractor
-import ru.example.gnt.common.utils.extensions.wrapRetrofitError
+import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorRegular
+import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorSuspending
+import ru.example.gnt.data.di.qualifiers.RxIOSchedulerQualifier
 import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.data.local.dao.LocationsDao
 import ru.example.gnt.data.mapper.CharacterEntityUiListItemMapper
@@ -37,7 +41,8 @@ class LocationDetailsRepositoryImpl @Inject constructor(
     private val characterEntityUiListItemMapper: CharacterEntityUiListItemMapper,
     //utility
     private val urlIdExtractor: UrlIdExtractor,
-    private val apiListQueryGenerator: ApiListQueryGenerator
+    private val apiListQueryGenerator: ApiListQueryGenerator,
+    @RxIOSchedulerQualifier private val scheduler: Scheduler
 ) : LocationDetailsRepository {
     override fun getLocationDetailsItemById(id: Int): Single<LocationDetailsModel> {
         return locationService.getLocationById(id).map { locationsResponse ->
@@ -73,25 +78,27 @@ class LocationDetailsRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun getCharacterList(ids: List<String>?): List<CharacterListItem> {
+    private fun getCharacterList(ids: List<String>?): List<CharacterListItem>? {
         if (ids == null) return listOf()
         return try {
             if (ids.size == 1) {
-                wrapRetrofitError {
+                wrapRetrofitErrorRegular {
                     listOf(
                         characterResponseUiListItemMapper.mapTo(
-                            characterService.getCharacterById(Integer.valueOf(ids[0])).blockingGet()
+                            characterService.getCharacterById(
+                                Integer.valueOf(ids[0])
+                            ).blockingGet()
                         )
                     )
                 }
             } else {
-                wrapRetrofitError {
+                wrapRetrofitErrorRegular {
                     characterService.getCharactersInRange(apiListQueryGenerator.generate(ids))
-                        .execute().body()?.map(characterResponseUiListItemMapper::mapTo) ?: listOf()
+                        .execute().body()?.map(characterResponseUiListItemMapper::mapTo)
                 }
             }
         } catch (ex: IOException) {
-            characterDao.getCharacters(ids).map(characterEntityUiListItemMapper::mapTo)
+            characterDao.getCharacters(ids).subscribeOn(scheduler).blockingGet()?.map(characterEntityUiListItemMapper::mapTo)
         }
     }
 }

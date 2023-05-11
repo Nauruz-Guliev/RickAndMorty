@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -25,7 +26,6 @@ import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.interfaces.ToggleActivity
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
-import ru.example.gnt.common.utils.extensions.flowWithLifecycle
 import ru.example.gnt.common.utils.CustomLoadStateAdapter
 import ru.example.gnt.common.utils.TryAgainAction
 import ru.example.gnt.common.utils.extensions.hideKeyboard
@@ -71,6 +71,7 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         initRecyclerView()
         initSwipeRefreshLayout()
         observePaginationStates()
+        observeInternetState()
     }
 
     private fun initSwipeRefreshLayout() {
@@ -128,11 +129,12 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
             with(loadingStateLayout) {
                 messageTextView.apply {
                     isVisible = isEmpty
-                    text = if(!locationsViewModel.isFilterOff() && isInternetOn) getString(R.string.no_filter_results) else getString(R.string.no_internet_connection)
+                    text = if(!locationsViewModel.isFilterOff() && isInternetOn) getString(ru.example.gnt.ui.R.string.no_filter_results) else getString(
+                        ru.example.gnt.ui.R.string.no_internet_connection)
                 }
                 tryAgainButton.apply {
                     isVisible = isEmpty && !locationsViewModel.isFilterOff()
-                    text = getString(R.string.clear_filter)
+                    text = getString(ru.example.gnt.ui.R.string.clear_filter)
                 }
             }
             swipeRefresh.isVisible = !isEmpty
@@ -165,7 +167,7 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
     private fun setUpInfoTextView() {
         binding.tvInformational.text =
             if (isInternetOn) getString(ru.example.gnt.ui.R.string.characters_welcome_message)
-            else getString(R.string.not_connected_ui_message)
+            else getString(ru.example.gnt.ui.R.string.not_connected_ui_message)
     }
 
 
@@ -174,6 +176,14 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         this.searchQuery = searchQuery
         locationsViewModel.applyFilter()
         adapter?.refresh()
+    }
+
+    private fun observeInternetState() {
+        lifecycleScope.launch {
+            networkState.flowWithLifecycle(lifecycle).collectLatest {
+                setUpInfoTextView()
+            }
+        }
     }
 
 

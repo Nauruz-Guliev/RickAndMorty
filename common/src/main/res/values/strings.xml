@@ -7,5 +7,6 @@
     <string name="no_internet_connection_error">You are not connected to the internet</string>
     <string name="alert_dialog_button_ok">ok</string>
     <string name="alert_dialog_general_error">Error occured</string>
+    <string name="no_data_available_error">No data available</string>
 
 </resources>

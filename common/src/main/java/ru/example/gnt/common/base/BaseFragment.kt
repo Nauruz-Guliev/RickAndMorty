@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import androidx.annotation.IdRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -16,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.example.gnt.common.exceptions.ApplicationException
-import ru.example.gnt.common.utils.extensions.flowWithLifecycle
 import ru.example.gnt.common.utils.extensions.internetCapabilitiesCallback
 import ru.example.gnt.common.utils.extensions.isNetworkOn
 import ru.example.gnt.common.utils.extensions.showToastShort
@@ -56,13 +56,14 @@ abstract class BaseFragment<VB : ViewBinding>(
         sheetBehavior?.isHideable = false
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         this.coordinatorLayout = coordinatorLayout
+        observeInternetConnectionChanges()
         return coordinatorLayout
     }
 
 
     private fun observeInternetConnectionChanges() {
         lifecycleScope.launch {
-            context?.internetCapabilitiesCallback()?.flowWithLifecycle(lifecycle)?.collectLatest {
+            requireActivity().internetCapabilitiesCallback().flowWithLifecycle(lifecycle).collectLatest {
                 isInternetOn = context?.isNetworkOn() ?: it
                 networkState.emit(isInternetOn)
             }

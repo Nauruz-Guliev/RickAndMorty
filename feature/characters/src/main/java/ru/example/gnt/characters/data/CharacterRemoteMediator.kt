@@ -52,7 +52,8 @@ class CharacterRemoteMediator @AssistedInject constructor(
                     status = filterModel?.status?.value,
                     gender = filterModel?.gender?.value
                 ).awaitResponse()
-            if (networkResult.isSuccessful) {
+            val characters = networkResult.body()?.results
+            if (networkResult.isSuccessful && characters != null) {
                 if (loadType == LoadType.REFRESH) {
                     with(filterModel) {
                         charactersDao.refresh(
@@ -61,17 +62,20 @@ class CharacterRemoteMediator @AssistedInject constructor(
                             type = this?.type,
                             status = this?.status?.value,
                             gender = this?.gender?.value,
-                            characters = networkResult.body()!!.results!!.map(characterMapper::mapTo)
+                            characters = characters.map(characterMapper::mapTo)
                         )
                     }
                 } else {
                     charactersDao.saveCharacters(
-                        networkResult.body()!!.results!!.map(
+                        characters.map(
                             characterMapper::mapTo
                         )
                     )
                 }
-                MediatorResult.Success(endOfPaginationReached = (networkResult.body())!!.results!!.size < limit)
+                MediatorResult.Success(
+                    endOfPaginationReached = ((networkResult.body())?.results?.size
+                        ?: 0) < limit
+                )
             } else {
                 MediatorResult.Success(endOfPaginationReached = true)
             }

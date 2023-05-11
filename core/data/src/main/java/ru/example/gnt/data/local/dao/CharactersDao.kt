@@ -2,6 +2,7 @@ package ru.example.gnt.data.local.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.flow.Flow
 import ru.example.gnt.data.local.entity.CharacterEntity
@@ -25,7 +26,7 @@ interface CharactersDao {
     fun getCharacters(): PagingSource<Int, CharacterEntity>
 
     @Query("SELECT * FROM character WHERE id IN (:ids)")
-    fun getCharacters(ids: List<String>?): List<CharacterEntity>
+    fun getCharacters(ids: List<String>?): Maybe<List<CharacterEntity>>
 
     @Query("SELECT * FROM character LIMIT :pageSize OFFSET :pageIndex")
     suspend fun getCharactersInRage(pageSize: Int, pageIndex: Int): List<CharacterEntity>

@@ -7,6 +7,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.example.gnt.common.model.UiState
 import ru.example.gnt.episodes.EpisodesRouter
@@ -31,9 +32,10 @@ class EpisodeDetailsViewModel @AssistedInject constructor(
         _state.value = UiState.Loading
         viewModelScope.launch {
             if (id != null) {
-                getEpisodeItemByIdUseCase(id)
-                    .onFailure { _state.value = UiState.Error(it) }
-                    .onSuccess { _state.value = UiState.Success(it) }
+                getEpisodeItemByIdUseCase(id).collectLatest { result ->
+                    result.onFailure { _state.value = UiState.Error(it) }
+                        .onSuccess { _state.value = UiState.Success(it) }
+                }
             } else {
                 UiState.Empty
             }

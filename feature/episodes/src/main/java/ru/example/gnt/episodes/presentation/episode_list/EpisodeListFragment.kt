@@ -71,6 +71,14 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
         initRecyclerView()
         initSwipeRefreshLayout()
         observePaginationStates()
+        observeInternetState()
+    }
+    private fun observeInternetState() {
+        lifecycleScope.launch {
+            networkState.flowWithLifecycle(lifecycle).collectLatest {
+                setUpInfoTextView()
+            }
+        }
     }
 
     private fun initSwipeRefreshLayout() {
@@ -88,7 +96,7 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
         adapter = EpisodeListAdapter(::onItemClicked)
         val tryAgainAction: TryAgainAction = { adapter?.retry() }
         val footerAdapter = CustomLoadStateAdapter(tryAgainAction)
-        val loadStateAdapter = adapter?.withLoadStateFooter(footerAdapter!!)
+        val loadStateAdapter = adapter?.withLoadStateFooter(footerAdapter)
         lifecycleScope.launch {
             binding.rvEpisodes.apply {
                 adapter = loadStateAdapter
@@ -128,11 +136,12 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
             with(loadingStateLayout) {
                 messageTextView.apply {
                     isVisible = isEmpty
-                    text = if(episodesViewModel.isFilterOn() && isInternetOn) getString(R.string.no_filter_results) else getString(R.string.no_internet_connection)
+                    text = if(!episodesViewModel.isFilterOff() && isInternetOn) getString(ru.example.gnt.ui.R.string.no_filter_results) else getString(
+                        ru.example.gnt.ui.R.string.not_connected_ui_message)
                 }
                 tryAgainButton.apply {
-                    isVisible = isEmpty && episodesViewModel.isFilterOn()
-                    text = getString(R.string.clear_filter)
+                    isVisible = isEmpty && !episodesViewModel.isFilterOff()
+                    text = getString(ru.example.gnt.ui.R.string.clear_filter)
                 }
             }
             swipeRefresh.isVisible = !isEmpty
@@ -193,7 +202,7 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
     private fun setUpInfoTextView() {
         binding.tvInformational.text =
             if (isInternetOn) getString(ru.example.gnt.ui.R.string.characters_welcome_message)
-            else getString(R.string.not_connected_ui_message)
+            else getString(ru.example.gnt.ui.R.string.not_connected_ui_message)
     }
 
     override fun setExpanded() {
