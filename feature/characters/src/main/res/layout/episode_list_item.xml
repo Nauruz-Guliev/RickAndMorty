@@ -15,15 +15,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_name"
-            style="@style/TextViewTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:paddingTop="@dimen/margin_6"
-            android:textSize="@dimen/text_size_3"
-            tools:text="Lawnmower Dog" />
 
         <TextView
             android:id="@+id/tv_episode"
@@ -33,6 +24,17 @@
             android:layout_marginTop="@dimen/margin_6"
             android:gravity="center_horizontal"
             android:paddingHorizontal="@dimen/margin_2"
+            tools:text="Lawnmower Dog" />
+
+        <TextView
+
+            android:id="@+id/tv_name"
+            style="@style/TextViewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingTop="@dimen/margin_6"
+            android:textSize="@dimen/text_size_4"
             tools:text="Lawnmower Dog" />
 
         <TextView

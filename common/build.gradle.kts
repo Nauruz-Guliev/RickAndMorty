@@ -40,6 +40,8 @@ dependencies {
 
     implementation(libs.gson)
     implementation(libs.bundles.okHttp)
+    implementation(libs.androidx.splash)
+
 
 
     //libraries

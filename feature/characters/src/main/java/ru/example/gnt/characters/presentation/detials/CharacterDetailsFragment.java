@@ -1,7 +1,7 @@
 package ru.example.gnt.characters.presentation.detials;
 
-import static ru.example.gnt.common.utils.extensions.UtilityExtensionsKt.isNetworkOn;
 import static ru.example.gnt.common.utils.extensions.UiExtensionsKt.showToastShort;
+import static ru.example.gnt.common.utils.extensions.UtilityExtensionsKt.isNetworkOn;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -157,7 +157,7 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
         }
         if (item.getGender() != null) {
             binding.tvGender.setVisibility(View.VISIBLE);
-            binding.tvGender.setText(item.getGender().getValue());
+            binding.tvGender.setText(getString(ru.example.gnt.ui.R.string.gender, item.getGender().getValue()));
         } else {
             binding.tvGender.setVisibility(View.GONE);
         }
@@ -185,11 +185,22 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
         } else {
             binding.tvType.setVisibility(ViewGroup.GONE);
         }
+
+        try {
+            binding.tvStatus.setBackgroundColor(item.getStatus().getColor().getValue(binding.getRoot().getContext()).getDefaultColor());
+        } catch (Exception ignored) {
+
+        }
         EpisodesAdapter adapter = new EpisodesAdapter(new EpisodesDiffCallback(), id -> viewModel.navigateToEpisodeDetails(id));
         adapter.submitList(item.getEpisode());
         binding.rvEpisodes.setAdapter(adapter);
         binding.tvName.setText(item.getName());
         binding.tvName.setVisibility(View.VISIBLE);
+        if (item.getSpecies().length() > 0) {
+            binding.tvRv.setVisibility(View.VISIBLE);
+        } else {
+            binding.tvRv.setVisibility(View.GONE);
+        }
         binding.tvSpecies.setText(item.getSpecies());
         binding.tvSpecies.setVisibility(View.VISIBLE);
         binding.ivAvatar.setVisibility(ViewGroup.VISIBLE);

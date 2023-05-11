@@ -1,6 +1,5 @@
 package ru.example.gnt.characters.presentation.list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -11,7 +10,6 @@ import kotlinx.coroutines.launch
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.domain.usecases.GetCharacterListUseCase
 import ru.example.gnt.characters.presentation.list.model.CharactersState
-import ru.example.gnt.common.base.BaseViewModel
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 import javax.inject.Inject

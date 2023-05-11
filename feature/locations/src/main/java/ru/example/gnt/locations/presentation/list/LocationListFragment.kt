@@ -29,6 +29,7 @@ import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.utils.CustomLoadStateAdapter
 import ru.example.gnt.common.utils.TryAgainAction
 import ru.example.gnt.common.utils.extensions.hideKeyboard
+import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.locations.R
 import ru.example.gnt.locations.databinding.LocationListFragmentBinding
 import ru.example.gnt.locations.di.LocationsComponentViewModel
@@ -60,8 +61,6 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
 
     override fun onResume() {
         super.onResume()
-        (requireActivity() as? SearchActivity)?.registerSearchFragment(this)
-        (requireActivity() as? ToggleActivity)?.registerToggleFragment(this)
         searchQuery?.let { (requireActivity() as? SearchActivity)?.setSearchText(it) }
     }
 
@@ -84,7 +83,12 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
                 adapter?.refresh()
             }
             btnClear.setOnClickListener {
-                locationsViewModel.clearAllFilters()
+                resetFilters()
+                if(locationsViewModel.isFilterOff()) {
+                    requireContext().showToastShort(getString(ru.example.gnt.ui.R.string.empty_filters_message))
+                } else {
+                    locationsViewModel.clearAllFilters()
+                }
                 adapter?.refresh()
                 setExpanded()
             }
@@ -145,8 +149,7 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
             with(loadingStateLayout) {
                 messageTextView.apply {
                     isVisible = isEmpty
-                    text = if(!locationsViewModel.isFilterOff() && isInternetOn) getString(ru.example.gnt.ui.R.string.no_filter_results) else getString(
-                        ru.example.gnt.ui.R.string.no_internet_connection)
+                    text =  getString(ru.example.gnt.ui.R.string.no_filter_results)
                 }
                 tryAgainButton.apply {
                     isVisible = isEmpty && !locationsViewModel.isFilterOff()

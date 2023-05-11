@@ -28,6 +28,7 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:visibility="gone"
+                android:paddingTop="@dimen/padding_1"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/margin_4"
                 android:elevation="1dp"
@@ -42,6 +43,7 @@
                 android:gravity="center"
                 tools:visibility="visible"
                 android:visibility="gone"
+                android:layout_marginBottom="@dimen/margin_1"
                 android:background="@color/red_rm"
                 android:padding="@dimen/padding_1"
                 tools:text="@string/no_internet_connection" />
@@ -54,6 +56,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:visibility="gone"
+                android:layout_marginBottom="@dimen/margin_1"
                 android:padding="@dimen/padding_1"
                 tools:text="Alive" />
 
@@ -75,6 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_2"
+                android:layout_marginTop="@dimen/margin_1"
                 android:gravity="center"
                 android:visibility="gone"
                 android:padding="@dimen/padding_1"
@@ -90,23 +94,30 @@
                 android:layout_marginTop="@dimen/margin_2"
                 tools:text="@string/gender" />
 
-            <TextView
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_origin"
                 style="@style/TextViewDetailsStyle"
+                android:drawableTint="@color/blue_rm_main"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:drawableEndCompat="@drawable/baseline_keyboard_arrow_right_24"
                 android:layout_marginTop="@dimen/margin_2"
                 android:visibility="gone"
+                tools:visibility="visible"
                 tools:text="@string/origin" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_location"
                 style="@style/TextViewDetailsStyle"
+                android:drawableTint="@color/blue_rm_main"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:drawableEndCompat="@drawable/baseline_keyboard_arrow_right_24"
                 android:layout_marginTop="@dimen/margin_2"
                 android:visibility="gone"
-                tools:text="@string/location" />
+                tools:text="@string/location"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_type"
@@ -122,15 +133,18 @@
             android:id="@+id/linearLayoutCompat2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="64dp"
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/main_layout">
 
             <TextView
                 style="@style/TextViewTitle"
+                android:id="@+id/tv_rv"
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/margin_4"
-                android:layout_marginTop="@dimen/padding_3"
+                android:paddingVertical="@dimen/padding_4"
                 android:text="@string/episodes"
                 android:textColor="@color/blue_rm" />
 

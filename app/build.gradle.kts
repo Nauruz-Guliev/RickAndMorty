@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.bundles.dagger.impl)
     kapt(libs.bundles.dagger.kapt)
 
+    implementation(libs.androidx.splash)
+
     implementation(project(":core:ui"))
     implementation(project(":core:data"))
     implementation(project(":common"))

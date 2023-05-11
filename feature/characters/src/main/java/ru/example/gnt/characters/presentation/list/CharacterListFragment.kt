@@ -60,8 +60,6 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
 
     override fun onResume() {
         super.onResume()
-        (requireActivity() as? SearchActivity)?.registerSearchFragment(this)
-        (requireActivity() as? ToggleActivity)?.registerToggleFragment(this)
         searchQuery?.let { (requireActivity() as? SearchActivity)?.setSearchText(it) }
         setExpanded()
     }
@@ -92,7 +90,7 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
             viewModel.applyFilter()
             adapter?.refresh()
             if (!isInternetOn) {
-                binding.root.context.showToastShort(ru.example.gnt.ui.R.string.no_internet_connection)
+                binding.root.context.showToastShort(getString(ru.example.gnt.ui.R.string.no_internet_connection))
             }
         }
     }
@@ -105,7 +103,12 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
                 adapter?.refresh()
             }
             btnClear.setOnClickListener {
-                viewModel.clearAllFilters()
+                if(viewModel.isFilterOff()) {
+                    requireContext().showToastShort(getString(ru.example.gnt.ui.R.string.empty_filters_message))
+                } else {
+                    viewModel.clearAllFilters()
+                }
+                resetAllUiFilters()
                 adapter?.refresh()
                 setExpanded()
             }
@@ -152,18 +155,18 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     }
 
 
+
+
     private fun handleNotLoadingState(isEmpty: Boolean) {
         with(binding) {
             with(loadingStateLayout) {
                 messageTextView.apply {
                     isVisible = isEmpty
                     text =
-                        if (viewModel.isFilterOff() && isInternetOn) getString(ru.example.gnt.ui.R.string.no_filter_results) else getString(
-                            ru.example.gnt.ui.R.string.no_internet_connection
-                        )
+                         getString(ru.example.gnt.ui.R.string.no_filter_results)
                 }
                 tryAgainButton.apply {
-                    isVisible = isEmpty && viewModel.isFilterOff()
+                    isVisible = isEmpty && !viewModel.isFilterOff()
                     text = getString(ru.example.gnt.ui.R.string.clear_filter)
                 }
             }
@@ -237,8 +240,6 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
             sheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         } else {
             sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-            initFilterValues()
-            adapter?.refresh()
         }
         context?.hideKeyboard(binding.root)
         return state

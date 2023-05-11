@@ -115,6 +115,11 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         } else {
             binding.tvCreated.setVisibility(View.GONE);
         }
+        if(item.getResidents() != null && !item.getResidents().isEmpty()) {
+            binding.tvRv.setVisibility(View.VISIBLE);
+        } else {
+            binding.tvRv.setVisibility(View.GONE);
+        }
         binding.tvType.setVisibility(ViewGroup.VISIBLE);
         CharacterListAdapter adapter = new CharacterListAdapter(new CharacterDiffCallback(), id -> {
             viewModel.navigateToCharacterDetails(id);

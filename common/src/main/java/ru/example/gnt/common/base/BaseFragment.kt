@@ -57,6 +57,7 @@ abstract class BaseFragment<VB : ViewBinding>(
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         this.coordinatorLayout = coordinatorLayout
         observeInternetConnectionChanges()
+        isInternetOn = requireContext().isNetworkOn()
         return coordinatorLayout
     }
 

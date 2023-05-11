@@ -28,6 +28,7 @@ import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.utils.CustomLoadStateAdapter
 import ru.example.gnt.common.utils.TryAgainAction
 import ru.example.gnt.common.utils.extensions.hideKeyboard
+import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.databinding.EpisodesFragmentBinding
 import ru.example.gnt.episodes.di.deps.EpisodesComponentViewModel
@@ -51,8 +52,6 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
 
     override fun onResume() {
         super.onResume()
-        (requireActivity() as? SearchActivity)?.registerSearchFragment(this)
-        (requireActivity() as? ToggleActivity)?.registerToggleFragment(this)
         searchQuery?.let { (requireActivity() as? SearchActivity)?.setSearchText(it) }
         setExpanded()
     }
@@ -84,7 +83,12 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
                 adapter?.refresh()
             }
             btnClear.setOnClickListener {
-                episodesViewModel.clearAllFilters()
+                resetFilters()
+                if(episodesViewModel.isFilterOff()) {
+                    requireContext().showToastShort(getString(ru.example.gnt.ui.R.string.empty_filters_message))
+                } else {
+                    episodesViewModel.clearAllFilters()
+                }
                 adapter?.refresh()
                 setExpanded()
             }
@@ -155,9 +159,7 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
                 messageTextView.apply {
                     isVisible = isEmpty
                     text =
-                        if (!episodesViewModel.isFilterOff() && isInternetOn) getString(ru.example.gnt.ui.R.string.no_filter_results) else getString(
-                            ru.example.gnt.ui.R.string.not_connected_ui_message
-                        )
+                        getString(ru.example.gnt.ui.R.string.no_filter_results)
                 }
                 tryAgainButton.apply {
                     isVisible = isEmpty && !episodesViewModel.isFilterOff()
@@ -211,8 +213,6 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
             sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
             (requireActivity() as? ToggleActivity)?.setFragmentCollapsed()
             binding.rvEpisodes.alpha = 1F
-            initFilterValues()
-            adapter?.refresh()
         }
         context?.hideKeyboard(binding.root)
         return state

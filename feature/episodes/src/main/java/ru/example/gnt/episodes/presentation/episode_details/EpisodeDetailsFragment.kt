@@ -117,6 +117,7 @@ class EpisodeDetailsFragment : BaseFragment<
             tvName.text = episodeDetailsItem.name
             tvName.isVisible = true
 
+            tvRv.isVisible = (episodeDetailsItem.characters?.size ?: 0) > 0
             rvCharacters.adapter =
                 CharacterListAdapter(::onItemClicked, Glide.with(binding.root)).apply {
                     submitList(episodeDetailsItem.characters)

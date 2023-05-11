@@ -22,10 +22,14 @@ public class CharacterViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void onBind(CharacterListItem item) {
-        binding.tvGender.setText(item.getGender().getValue());
+        try {
+            binding.tvGender.setText(item.getGender().getValue());
+            binding.tvStatus.setText(item.getStatus().getValue());
+            binding.tvStatus.setBackgroundColor(item.getStatus().getColor().getValue(binding.getRoot().getContext()).getDefaultColor());
+        } catch (Exception ignored) {}
         binding.tvName.setText(item.getName());
-        binding.tvStatus.setText(item.getStatus().getValue());
         binding.tvSpecies.setText(item.getSpecies());
+        binding.tvStatus.setWidth(binding.ivCharacter.getMaxWidth());
         binding.getRoot().setOnClickListener(v -> {
             listener.onItemClicked(item.getId());
         });

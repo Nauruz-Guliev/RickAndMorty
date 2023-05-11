@@ -43,7 +43,8 @@
     <string name="name_empty">Name</string>
 
     <string name="unknown_data_access_error">Unknown data access error occurred.</string>
-    <string name="episode">Episode</string>
+    <string name="episode">Episode: \n %1s</string>
+    <string name="air_date">Air date: \n %1s</string>
 
     <string name="no_result_exception">No data found in local storage</string>
 
@@ -52,6 +53,8 @@
     <string name="clear">Clear</string>
 
     <string name="no_filters_applied">No filters applied</string>
+    <string name="empty_filters_message">No filters were applied anyway</string>
+
 
 
 </resources>

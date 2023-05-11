@@ -23,9 +23,12 @@ import javax.inject.Inject
 class MainRouter @Inject constructor(
     private val fragmentManager: FragmentManager,
     @IdRes private val mainContainerId: Int,
+    private val context: Context
 ) : CharactersRouter, EpisodesRouter, LocationsRouter {
 
     var currentActiveTag: String? = null
+    private var currentActiveFragment: Fragment? = null
+
     fun openCharactersScreen() {
         navigate(
             fragment = CharacterListFragment.createInstance(),
@@ -34,8 +37,16 @@ class MainRouter @Inject constructor(
         )
     }
 
+    fun openInitialState() {
+        navigate(
+            fragment = CharacterListFragment.createInstance(),
+            tag = null,
+            addToBackStack = false,
+        )
+    }
+
     fun clearBackStack() {
-        fragmentManager.popBackStack()
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     fun openEpisodesScreen() {
@@ -68,40 +79,41 @@ class MainRouter @Inject constructor(
         return if (f?.isVisible == true) {
             f
         } else {
-            fragmentManager.fragments.firstOrNull {
-                it.isVisible
-            }
+            fragmentManager.fragments.firstOrNull { it.isVisible } ?: currentActiveFragment
         }
     }
 
     private fun navigate(
         fragment: Fragment,
-        tag: String,
+        tag: String?,
         addToBackStack: Boolean = true,
     ) {
         this.currentActiveTag = tag
-        if (fragment is RootFragment && fragmentManager.findFragmentByTag(tag) != null) {
+        this.currentActiveFragment = fragment
+        if(fragment is RootFragment && fragmentManager.findFragmentByTag(tag) != null) {
             popBackStack(tag)
-        } else {
-            val transaction = fragmentManager.beginTransaction().replace(
-                mainContainerId,
-                fragment,
-                tag,
-            )
-            if (addToBackStack) {
-                transaction.addToBackStack(tag)
-            }
-            transaction.setCustomAnimations(
-                androidx.appcompat.R.anim.abc_slide_in_bottom,
-                androidx.appcompat.R.anim.abc_slide_out_bottom,
-                androidx.appcompat.R.anim.abc_popup_enter,
-                androidx.appcompat.R.anim.abc_popup_exit
-            )
-            transaction.setReorderingAllowed(true)
-            transaction.commitAllowingStateLoss()
+            return
         }
+        val transaction = fragmentManager.beginTransaction().replace(
+            mainContainerId,
+            fragment,
+            tag,
+        )
+        if (addToBackStack) {
+            transaction.addToBackStack(tag)
+        }
+        transaction.setCustomAnimations(
+            androidx.appcompat.R.anim.abc_slide_in_bottom,
+            androidx.appcompat.R.anim.abc_slide_out_bottom,
+            androidx.appcompat.R.anim.abc_popup_enter,
+            androidx.appcompat.R.anim.abc_popup_exit
+        )
+        transaction.setReorderingAllowed(true)
+        transaction.commitAllowingStateLoss()
+
     }
-    fun popBackStack(tag: String) {
+
+    fun popBackStack(tag: String?) {
         fragmentManager.popBackStack(tag, 0)
     }
 

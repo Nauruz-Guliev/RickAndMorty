@@ -3,26 +3,24 @@ package ru.example.gnt.rickandmorty
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.text.TextUtils
 import android.view.Menu
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import ru.example.gnt.characters.di.provider.CharactersDepsStore
 import ru.example.gnt.characters.presentation.list.CharacterListFragment
-import ru.example.gnt.common.base.interfaces.DetailsFragment
 import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
+import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.interfaces.ToggleActivity
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
-import ru.example.gnt.common.di.deps.CommonModuleDeps
-import ru.example.gnt.common.di.deps.CommonModuleDepsStore
 import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.setImageDrawable
+import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.di.deps.EpisodesDepsStore
 import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
 import ru.example.gnt.locations.di.LocationDependencyStore
@@ -45,11 +43,11 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
     @Inject
     lateinit var mainRouter: MainRouter
 
-    private var buttonState: Boolean = false
-
     private var searchFragment: SearchFragment? = null
     private var toggleFragment: LayoutBackDropManager? = null
     private var searchCloseButton: ImageView? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +57,8 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         setContentView(binding.root)
         initBottomNav()
         supportFragmentManager.addOnBackStackChangedListener(this)
-
+        mainRouter.openInitialState()
+        registerFragments(mainRouter.getActiveFragment())
     }
 
     private fun initBottomNav() {
@@ -69,20 +68,14 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                 ru.example.gnt.ui.R.id.characters -> {
                     mainRouter.openCharactersScreen()
                     mainRouter.currentActiveTag = CharacterListFragment.CHARACTERS_FRAGMENT_TAG
-                    setMainScreenMode()
                 }
                 ru.example.gnt.ui.R.id.episodes -> {
                     mainRouter.openEpisodesScreen()
                     mainRouter.currentActiveTag = EpisodeListFragment.EPISODES_FRAGMENT_TAG
-                    setMainScreenMode()
                 }
                 ru.example.gnt.ui.R.id.locations -> {
                     mainRouter.openLocationScreen()
-                    setMainScreenMode()
                     mainRouter.currentActiveTag = LocationListFragment.LOCATION_LIST_FRAGMENT_TAG
-                }
-                else -> {
-                    setItemsVisibility(false)
                 }
             }
             return@setOnItemSelectedListener true
@@ -93,9 +86,9 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
     private fun initActionBar() {
         setSupportActionBar(binding.toolbar)
         binding.toolbar.outlineProvider = null
-        mainRouter.openCharactersScreen()
         with(binding.btnFilter) {
             setOnClickListener {
+                mainRouter.clearBackStack()
                 (searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView).callOnClick()
                 when (toggleFragment?.toggle()) {
                     BottomSheetBehavior.STATE_EXPANDED -> setFragmentCollapsed()
@@ -112,7 +105,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
     }
 
     override fun setFragmentExpanded() {
-        searchView?.isVisible = true
+        searchView?.isVisible = searchFragment != null
         binding.btnFilter.setImageDrawable(ru.example.gnt.ui.R.drawable.baseline_filter_list_24)
     }
 
@@ -122,6 +115,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        if (mainRouter.getActiveFragment() !is SearchFragment) return false
         val inflater = menuInflater
         inflater.inflate(ru.example.gnt.ui.R.menu.app_bar_menu, menu)
         val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -129,10 +123,8 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         searchView = searchItem?.actionView as SearchView
 
         searchView?.setSearchableInfo(manager.getSearchableInfo(componentName))
-
-
         searchCloseButton =
-        searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
+            searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
 
         searchCloseButton?.setOnClickListener {
             searchView?.setQuery(null, false)
@@ -145,6 +137,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                 searchFragment?.doSearch(newText)
                 return true
             }
+
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
@@ -152,12 +145,6 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         return true
     }
 
-    private fun setItemsVisibility(isVisible: Boolean) {
-        with(binding) {
-            btnFilter.isVisible = isVisible
-            toolbar.menu?.findItem(ru.example.gnt.ui.R.id.search)?.isVisible = isVisible
-        }
-    }
 
     private fun initDagger() {
         activityComponent =
@@ -166,23 +153,15 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                 .fragmentManager(supportFragmentManager)
                 .context(this)
                 .build()
-        CommonModuleDepsStore.deps = activityComponent
         CharactersDepsStore.charactersRouterDependency = activityComponent
         EpisodesDepsStore.routerDeps = activityComponent
         LocationDependencyStore.locationsRouterDependency = activityComponent
         activityComponent.inject(mainActivity = this)
     }
 
-    override fun showSearchView(isShown: Boolean) {
-        binding.toolbar.menu?.findItem(ru.example.gnt.ui.R.id.search)?.isVisible = false
-    }
 
     override fun setSearchText(searchQuery: String) {
         searchView?.setQuery(searchQuery, true)
-    }
-
-    override fun registerSearchFragment(instance: SearchFragment) {
-        searchFragment = instance
     }
 
     override fun closeSearchInterface() {
@@ -195,15 +174,11 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        outState.putInt(ACTIVE_TAB_ID, binding.bottomNav.selectedItemId)
-        outState.putString(ACTIVE_FRAGMENT_TAG, mainRouter.currentActiveTag)
-    }
-
     override fun onBackStackChanged() {
         hideKeyboard(binding.root)
         val fragment = mainRouter.getActiveFragment()
+        unregisterFragments()
+        registerFragments(fragment)
         if (fragment != null) {
             when (fragment) {
                 is CharacterListFragment -> {
@@ -211,6 +186,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                         ru.example.gnt.ui.R.id.characters
                     )
                     setMainScreenMode()
+                    mainRouter.clearBackStack()
                 }
                 is EpisodeListFragment -> {
                     checkBottomNavSelectedItemId(
@@ -224,26 +200,42 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                     )
                     setMainScreenMode()
                 }
-                is DetailsFragment -> {
-                    setItemsVisibility(isVisible = false)
+                is SearchFragment -> {
+                    registerFragments(fragment)
+                }
+                else -> {
+                    setMainScreenItemsVisibility(isVisible = false)
                     setToolbarBackButtonVisibility(isVisible = true)
                 }
             }
         }
     }
 
+
+
+    private fun setMainScreenItemsVisibility(isVisible: Boolean) {
+        searchView?.isVisible = isVisible
+        binding.btnFilter.isVisible = isVisible
+    }
+
     private fun setMainScreenMode() {
+        setMainScreenItemsVisibility(isVisible = true)
         setToolbarBackButtonVisibility(isVisible = false)
-        setItemsVisibility(isVisible = true)
     }
 
 
-    override fun registerToggleFragment(fragment: LayoutBackDropManager) {
-        toggleFragment = fragment
+    private fun unregisterFragments() {
+        toggleFragment = null
+        searchFragment = null
     }
 
-    companion object {
-        const val ACTIVE_TAB_ID = "ACTIVE_TAB_ID"
-        const val ACTIVE_FRAGMENT_TAG = "ACTIVE_FRAGMENT_TAG"
+    private fun registerFragments(fragment: Fragment?) {
+        if(fragment is SearchFragment) {
+            searchFragment = fragment
+        }
+        if(fragment is LayoutBackDropManager) {
+            toggleFragment = fragment
+        }
     }
+
 }

@@ -3,6 +3,7 @@ package ru.example.gnt.characters.presentation.detials.recyclerview;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import ru.example.gnt.characters.R;
 import ru.example.gnt.characters.databinding.EpisodeListItemBinding;
 import ru.example.gnt.common.model.Resource;
 import ru.example.gnt.common.model.episodes.EpisodeListItem;
@@ -19,9 +20,9 @@ public class EpisodesViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void onBind(EpisodeListItem item) {
-        binding.tvEpisode.setText(item.getEpisode());
+        binding.tvEpisode.setText(binding.getRoot().getContext().getString(ru.example.gnt.ui.R.string.episode, item.getEpisode()));
         binding.tvName.setText(item.getName());
-        binding.tvAirDate.setText(item.getAirDate());
+        binding.tvAirDate.setText(binding.getRoot().getContext().getString(ru.example.gnt.ui.R.string.air_date, item.getAirDate()));
         binding.getRoot().setOnClickListener(v -> {
             listener.onItemClicked(item.getId());
         });
