@@ -48,5 +48,10 @@
     <string name="no_result_exception">No data found in local storage</string>
 
     <string name="no_data_available_error">No data available</string>
+    <string name="apply">Apply</string>
+    <string name="clear">Clear</string>
+
+    <string name="no_filters_applied">No filters applied</string>
+
 
 </resources>

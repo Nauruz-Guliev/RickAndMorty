@@ -2,7 +2,6 @@ package ru.example.gnt.locations.data.repository
 
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.core.Single
-import retrofit2.awaitResponse
 import ru.example.gnt.common.R
 import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
@@ -10,7 +9,6 @@ import ru.example.gnt.common.model.characters.CharacterListItem
 import ru.example.gnt.common.utils.ApiListQueryGenerator
 import ru.example.gnt.common.utils.UrlIdExtractor
 import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorRegular
-import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorSuspending
 import ru.example.gnt.data.di.qualifiers.RxIOSchedulerQualifier
 import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.data.local.dao.LocationsDao
@@ -20,7 +18,7 @@ import ru.example.gnt.data.mapper.LocationEntityResponseMapper
 import ru.example.gnt.data.remote.service.CharacterService
 import ru.example.gnt.data.remote.service.LocationService
 import ru.example.gnt.locations.data.mapper.LocationEntityUiDetailsMapper
-import ru.example.gnt.locations.data.mapper.LocationsResponseUiDetailsMapper
+import ru.example.gnt.locations.data.mapper.LocationResponseUiDetailsMapper
 import ru.example.gnt.locations.domain.repository.LocationDetailsRepository
 import ru.example.gnt.locations.presentation.details.LocationDetailsModel
 import java.io.IOException
@@ -35,7 +33,7 @@ class LocationDetailsRepositoryImpl @Inject constructor(
     private val characterService: CharacterService,
     //mappers
     private val locationEntityUiDetailsMapper: LocationEntityUiDetailsMapper,
-    private val locationsResponseUiDetailsMapper: LocationsResponseUiDetailsMapper,
+    private val locationResponseUiDetailsMapper: LocationResponseUiDetailsMapper,
     private val locationEntityResponseMapper: LocationEntityResponseMapper,
     private val characterResponseUiListItemMapper: CharacterResponseUiListItemMapper,
     private val characterEntityUiListItemMapper: CharacterEntityUiListItemMapper,
@@ -46,7 +44,7 @@ class LocationDetailsRepositoryImpl @Inject constructor(
 ) : LocationDetailsRepository {
     override fun getLocationDetailsItemById(id: Int): Single<LocationDetailsModel> {
         return locationService.getLocationById(id).map { locationsResponse ->
-            locationsResponseUiDetailsMapper.mapTo(locationsResponse).apply {
+            locationResponseUiDetailsMapper.mapTo(locationsResponse).apply {
                 residents =
                     getCharacterList(locationsResponse.residents?.map(urlIdExtractor::extract))
                 locationsDao.saveLocationBlocking(

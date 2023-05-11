@@ -6,7 +6,7 @@ import ru.example.gnt.data.remote.model.LocationsResponseModel
 import ru.example.gnt.locations.presentation.details.LocationDetailsModel
 import javax.inject.Inject
 
-class LocationsResponseUiDetailsMapper @Inject constructor(
+class LocationResponseUiDetailsMapper @Inject constructor(
     private val urlIdExtractor: UrlIdExtractor
 ) :
     BaseMapper<LocationsResponseModel.Result, LocationDetailsModel> {

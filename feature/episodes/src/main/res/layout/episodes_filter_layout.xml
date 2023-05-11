@@ -62,5 +62,8 @@
             android:hint="" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <include
+        android:id="@+id/filter_buttons"
+        layout="@layout/filter_buttons_layout"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

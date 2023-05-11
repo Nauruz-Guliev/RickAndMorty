@@ -69,11 +69,27 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
+        initFilterButtons()
         initSwipeRefreshLayout()
         observePaginationStates()
         observeInternetState()
     }
 
+
+    private fun initFilterButtons() {
+        with(binding.filterLayout.filterButtons) {
+            btnApply.setOnClickListener {
+                initFilterValues()
+                setExpanded()
+                adapter?.refresh()
+            }
+            btnClear.setOnClickListener {
+                locationsViewModel.clearAllFilters()
+                adapter?.refresh()
+                setExpanded()
+            }
+        }
+    }
     private fun initSwipeRefreshLayout() {
         binding.swipeRefresh.setOnRefreshListener {
             locationsViewModel.applyFilter()
@@ -191,16 +207,13 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         val state = sheetBehavior?.state
         if (sheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior?.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-            with(binding) {
-                rvLocations.visibility = ViewGroup.GONE
-            }
+            (requireActivity() as? ToggleActivity)?.setFragmentCollapsed()
+              binding.rvLocations.alpha = 0.3F
+
         } else {
             sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-            with(binding) {
-                rvLocations.visibility = ViewGroup.VISIBLE
-            }
-            setUpUiFilterValues()
-            adapter?.refresh()
+            (requireActivity() as? ToggleActivity)?.setFragmentExpanded()
+            binding.rvLocations.alpha = 1F
         }
         context?.hideKeyboard(binding.root)
         return state
@@ -211,7 +224,7 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         binding.rvLocations.isVisible = true
     }
 
-    private fun setUpUiFilterValues() {
+    private fun initFilterValues() {
         with(binding.filterLayout) {
             locationsViewModel.applyFilter(
                 name = etName.text.toString(),

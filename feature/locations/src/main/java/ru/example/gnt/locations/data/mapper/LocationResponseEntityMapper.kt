@@ -6,7 +6,7 @@ import ru.example.gnt.data.mapper.LocationEntityResponseMapper
 import ru.example.gnt.data.remote.model.LocationsResponseModel
 import javax.inject.Inject
 
-class LocationResponseInfoEntityMapper @Inject constructor(
+class LocationResponseEntityMapper @Inject constructor(
     private val mapper: LocationEntityResponseMapper
 ) : BaseMapper<LocationsResponseModel, List<LocationEntity>> {
     override fun mapTo(model: LocationsResponseModel): List<LocationEntity> =

@@ -2,7 +2,6 @@ package ru.example.gnt.characters.presentation.list
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +18,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputLayout
-import io.reactivex.rxjava3.core.Scheduler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -36,8 +33,6 @@ import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
-import ru.example.gnt.common.exceptions.ApplicationException
-import ru.example.gnt.common.utils.extensions.internetCapabilitiesCallback
 import ru.example.gnt.common.utils.CustomLoadStateAdapter
 import ru.example.gnt.common.utils.TryAgainAction
 import ru.example.gnt.common.utils.extensions.createChip
@@ -86,6 +81,7 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
         initCoordinatorLayout()
         initChipGroup()
         initSwipeRefreshLayout()
+        initFilterButtons()
         observeDataStates()
         observeInternetConnectionChanges()
         setUpInfoTextView()
@@ -95,6 +91,24 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.applyFilter()
             adapter?.refresh()
+            if (!isInternetOn) {
+                binding.root.context.showToastShort(ru.example.gnt.ui.R.string.no_internet_connection)
+            }
+        }
+    }
+
+    private fun initFilterButtons() {
+        with(binding.filterLayout.filterButtons) {
+            btnApply.setOnClickListener {
+                initFilterValues()
+                setExpanded()
+                adapter?.refresh()
+            }
+            btnClear.setOnClickListener {
+                viewModel.clearAllFilters()
+                adapter?.refresh()
+                setExpanded()
+            }
         }
     }
 
@@ -144,12 +158,12 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
                 messageTextView.apply {
                     isVisible = isEmpty
                     text =
-                        if (viewModel.isFilterOn() && isInternetOn) getString(ru.example.gnt.ui.R.string.no_filter_results) else getString(
+                        if (viewModel.isFilterOff() && isInternetOn) getString(ru.example.gnt.ui.R.string.no_filter_results) else getString(
                             ru.example.gnt.ui.R.string.no_internet_connection
                         )
                 }
                 tryAgainButton.apply {
-                    isVisible = isEmpty && viewModel.isFilterOn()
+                    isVisible = isEmpty && viewModel.isFilterOff()
                     text = getString(ru.example.gnt.ui.R.string.clear_filter)
                 }
             }
@@ -203,8 +217,8 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     }
 
     private fun observeInternetConnectionChanges() {
-        lifecycleScope.launch(Dispatchers.Main) {
-            networkState.collectLatest {
+        lifecycleScope.launch {
+            networkState.flowWithLifecycle(lifecycle).collectLatest {
                 setUpInfoTextView()
             }
         }
@@ -223,7 +237,7 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
             sheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         } else {
             sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-            setUpFilterValues()
+            initFilterValues()
             adapter?.refresh()
         }
         context?.hideKeyboard(binding.root)
@@ -231,10 +245,11 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     }
 
     override fun setExpanded() {
+        (requireActivity() as? ToggleActivity)?.setFragmentExpanded()
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    private fun setUpFilterValues() {
+    private fun initFilterValues() {
         with(binding.filterLayout) {
             viewModel.applyFilter(
                 name = etName.text.toString(),

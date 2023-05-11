@@ -19,6 +19,8 @@ import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
 import ru.example.gnt.common.base.interfaces.ToggleActivity
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
+import ru.example.gnt.common.di.deps.CommonModuleDeps
+import ru.example.gnt.common.di.deps.CommonModuleDepsStore
 import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.setImageDrawable
 import ru.example.gnt.episodes.di.deps.EpisodesDepsStore
@@ -58,17 +60,6 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         initBottomNav()
         supportFragmentManager.addOnBackStackChangedListener(this)
 
-        /*
-        val selectedItemId = savedInstanceState?.getInt(ACTIVE_TAB_ID)
-        val lastActiveFragmentTag = savedInstanceState?.getString(ACTIVE_FRAGMENT_TAG)
-        if (selectedItemId != null) {
-            binding.bottomNav.selectedItemId = selectedItemId
-            showToastShort(selectedItemId)
-            if (lastActiveFragmentTag != null) {
-                mainRouter.popBackStack(lastActiveFragmentTag)
-            }
-        }
-         */
     }
 
     private fun initBottomNav() {
@@ -115,12 +106,12 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
-    private fun setFragmentCollapsed() {
+    override fun setFragmentCollapsed() {
         searchView?.isVisible = false
         binding.btnFilter.setImageDrawable(ru.example.gnt.ui.R.drawable.cross_svgrepo_com)
     }
 
-    private fun setFragmentExpanded() {
+    override fun setFragmentExpanded() {
         searchView?.isVisible = true
         binding.btnFilter.setImageDrawable(ru.example.gnt.ui.R.drawable.baseline_filter_list_24)
     }
@@ -175,6 +166,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                 .fragmentManager(supportFragmentManager)
                 .context(this)
                 .build()
+        CommonModuleDepsStore.deps = activityComponent
         CharactersDepsStore.charactersRouterDependency = activityComponent
         EpisodesDepsStore.routerDeps = activityComponent
         LocationDependencyStore.locationsRouterDependency = activityComponent

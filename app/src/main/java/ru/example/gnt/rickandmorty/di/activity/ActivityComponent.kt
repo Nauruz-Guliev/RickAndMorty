@@ -7,7 +7,11 @@ import dagger.BindsInstance
 import dagger.Component
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.di.CharactersRouterDependency
+import ru.example.gnt.common.di.deps.CommonModuleDeps
 import ru.example.gnt.common.di.scope.ScreenScope
+import ru.example.gnt.common.utils.AppLogger
+import ru.example.gnt.common.utils.CommonUi
+import ru.example.gnt.common.utils.ErrorHandler
 import ru.example.gnt.episodes.EpisodesRouter
 import ru.example.gnt.episodes.di.deps.EpisodesRouterDependency
 import ru.example.gnt.locations.LocationsRouter
@@ -16,12 +20,15 @@ import ru.example.gnt.rickandmorty.MainActivity
 
 @Component(
     modules = [
-        RouterModule::class
+        RouterModule::class,
     ]
 )
 @ScreenScope
 interface ActivityComponent : LocationsRouterDependency, CharactersRouterDependency,
-    EpisodesRouterDependency {
+    EpisodesRouterDependency, CommonModuleDeps {
+    override val commonUi: CommonUi
+    override val errorHandler: ErrorHandler
+    override val logger: AppLogger
     override val locationsRouter: LocationsRouter
     override val charactersRouter: CharactersRouter
     override val episodesRouter: EpisodesRouter

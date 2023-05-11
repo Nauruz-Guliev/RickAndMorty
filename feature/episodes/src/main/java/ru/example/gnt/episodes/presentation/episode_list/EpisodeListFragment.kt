@@ -40,6 +40,7 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
 
     private var adapter: EpisodeListAdapter? = null
     private var searchQuery: String? = null
+
     @Inject
     internal lateinit var episodesViewModel: EpisodeListViewModel
     override fun onAttach(context: Context) {
@@ -69,10 +70,27 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
+        initFilterButtons()
         initSwipeRefreshLayout()
         observePaginationStates()
         observeInternetState()
     }
+
+    private fun initFilterButtons() {
+        with(binding.filterLayout.filterButtons) {
+            btnApply.setOnClickListener {
+                initFilterValues()
+                setExpanded()
+                adapter?.refresh()
+            }
+            btnClear.setOnClickListener {
+                episodesViewModel.clearAllFilters()
+                adapter?.refresh()
+                setExpanded()
+            }
+        }
+    }
+
     private fun observeInternetState() {
         lifecycleScope.launch {
             networkState.flowWithLifecycle(lifecycle).collectLatest {
@@ -136,8 +154,10 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
             with(loadingStateLayout) {
                 messageTextView.apply {
                     isVisible = isEmpty
-                    text = if(!episodesViewModel.isFilterOff() && isInternetOn) getString(ru.example.gnt.ui.R.string.no_filter_results) else getString(
-                        ru.example.gnt.ui.R.string.not_connected_ui_message)
+                    text =
+                        if (!episodesViewModel.isFilterOff() && isInternetOn) getString(ru.example.gnt.ui.R.string.no_filter_results) else getString(
+                            ru.example.gnt.ui.R.string.not_connected_ui_message
+                        )
                 }
                 tryAgainButton.apply {
                     isVisible = isEmpty && !episodesViewModel.isFilterOff()
@@ -184,15 +204,14 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
         val state = sheetBehavior?.state
         if (sheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior?.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-            with(binding) {
-                rvEpisodes.visibility = ViewGroup.GONE
-            }
+            (requireActivity() as? ToggleActivity)?.setFragmentCollapsed()
+            binding.rvEpisodes.alpha = 0.3F
+
         } else {
             sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-            with(binding) {
-                rvEpisodes.visibility = ViewGroup.VISIBLE
-            }
-            setUpUiFilterValues()
+            (requireActivity() as? ToggleActivity)?.setFragmentCollapsed()
+            binding.rvEpisodes.alpha = 1F
+            initFilterValues()
             adapter?.refresh()
         }
         context?.hideKeyboard(binding.root)
@@ -206,11 +225,11 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
     }
 
     override fun setExpanded() {
+        (requireActivity() as? ToggleActivity)?.setFragmentExpanded()
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-        binding.rvEpisodes.isVisible = true
     }
 
-    private fun setUpUiFilterValues() {
+    private fun initFilterValues() {
         with(binding.filterLayout) {
             episodesViewModel.applyFilter(
                 name = etName.text.toString(),

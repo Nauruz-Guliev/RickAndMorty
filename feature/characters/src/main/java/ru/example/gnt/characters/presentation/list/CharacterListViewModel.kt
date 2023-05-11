@@ -1,5 +1,6 @@
 package ru.example.gnt.characters.presentation.list
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -10,6 +11,7 @@ import kotlinx.coroutines.launch
 import ru.example.gnt.characters.CharactersRouter
 import ru.example.gnt.characters.domain.usecases.GetCharacterListUseCase
 import ru.example.gnt.characters.presentation.list.model.CharactersState
+import ru.example.gnt.common.base.BaseViewModel
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 import javax.inject.Inject
@@ -61,16 +63,16 @@ internal class CharacterListViewModel @Inject constructor(
         }
     }
 
-    fun isFilterOn(): Boolean {
+    fun isFilterOff(): Boolean =
         with(_uiState.value.filter) {
-            return type == null && status == null && species == null && gender == null && name == null
+            type == null && status == null && species == null && gender == null && name == null
         }
-    }
+
 
     private suspend fun loadCharacters() {
-        _uiState.value = _uiState.value.copy(
+        _uiState.emit(_uiState.value.copy(
             charactersFlow = getCharacterListUseCase(_uiState.value.filter).distinctUntilChanged()
-                .cachedIn(viewModelScope)
+                .cachedIn(viewModelScope))
         )
     }
 

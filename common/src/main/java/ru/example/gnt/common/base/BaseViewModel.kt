@@ -31,24 +31,6 @@ open class BaseViewModel : ViewModel() {
     }
 
 
-    private val debounceFlow = MutableSharedFlow<() -> Unit>(
-        replay = 1,
-        extraBufferCapacity = 42
-    )
-
-    init {
-        viewModelScope.launch {
-            debounceFlow.sample(400).collect {
-                it()
-            }
-        }
-    }
-
-    protected fun debounce(block: () -> Unit) {
-        debounceFlow.tryEmit(block)
-    }
-
-
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()

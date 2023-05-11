@@ -14,7 +14,7 @@ import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.data.local.dao.LocationsDao
 import ru.example.gnt.data.local.entity.LocationEntity
 import ru.example.gnt.data.remote.service.LocationService
-import ru.example.gnt.locations.data.mapper.LocationResponseInfoEntityMapper
+import ru.example.gnt.locations.data.mapper.LocationResponseEntityMapper
 import ru.example.gnt.locations.presentation.list.LocationListFilterModel
 
 @OptIn(ExperimentalPagingApi::class)
@@ -23,7 +23,7 @@ class LocationsRemoteMediator @AssistedInject constructor(
     private val service: LocationService,
     @Assisted
     private val filterModel: LocationListFilterModel,
-    private val responseInfoEntityMapper: LocationResponseInfoEntityMapper
+    private val responseInfoEntityMapper: LocationResponseEntityMapper
 ) :
     RemoteMediator<Int, LocationEntity>() {
 
