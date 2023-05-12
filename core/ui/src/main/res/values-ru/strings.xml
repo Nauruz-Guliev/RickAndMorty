@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="network_error">
+        Не удалось загрузить данные
+    </string>
+    <string name="app_name">Рик и Морти</string>
+    <string name="characters">Персонажи</string>
+    <string name="episodes">Эпизоды</string>
+    <string name="locations">Локации</string>
+
+
+    <string name="avatar">Avatar</string>
+    <string name="characters_welcome_message"> Знакомься с персонажами из Рик и Морти!</string>
+    <string name="episodes_welcome_message"> Исследуй мир Рик и Морти!</string>
+
+    <string name="information">Информация</string>
+    <string name="gender">Пол : %1s</string>
+    <string name="origin">Происхождение: %1s</string>
+    <string name="type">Тип: %1s</string>
+    <string name="type_empty">Тип </string>
+    <string name="dimension">Измерение: %1s</string>
+    <string name="dimension_empty">Измерение</string>
+
+    <string name="status">Статус %1s</string>
+    <string name="status_empty">Статус</string>
+    <string name="gender_empty">Пол</string>
+    <string name="search">Поиск</string>
+    <string name="try_again">Попробуй ещё раз</string>
+
+    <string name="network_empty_result_error">Не получено данных.</string>
+    <string name="network_error_with_code">Произошла ошибка %1s во время получения данных.</string>
+    <string name="unknown_network_exception">Произошла неизвестная ошибка во время получения данных.</string>
+    <string name="database_error">Произошла ошибка в процессе обращения к базе данных.</string>
+    <string name="location">Локация: %1s</string>
+
+
+    <string name="species">Виды: %1s</string>
+    <string name="species_empty">Виды</string>
+    <string name="name">Имя: %1s</string>
+    <string name="created">Создан: %1s</string>
+
+    <string name="name_empty">Имя</string>
+    <string name="results_amount">Результаты: %1s</string>
+    <string name="no_filter_results">Совпадений не найдено.</string>
+    <string name="clear_filter">Очистить фильтр</string>
+    <string name="no_internet_connection">Нет подключения к интернету.</string>
+    <string name="unknown_resource_error">Запрос на неопределнный ресурс</string>
+    <string name="unknown_network_error">Неизвестная ошибка сети.</string>
+    <string name="not_connected_ui_message">Нет подключения к интернету</string>
+    <string name="human">Человек</string>
+
+    <string name="unknown_data_access_error">Произошла неизвестная ошибка доступа данных.</string>
+    <string name="episode">Эпизод: \n %1s</string>
+    <string name="episode_empty">Эпизод </string>
+    <string name="air_date">Дата выхода: \n %1s</string>
+
+    <string name="no_result_exception">Нет данных в локальном источнике.</string>
+
+    <string name="no_data_available_error">Нет доступных данных</string>
+    <string name="local_data_warning">Не удалось загрузить данные из удаленного источника. Отображаются локальные данные. </string>
+
+    <string name="apply">Применить</string>
+    <string name="clear">Очистить</string>
+
+    <string name="no_filters_applied">Нет примененных фильтров</string>
+    <string name="empty_filters_message">Фильтры не были определны.</string>
+
+
+    <string name="empty_database_result">Локальных данных не найдено</string>
+    <string name="unable_to_parse_error">Невозможно преобразовать данные.</string>
+    <string name="data_access_error">Не удалось преобразовать данные</string>
+    <string name="connection_error">Произошла ошибка во время подключения</string>
+    <string name="no_internet_connection_error">You are not connected to the internet</string>
+    <string name="alert_dialog_button_ok">OK</string>
+    <string name="alert_dialog_general_error">Произошла ошибка</string>
+
+    <string name="no_internet_data_might_be_outdated">Нет подключения к интернету. Возможно, не все данные были загружены или они не актуальны.</string>
+</resources>
