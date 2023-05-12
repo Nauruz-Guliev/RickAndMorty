@@ -42,6 +42,7 @@ abstract class BaseFragment<VB : ViewBinding>(
     ): View {
         _binding = bindingInflater.invoke(layoutInflater)
         isInternetOn = requireContext().isNetworkOn()
+        observeInternetConnectionChanges()
         return binding.root
     }
 
@@ -56,7 +57,6 @@ abstract class BaseFragment<VB : ViewBinding>(
         sheetBehavior?.isHideable = false
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         this.coordinatorLayout = coordinatorLayout
-        observeInternetConnectionChanges()
         isInternetOn = requireContext().isNetworkOn()
         return coordinatorLayout
     }

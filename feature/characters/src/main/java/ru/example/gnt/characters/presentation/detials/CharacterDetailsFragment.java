@@ -4,11 +4,17 @@ import static ru.example.gnt.common.utils.extensions.UiExtensionsKt.showToastSho
 import static ru.example.gnt.common.utils.extensions.UtilityExtensionsKt.isNetworkOn;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkRequest;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -66,10 +72,46 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
         return binding.getRoot();
     }
 
+    private void checkConnectivity() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkRequest networkRequest = new NetworkRequest.Builder().build();
+        connectivityManager.registerNetworkCallback(networkRequest, new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onLost(Network network) {
+                super.onLost(network);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    try {
+                        binding.tvNetwork.tvNetwork.setVisibility(View.VISIBLE);
+                    } catch (Exception ex) {
+                    }
+                });
+            }
+
+            ;
+
+            @Override
+            public void onAvailable(Network network) {
+                super.onAvailable(network);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    try {
+                        binding.tvNetwork.tvNetwork.setVisibility(View.GONE);
+                    } catch (Exception ex) {
+                    }
+
+                });
+            }
+
+            ;
+        });
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (!isNetworkOn(requireContext()))
+            new Handler(Looper.getMainLooper()).post(() -> binding.tvNetwork.tvNetwork.setVisibility(View.VISIBLE));
         observeDataStates();
+        checkConnectivity();
         initSwipeRefreshListener();
         observeMotionLayoutStates();
     }
@@ -112,7 +154,7 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
     }
 
     private void observeDataStates() {
-        final Observer<UiState<?>> observer = (Observer<UiState<?>>) value -> {
+        final Observer<UiState<?>> observer = value -> {
             if (value instanceof UiState.Loading) {
                 binding.swipeRefresh.setRefreshing(true);
 
@@ -133,9 +175,15 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
     }
 
     private void handleErrors(Throwable ex) {
-        if(ex instanceof ApplicationException) {
+        if (ex instanceof ApplicationException.LocalDataException) {
+            try {
+                Toast.makeText(requireContext(), ex.getMessage() + " not empty", Toast.LENGTH_SHORT).show();
+                binding.tvNetwork.tvNetwork.setText(((ApplicationException.LocalDataException) ex).getResource().getValue(requireContext()));
+            } catch (Exception ignored) {
+            }
+        } else if (ex instanceof ApplicationException) {
             Resource.String resource = ((ApplicationException) ex).getResource();
-            if(resource != null) {
+            if (resource != null) {
                 showToastShort(requireContext(), resource.getValue(requireContext()));
             }
         } else {

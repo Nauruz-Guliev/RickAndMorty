@@ -28,6 +28,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <include
+                android:id="@+id/tv_network"
+                layout="@layout/no_internet_connection_text_view"/>
+
             <TextView
                 android:id="@+id/tv_name"
                 style="@style/TextViewDetailsStyle"

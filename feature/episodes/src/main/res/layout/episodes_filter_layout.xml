@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_6"
         android:layout_marginHorizontal="@dimen/margin_4"
-        android:text="@string/episode"
+        android:text="@string/episode_empty"
         android:textColor="@color/blue_rm" />
 
 

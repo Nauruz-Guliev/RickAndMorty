@@ -67,6 +67,9 @@ dependencies {
     implementation(libs.androidx.paging)
     implementation(libs.androidx.swiperefresh)
 
+    implementation(libs.androidx.splash)
+
+
     implementation(libs.bundles.okHttp)
 
     //tests

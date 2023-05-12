@@ -12,6 +12,7 @@
         android:layout_gravity="center"
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
+        android:indeterminateTint="@color/red_rm"
         android:layout_height="wrap_content"
         android:visibility="gone"
         tools:visibility="visible" />

@@ -1,11 +1,11 @@
 package ru.example.gnt.characters.data
 
+import android.util.Log
 import io.reactivex.rxjava3.core.Observable
 import ru.example.gnt.characters.data.mapper.CharacterEntityUiDetailsMapper
 import ru.example.gnt.characters.data.mapper.CharacterResponseUiDetailsMapper
 import ru.example.gnt.characters.domain.repository.CharacterDetailsRepository
 import ru.example.gnt.characters.presentation.detials.CharacterDetailsModel
-import ru.example.gnt.common.R
 import ru.example.gnt.common.base.BaseMapper
 import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
@@ -25,6 +25,7 @@ import ru.example.gnt.data.remote.service.CharacterService
 import ru.example.gnt.data.remote.service.EpisodeService
 import ru.example.gnt.data.remote.service.LocationService
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CharacterDetailsRepositoryImpl @Inject constructor(
@@ -49,40 +50,57 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
 ) : CharacterDetailsRepository {
 
     override fun getCharacterById(id: Int): Observable<CharacterDetailsModel> {
-        return Observable.create { emitter ->
-            val character = characterService.getCharacterById(id).blockingGet()
-            emitter.onNext(
-                loadMissingValues(
-                    ids = character.episode?.map(urlIdExtractor::extract),
-                    character = character,
-                    locationId = urlIdExtractor.extract(character.location?.url),
-                    originId = urlIdExtractor.extract(character.origin?.url),
-                    mapper = characterResponseUiDetailsMapper
-                )
+        return Observable.create<CharacterDetailsModel> { emitter ->
+            val characterLocal = loadLocal(id)
+            Log.d("CHARACTER_LOCAL", "LOCAL" + characterLocal)
+            if (characterLocal != null) emitter.onNext(characterLocal)
+
+            val characterRemote = characterService.getCharacterById(id).blockingGet()
+            loadMissingValues(
+                ids = characterRemote.episode?.map(urlIdExtractor::extract),
+                character = characterRemote,
+                locationId = urlIdExtractor.extract(characterRemote.location?.url),
+                originId = urlIdExtractor.extract(characterRemote.origin?.url),
+                mapper = characterResponseUiDetailsMapper
             )
-        }.onErrorReturn { exception ->
-            when (exception) {
-                is IOException, is RuntimeException -> {
-                    val character = charactersDao.getCharacterById(id)
-                    try {
-                        return@onErrorReturn loadMissingValues(
-                            ids = character.episode,
-                            character = character,
-                            locationId = character.locationId,
-                            originId = character.originId,
-                            mapper = characterEntityUiDetailsMapper
+
+        }.delay(100, TimeUnit.MILLISECONDS)
+            .onErrorReturn { exception ->
+                Log.e(
+                    "CHARACTER_LOCAL",
+                    exception.message.toString() + exception.javaClass.name.toString()
+                )
+                when (exception) {
+                    is IOException, is RuntimeException -> {
+                        Log.e("CHARACTER_LOCAL_NEW", loadLocal(id).toString())
+                        throw ApplicationException.LocalDataException(resource = Resource.String(ru.example.gnt.ui.R.string.local_data_warning))
+                    }
+                    is ApplicationException -> throw exception
+                    else -> {
+                        throw ApplicationException.DataAccessException(
+                            exception,
+                            Resource.String(ru.example.gnt.ui.R.string.data_access_error)
                         )
-                    } catch (ex: Exception) {
-                        characterEntityUiDetailsMapper.mapTo(character)
                     }
                 }
-                else -> {
-                    throw ApplicationException.DataAccessException(
-                        exception,
-                        Resource.String(ru.example.gnt.ui.R.string.data_access_error)
-                    )
-                }
             }
+    }
+
+
+    private fun loadLocal(id: Int): CharacterDetailsModel? {
+        val character = charactersDao.getCharacterById(id) ?: return null
+        return try {
+            with(character) {
+                loadMissingValues(
+                    ids = episode,
+                    character = character,
+                    locationId = character.locationId,
+                    originId = character.originId,
+                    mapper = characterEntityUiDetailsMapper
+                )
+            }
+        } catch (ex: Exception) {
+            characterEntityUiDetailsMapper.mapTo(character)
         }
     }
 
@@ -104,7 +122,7 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
 
     override fun getEpisodeList(ids: List<String>): List<EpisodeListItem> {
         return try {
-            return if (ids.size > 1) {
+            if (ids.size > 1) {
                 wrapRetrofitErrorRegular {
                     episodeService.getEpisodesInRange(apiListQueryGenerator.generate(ids))
                         .execute().body()
@@ -121,7 +139,7 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
                     }
                 }
             }
-        } catch (ex: IOException) {
+        } catch (ex: Exception) {
             episodeDao.getEpisodes(ids).map(episodeEntityUiListMapper::mapTo)
         }
     }
@@ -137,8 +155,10 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
                     null
                 }
             }
-        } catch (ex: IOException) {
-            locationsDao.getLocations(listOf(id)).map(locationEntityUiListMapper::mapTo)[0]
+        } catch (ex: Exception) {
+            val result =
+                locationsDao.getLocations(listOf(id)).map(locationEntityUiListMapper::mapTo)
+            if (result.isNotEmpty()) return result[0] else null
         }
     }
 }

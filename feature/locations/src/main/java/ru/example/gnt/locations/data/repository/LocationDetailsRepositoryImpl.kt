@@ -1,8 +1,9 @@
 package ru.example.gnt.locations.data.repository
 
+import android.util.Log
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Scheduler
-import io.reactivex.rxjava3.core.Single
-import ru.example.gnt.common.R
+import ru.example.gnt.common.base.BaseMapper
 import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.characters.CharacterListItem
@@ -42,27 +43,34 @@ class LocationDetailsRepositoryImpl @Inject constructor(
     private val apiListQueryGenerator: ApiListQueryGenerator,
     @RxIOSchedulerQualifier private val scheduler: Scheduler
 ) : LocationDetailsRepository {
-    override fun getLocationDetailsItemById(id: Int): Single<LocationDetailsModel> {
-        return locationService.getLocationById(id).map { locationsResponse ->
-            locationResponseUiDetailsMapper.mapTo(locationsResponse).apply {
-                residents =
-                    getCharacterList(locationsResponse.residents?.map(urlIdExtractor::extract))
-                locationsDao.saveLocationBlocking(
-                    listOf(
-                        locationEntityResponseMapper.mapTo(
-                            locationsResponse
-                        )
-                    )
+    override fun getLocationDetailsItemById(id: Int): Observable<LocationDetailsModel> {
+        return Observable.create { emitter ->
+            val location = locationService.getLocation(id).execute().body()
+            if (location != null && location.residents?.isNotEmpty() == false) {
+                emitter.onNext(locationResponseUiDetailsMapper.mapTo(location))
+                emitter.onComplete()
+            }else {
+                val locationExtended = loadMissingValues(
+                    ids = location?.residents?.map(urlIdExtractor::extract),
+                    mapper = locationResponseUiDetailsMapper,
+                    location = location
                 )
+                if (locationExtended != null) emitter.onNext(locationExtended)
+                emitter.onComplete()
             }
         }.onErrorReturn { exception ->
-            when (exception) {
-                is IOException -> {
+            return@onErrorReturn when (exception) {
+
+                is IOException, is RuntimeException -> {
                     val location = locationsDao.getLocationById(id).blockingGet()
-                    locationEntityUiDetailsMapper.mapTo(
-                        locationsDao.getLocationById(id).blockingGet()
-                    ).apply {
-                        residents = getCharacterList(location.residents ?: listOf())
+                    try {
+                        loadMissingValues(
+                            ids = location.residents,
+                            location = location,
+                            locationEntityUiDetailsMapper
+                        ) as LocationDetailsModel
+                    } catch (ex: Exception) {
+                        locationEntityUiDetailsMapper.mapTo(location)
                     }
                 }
                 is ApplicationException -> throw exception
@@ -73,6 +81,17 @@ class LocationDetailsRepositoryImpl @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    private fun <T> loadMissingValues(
+        ids: List<String>?,
+        location: T?,
+        mapper: BaseMapper<T, LocationDetailsModel>
+    ): LocationDetailsModel? {
+        return if (location == null || ids == null || ids.isEmpty()) null
+        else mapper.mapTo(location).apply {
+            residents = getCharacterList(ids)
         }
     }
 

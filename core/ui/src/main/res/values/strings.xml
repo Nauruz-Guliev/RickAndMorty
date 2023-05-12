@@ -16,8 +16,13 @@
     <string name="information">Information</string>
     <string name="gender">Gender : %1s</string>
     <string name="origin">Origin: %1s</string>
-    <string name="type">Type %1s</string>
-    <string name="status">Status</string>
+    <string name="type">Type: %1s</string>
+    <string name="type_empty">Type </string>
+    <string name="dimension">Dimension: %1s</string>
+    <string name="dimension_empty">Dimension</string>
+
+    <string name="status">Status %1s</string>
+    <string name="status_empty">Status</string>
     <string name="gender_empty">Gender</string>
     <string name="search">Search</string>
     <string name="try_again">Try again</string>
@@ -29,9 +34,12 @@
     <string name="location">Location: %1s</string>
 
 
-    <string name="species">Species</string>
-    <string name="name">Name</string>
-    <string name="type_empty">Type</string>
+    <string name="species">Species: %1s</string>
+    <string name="species_empty">Species</string>
+    <string name="name">Name: %1s</string>
+    <string name="created">Created: %1s</string>
+
+    <string name="name_empty">Name</string>
     <string name="results_amount">Results: %1s</string>
     <string name="no_filter_results">No matching results.</string>
     <string name="clear_filter">Clear filter</string>
@@ -40,15 +48,17 @@
     <string name="unknown_network_error">Unknown network error</string>
     <string name="not_connected_ui_message">You are not connected to internet</string>
     <string name="human">Human</string>
-    <string name="name_empty">Name</string>
 
     <string name="unknown_data_access_error">Unknown data access error occurred.</string>
     <string name="episode">Episode: \n %1s</string>
+    <string name="episode_empty">Episode </string>
     <string name="air_date">Air date: \n %1s</string>
 
     <string name="no_result_exception">No data found in local storage</string>
 
     <string name="no_data_available_error">No data available</string>
+    <string name="local_data_warning">No internet connection was available. Local data is loaded. </string>
+
     <string name="apply">Apply</string>
     <string name="clear">Clear</string>
 
@@ -64,4 +74,5 @@
     <string name="alert_dialog_button_ok">OK</string>
     <string name="alert_dialog_general_error">Error occurred</string>
 
+    <string name="no_internet_data_might_be_outdated">No internet. Some data might be missing or out of date.</string>
 </resources>

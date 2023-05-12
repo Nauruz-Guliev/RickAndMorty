@@ -1,10 +1,15 @@
 package ru.example.gnt.locations.presentation.details;
 
-import static ru.example.gnt.common.utils.extensions.UtilityExtensionsKt.isNetworkOn;
 import static ru.example.gnt.common.utils.extensions.UiExtensionsKt.showToastShort;
+import static ru.example.gnt.common.utils.extensions.UtilityExtensionsKt.isNetworkOn;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkRequest;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +67,8 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = LocationDetailsFragmentBinding.inflate(getLayoutInflater());
+        if (!isNetworkOn(requireContext()))
+            new Handler(Looper.getMainLooper()).post(() -> binding.tvNetwork.tvNetwork.setVisibility(View.VISIBLE));
         return binding.getRoot();
     }
 
@@ -70,6 +77,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         super.onViewCreated(view, savedInstanceState);
         observeDataStates();
         initSwipeRefreshListener();
+        checkConnectivity();
         observeMotionLayoutStates();
     }
 
@@ -108,10 +116,10 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
 
     private void setValues(LocationDetailsModel item) {
         binding.tvName.setVisibility(View.VISIBLE);
-        binding.tvName.setText(item.getName());
+        binding.tvName.setText(getString(ru.example.gnt.ui.R.string.name, item.getName()));
         if (item.getCreated() != null) {
             binding.tvCreated.setVisibility(View.VISIBLE);
-            binding.tvCreated.setText(item.getCreated());
+            binding.tvCreated.setText(getString(ru.example.gnt.ui.R.string.created, item.getCreated()));
         } else {
             binding.tvCreated.setVisibility(View.GONE);
         }
@@ -120,7 +128,10 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         } else {
             binding.tvRv.setVisibility(View.GONE);
         }
+        binding.tvDimension.setText(getString(ru.example.gnt.ui.R.string.dimension, item.getDimension()));
+        binding.tvDimension.setVisibility(View.VISIBLE);
         binding.tvType.setVisibility(ViewGroup.VISIBLE);
+        binding.tvType.setText(getString(ru.example.gnt.ui.R.string.type, item.getType()));
         CharacterListAdapter adapter = new CharacterListAdapter(new CharacterDiffCallback(), id -> {
             viewModel.navigateToCharacterDetails(id);
         }, Glide.with(binding.getRoot()));
@@ -153,6 +164,35 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
                                                        }
                                                    }
         );
+    }
+
+    private void checkConnectivity() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkRequest networkRequest = new NetworkRequest.Builder().build();
+        connectivityManager.registerNetworkCallback(networkRequest, new ConnectivityManager.NetworkCallback() {
+
+            @Override
+            public void onLost(@NonNull Network network) {
+                super.onLost(network);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    try {
+                        binding.tvNetwork.tvNetwork.setVisibility(View.VISIBLE);
+                    } catch (Exception ex) {}
+
+                });
+            }
+
+            @Override
+            public void onAvailable(Network network) {
+                super.onAvailable(network);
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    try {
+                        binding.tvNetwork.tvNetwork.setVisibility(View.GONE);
+                    } catch (Exception ex) {}
+
+                });
+            };
+        });
     }
 
     @Override

@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.bundles.okHttp)
     implementation(libs.androidx.splash)
 
+    implementation(libs.androidx.splash)
 
 
     //libraries

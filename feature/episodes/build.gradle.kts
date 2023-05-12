@@ -61,6 +61,9 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.bundles.android.java.rx)
 
+    implementation(libs.androidx.splash)
+
+
     implementation(libs.androidx.paging)
     implementation(libs.androidx.swiperefresh)
 

@@ -22,6 +22,9 @@ sealed class ApplicationException(
     class DataAccessException(cause: Throwable? = null, override val resource: Resource.String? = null) :
         ApplicationException(resource = resource)
 
+    class LocalDataException(cause: Throwable? = null, override val resource: Resource.String? = null) :
+        ApplicationException(resource = resource)
+
     class DatabaseException(cause: Throwable? = null, override val resource: Resource.String? = null) :
         ApplicationException(resource = resource)
 

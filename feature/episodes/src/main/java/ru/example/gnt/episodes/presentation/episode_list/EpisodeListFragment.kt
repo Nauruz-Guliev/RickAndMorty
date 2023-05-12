@@ -227,6 +227,7 @@ class EpisodeListFragment : BaseFragment<EpisodesFragmentBinding>(
     override fun setExpanded() {
         (requireActivity() as? ToggleActivity)?.setFragmentExpanded()
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        binding.rvEpisodes.alpha = 1F
     }
 
     private fun initFilterValues() {

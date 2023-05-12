@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import ru.example.gnt.common.base.BaseFragment
 import ru.example.gnt.common.base.interfaces.DetailsFragment
 import ru.example.gnt.common.model.UiState
+import ru.example.gnt.common.utils.extensions.isNetworkOn
 import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.databinding.EpisodeDetailsFragmentBinding
 import ru.example.gnt.episodes.di.deps.EpisodesComponentViewModel
@@ -52,6 +53,20 @@ class EpisodeDetailsFragment : BaseFragment<
         observeStates()
         refreshListener()
         observeMotionLayoutStates()
+        observeConnectivity()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.tvNetwork.tvNetwork.isVisible = !requireContext().isNetworkOn()
+    }
+
+    private fun observeConnectivity() {
+        lifecycleScope.launch {
+            networkState.flowWithLifecycle(lifecycle).collectLatest {
+                binding.tvNetwork.tvNetwork.isVisible = !it
+            }
+        }
     }
 
     private fun observeMotionLayoutStates() {
@@ -61,8 +76,21 @@ class EpisodeDetailsFragment : BaseFragment<
                     binding.swipeRefresh.isEnabled = motionLayout.currentState == R.id.start
                 }
             }
-            override fun onTransitionTrigger(motionLayout: MotionLayout?, triggerId: Int, positive: Boolean, progress: Float) {}
-            override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) {}
+
+            override fun onTransitionTrigger(
+                motionLayout: MotionLayout?,
+                triggerId: Int,
+                positive: Boolean,
+                progress: Float
+            ) {
+            }
+
+            override fun onTransitionStarted(
+                motionLayout: MotionLayout?,
+                startId: Int,
+                endId: Int
+            ) {
+            }
             override fun onTransitionChange(motionLayout: MotionLayout?, startId: Int, endId: Int, progress: Float) {}
         })
     }

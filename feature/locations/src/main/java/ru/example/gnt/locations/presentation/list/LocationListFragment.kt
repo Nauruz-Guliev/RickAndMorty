@@ -223,8 +223,9 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
     }
 
     override fun setExpanded() {
+        (requireActivity() as? ToggleActivity)?.setFragmentExpanded()
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-        binding.rvLocations.isVisible = true
+        binding.rvLocations.alpha = 1F
     }
 
     private fun initFilterValues() {

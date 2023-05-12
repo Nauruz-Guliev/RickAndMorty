@@ -14,7 +14,7 @@ interface CharactersDao {
     suspend fun saveCharacters(characters: List<CharacterEntity>)
 
     @Query("SELECT * FROM character WHERE id= :id")
-    fun getCharacterById(id: Int): CharacterEntity
+    fun getCharacterById(id: Int): CharacterEntity?
 
     @Query("DELETE FROM character WHERE id=:id")
     suspend fun deleteCharacterById(id: Int): Int

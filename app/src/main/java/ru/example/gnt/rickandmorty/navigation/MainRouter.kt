@@ -33,7 +33,7 @@ class MainRouter @Inject constructor(
         navigate(
             fragment = CharacterListFragment.createInstance(),
             tag = CharacterListFragment.CHARACTERS_FRAGMENT_TAG,
-            addToBackStack = true,
+            addToBackStack = false,
         )
     }
 
@@ -53,7 +53,7 @@ class MainRouter @Inject constructor(
         navigate(
             fragment = EpisodeListFragment.createInstance(),
             tag = EpisodeListFragment.EPISODES_FRAGMENT_TAG,
-            addToBackStack = true
+            addToBackStack = false
         )
     }
 
@@ -61,7 +61,7 @@ class MainRouter @Inject constructor(
         navigate(
             fragment = LocationListFragment.createInstance(),
             tag = LocationListFragment.LOCATION_LIST_FRAGMENT_TAG,
-            addToBackStack = true
+            addToBackStack = false
         )
     }
 

@@ -63,6 +63,9 @@ dependencies {
     kapt(libs.room.compiler)
     annotationProcessor(libs.room.compiler)
 
+    implementation(libs.androidx.splash)
+
+
     //paging
     implementation(libs.room.paging)
 

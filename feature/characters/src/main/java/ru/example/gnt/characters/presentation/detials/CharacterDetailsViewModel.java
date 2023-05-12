@@ -6,6 +6,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.concurrent.TimeUnit;
+
 import dagger.assisted.Assisted;
 import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -47,6 +49,7 @@ public class CharacterDetailsViewModel extends ViewModel {
     public void loadData() {
         disposable = getCharacterById.invoke(characterId)
                 .subscribeOn(scheduler)
+                .debounce(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         characterDetailsModel -> {

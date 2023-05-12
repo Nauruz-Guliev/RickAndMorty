@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Singleton
 class App: Application() {
 
-    private val appComponent: AppComponent by lazy {
+    private val appComponent: AppComponent by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
         DaggerAppComponent.builder().context(this).build()
     }
 

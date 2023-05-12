@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_6"
         android:layout_marginHorizontal="@dimen/margin_4"
-        android:text="@string/type"
+        android:text="@string/type_empty"
         android:textColor="@color/blue_rm" />
 
 
@@ -69,7 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_6"
         android:layout_marginHorizontal="@dimen/margin_4"
-        android:text="@string/type"
+        android:text="@string/dimension_empty"
         android:textColor="@color/blue_rm" />
 
 

@@ -7,6 +7,7 @@ import android.view.Menu
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         binding = ActivityMainBinding.inflate(layoutInflater)
         initDagger()
         initActionBar()
@@ -67,15 +69,12 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
             when (item.itemId) {
                 ru.example.gnt.ui.R.id.characters -> {
                     mainRouter.openCharactersScreen()
-                    mainRouter.currentActiveTag = CharacterListFragment.CHARACTERS_FRAGMENT_TAG
                 }
                 ru.example.gnt.ui.R.id.episodes -> {
                     mainRouter.openEpisodesScreen()
-                    mainRouter.currentActiveTag = EpisodeListFragment.EPISODES_FRAGMENT_TAG
                 }
                 ru.example.gnt.ui.R.id.locations -> {
                     mainRouter.openLocationScreen()
-                    mainRouter.currentActiveTag = LocationListFragment.LOCATION_LIST_FRAGMENT_TAG
                 }
             }
             return@setOnItemSelectedListener true
@@ -88,8 +87,8 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         binding.toolbar.outlineProvider = null
         with(binding.btnFilter) {
             setOnClickListener {
-                mainRouter.clearBackStack()
                 (searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView).callOnClick()
+
                 when (toggleFragment?.toggle()) {
                     BottomSheetBehavior.STATE_EXPANDED -> setFragmentCollapsed()
                     else -> setFragmentExpanded()
@@ -112,6 +111,9 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
     private fun setToolbarBackButtonVisibility(isVisible: Boolean) {
         supportActionBar?.setDisplayHomeAsUpEnabled(isVisible)
         supportActionBar?.setDisplayShowHomeEnabled(isVisible)
+    }
+    private fun setBottomNavInvisible() {
+        binding.bottomNav.isVisible = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -200,10 +202,8 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
                     )
                     setMainScreenMode()
                 }
-                is SearchFragment -> {
-                    registerFragments(fragment)
-                }
                 else -> {
+                    setBottomNavInvisible()
                     setMainScreenItemsVisibility(isVisible = false)
                     setToolbarBackButtonVisibility(isVisible = true)
                 }
@@ -216,6 +216,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
     private fun setMainScreenItemsVisibility(isVisible: Boolean) {
         searchView?.isVisible = isVisible
         binding.btnFilter.isVisible = isVisible
+        binding.bottomNav.isVisible = isVisible
     }
 
     private fun setMainScreenMode() {

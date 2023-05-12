@@ -23,30 +23,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+        <include
+            android:id="@+id/tv_network"
+            layout="@layout/no_internet_connection_text_view"/>
+
+
             <com.google.android.material.imageview.ShapeableImageView
+                android:paddingTop="@dimen/padding_1"
                 android:id="@+id/iv_avatar"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:visibility="gone"
-                android:paddingTop="@dimen/padding_1"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/margin_4"
                 android:elevation="1dp"
                 app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
                 app:strokeWidth="@dimen/margin_1" />
 
-            <TextView
-                android:id="@+id/tv_network"
-                style="@style/TextViewDetailsStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                tools:visibility="visible"
-                android:visibility="gone"
-                android:layout_marginBottom="@dimen/margin_1"
-                android:background="@color/red_rm"
-                android:padding="@dimen/padding_1"
-                tools:text="@string/no_internet_connection" />
+
 
 
             <TextView
@@ -83,6 +77,7 @@
                 android:visibility="gone"
                 android:padding="@dimen/padding_1"
                 tools:text="@string/human" />
+
 
 
             <TextView
@@ -153,8 +148,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/blue_rm_main"
-                app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-                app:spanCount="2"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:spanCount="1"
                 tools:listitem="@layout/episode_list_item" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
