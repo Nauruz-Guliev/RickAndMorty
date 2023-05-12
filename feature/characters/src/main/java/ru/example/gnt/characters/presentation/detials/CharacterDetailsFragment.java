@@ -10,11 +10,9 @@ import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -160,20 +158,19 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
                 binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.no_internet_connection_error));
             } else if (value instanceof UiState.SuccessRemote) {
                 showMainLayout();
+                binding.errorLayout.getRoot().setVisibility(View.GONE);
                 binding.swipeRefresh.setRefreshing(false);
                 setValues(((UiState.SuccessRemote<CharacterDetailsModel>) value).getData());
-                binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.no_internet_connection_error));
             } else if(value instanceof UiState.SuccessCached) {
+                binding.errorLayout.getRoot().setVisibility(View.GONE);
                 showMainLayout();
                 binding.swipeRefresh.setRefreshing(false);
                 setValues(((UiState.SuccessCached<CharacterDetailsModel>) value).getData());
                 binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.local_data_warning));
             } else if (value instanceof UiState.Empty) {
                 binding.swipeRefresh.setRefreshing(false);
-                binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.no_internet_connection_error));
             } else if (value instanceof UiState.Error) {
                 handleErrors(((UiState.Error) value).getError());
-                binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.no_internet_connection_error));
                 binding.swipeRefresh.setRefreshing(false);
             }
         };
@@ -181,13 +178,30 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
     }
 
     private void handleErrors(Throwable ex) {
-       if (ex instanceof ApplicationException) {
+        if (ex instanceof ApplicationException) {
             Resource.String resource = ((ApplicationException) ex).getResource();
+            String message;
             if (resource != null) {
-                showToastShort(requireContext(), resource.getValue(requireContext()));
+                message = resource.getValue(requireContext());
+            } else {
+                if (ex.getCause() != null) {
+                    message = ex.getCause().getMessage();
+                } else {
+                    message = getString(ru.example.gnt.ui.R.string.unknown_data_access_error);
+                }
             }
+            binding.motionLayout.setVisibility(View.GONE);
+            binding.errorLayout.getRoot().setVisibility(View.VISIBLE);
+            if (ex instanceof ApplicationException.BackendException) {
+                binding.errorLayout.tvErrorCode.setText(((ApplicationException.BackendException) ex).getCode());
+                binding.errorLayout.tvErrorCode.setVisibility(View.VISIBLE);
+            } else {
+                binding.errorLayout.tvErrorCode.setVisibility(View.GONE);
+            }
+            binding.errorLayout.tvErrorMessage.setText(message);
+
         } else {
-            Log.e("ERROR", ex.getLocalizedMessage(), ex);
+            showToastShort(requireContext(), ex.getMessage());
         }
     }
 

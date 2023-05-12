@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_4"
         android:layout_marginTop="@dimen/margin_6"
-        android:text="@string/status"
+        android:text="@string/status_empty"
         android:textColor="@color/blue_rm" />
 
     <com.google.android.material.chip.ChipGroup
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_6"
         android:layout_marginHorizontal="@dimen/margin_4"
-        android:text="@string/name"
+        android:text="@string/name_empty"
         android:textColor="@color/blue_rm" />
 
 
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_6"
         android:layout_marginHorizontal="@dimen/margin_4"
-        android:text="@string/species"
+        android:text="@string/species_empty"
         android:textColor="@color/blue_rm" />
 
 

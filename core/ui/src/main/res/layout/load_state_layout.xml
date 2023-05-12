@@ -10,7 +10,7 @@
 
     <ProgressBar
         android:layout_gravity="center"
-        android:id="@+id/progressBar"
+        android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:indeterminateTint="@color/red_rm"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         android:textSize="@dimen/text_size_3"
         android:textColor="@color/black_70"
         android:layout_gravity="center"
-        android:id="@+id/messageTextView"
+        android:id="@+id/tv_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/network_error"
@@ -31,8 +31,7 @@
 
     <Button
         android:layout_gravity="center"
-
-        android:id="@+id/tryAgainButton"
+        android:id="@+id/btn_try_again"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"

@@ -7,10 +7,6 @@
     android:animateLayoutChanges="true"
     android:layout_height="match_parent">
 
-    <!--This the interface sitting behind the backdrop and shown when it is collapsed-->
-
-    <!--This is the backdrop's content with a BottomSheetBehaviour applied to it-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,7 +27,6 @@
         app:behavior_peekHeight="112dp"
         app:layout_behavior="ru.example.gnt.common.utils.GestureLockedBottomSheetBehavior">
 
-        <!--This is the backdrop's header with a title and icon-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,22 +47,8 @@
                 android:layout_marginHorizontal="@dimen/margin_5"
                 android:text="@string/characters_welcome_message" />
 
-            <!--
-
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:layout_marginTop="@dimen/margin_4"
-                android:id="@+id/progress_indicator"
-                android:layout_width="match_parent"
-                app:indicatorColor="@color/brown_rm"
-                android:layout_height="8dp"
-                android:layout_marginHorizontal="@dimen/margin_5"
-                android:indeterminate="true" />
-            -->
-
 
         </LinearLayout>
-
-        <!--And finally this is the body of the backdrop's content. You can add here whatever you need inside a view group (LinearLayout, RelativeLayout, SwipeRefreshLayout, ConstraintLayout, etc.)-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_layout"

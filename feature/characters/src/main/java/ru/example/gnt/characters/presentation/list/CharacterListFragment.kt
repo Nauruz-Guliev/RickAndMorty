@@ -22,7 +22,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.example.gnt.characters.R
-import ru.example.gnt.characters.databinding.CharactersFragmentBinding
+import ru.example.gnt.characters.databinding.CharacterListFragmentBinding
 import ru.example.gnt.characters.di.provider.CharactersComponentViewModel
 import ru.example.gnt.characters.presentation.list.paging_recyclerview.CharactersAdapter
 import ru.example.gnt.common.base.BaseFragment
@@ -33,6 +33,7 @@ import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
+import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.utils.CustomLoadStateAdapter
 import ru.example.gnt.common.utils.TryAgainAction
 import ru.example.gnt.common.utils.extensions.createChip
@@ -41,8 +42,8 @@ import ru.example.gnt.common.utils.extensions.showToastShort
 import javax.inject.Inject
 
 
-class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
-    CharactersFragmentBinding::inflate
+class CharacterListFragment : BaseFragment<CharacterListFragmentBinding>(
+    CharacterListFragmentBinding::inflate
 ), LayoutBackDropManager, SearchFragment, RootFragment {
 
     @Inject
@@ -57,7 +58,6 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
         super.onAttach(context)
     }
 
-
     override fun onResume() {
         super.onResume()
         searchQuery?.let { (requireActivity() as? SearchActivity)?.setSearchText(it) }
@@ -68,13 +68,14 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = CharactersFragmentBinding.inflate(layoutInflater)
+        _binding = CharacterListFragmentBinding.inflate(layoutInflater)
         setUpCoordinatorLayout(R.id.contentLayout, binding.coordinatorLayout)
         return binding.coordinatorLayout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setRefreshing()
         initRecyclerView()
         initCoordinatorLayout()
         initChipGroup()
@@ -125,25 +126,25 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
                 adapter = loadStateAdapter
                 (itemAnimator as? DefaultItemAnimator)?.supportsChangeAnimations = false
             }
-            observeCharacters()
+            observeCharacterList()
         }
     }
 
     @OptIn(FlowPreview::class)
     private fun observeDataStates() {
         lifecycleScope.launch {
-            adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)
-                ?.debounce(400)?.collectLatest { state ->
+            adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)?.distinctUntilChanged()
+                ?.debounce(1000)?.collectLatest { state ->
                     binding.swipeRefresh.isRefreshing = state.refresh is LoadState.Loading
                     val isEmpty = (adapter?.snapshot()?.items?.size ?: 0) <= 0
-                    binding.loadingStateLayout.tryAgainButton.setOnClickListener(::handleFilterReset)
+                    binding.loadingStateLayout.btnTryAgain.setOnClickListener(::handleFilterReset)
                     when (val res = state.source.refresh) {
                         is LoadState.Error -> {
                             binding.swipeRefresh.isRefreshing = false
                             handleErrorState(res.error)
                         }
                         is LoadState.Loading -> {
-                            binding.swipeRefresh.isRefreshing = true
+                            setRefreshing()
                         }
                         is LoadState.NotLoading -> {
                             handleNotLoadingState(isEmpty)
@@ -160,12 +161,12 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
     private fun handleNotLoadingState(isEmpty: Boolean) {
         with(binding) {
             with(loadingStateLayout) {
-                messageTextView.apply {
+                tvMessage.apply {
                     isVisible = isEmpty
                     text =
                          getString(ru.example.gnt.ui.R.string.no_filter_results)
                 }
-                tryAgainButton.apply {
+                btnTryAgain.apply {
                     isVisible = isEmpty && !viewModel.isFilterOff()
                     text = getString(ru.example.gnt.ui.R.string.clear_filter)
                 }
@@ -184,7 +185,7 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
         adapter?.refresh()
     }
 
-    private suspend fun observeCharacters() {
+    private suspend fun observeCharacterList() {
         viewModel.uiState.value.charactersFlow?.flowWithLifecycle(lifecycle)
             ?.collectLatest { pagingData ->
                 adapter?.submitData(pagingData)
@@ -265,6 +266,29 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
                         .firstOrNull { (it as Chip).isChecked }) as? Chip)?.text.toString()
                 ),
             )
+            setRefreshing()
+        }
+    }
+
+    private fun handleErrorState(ex: Throwable) {
+        with(binding) {
+            when (ex) {
+                is ApplicationException -> {
+                    val message =
+                        ex.resource?.getValue(root.context) ?: ex.cause?.message
+                        ?: ex.message
+                        ?: getString(ru.example.gnt.ui.R.string.unknown_data_access_error)
+                    mainLayout.isVisible = false
+                    with(loadingStateLayout) {
+                        root.isVisible = true
+                        btnTryAgain.isVisible = false
+                        tvInfo.text = message
+                    }
+                }
+                else -> {
+                    root.context.showToastShort(ex.message ?: ex.cause?.message)
+                }
+            }
         }
     }
 
@@ -273,6 +297,10 @@ class CharacterListFragment : BaseFragment<CharactersFragmentBinding>(
         this.searchQuery = searchQuery
         viewModel.applyFilter(name = searchQuery)
         adapter?.refresh()
+    }
+
+    private fun setRefreshing() {
+        binding.swipeRefresh.isRefreshing = true
     }
 
 

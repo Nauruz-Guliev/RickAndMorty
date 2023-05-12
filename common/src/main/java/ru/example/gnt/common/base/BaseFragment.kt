@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.utils.extensions.internetCapabilitiesCallback
 import ru.example.gnt.common.utils.extensions.isNetworkOn
-import ru.example.gnt.common.utils.extensions.showToastShort
 
 abstract class BaseFragment<VB : ViewBinding>(
     private val bindingInflater: (inflater: LayoutInflater) -> VB,
@@ -41,7 +40,6 @@ abstract class BaseFragment<VB : ViewBinding>(
         savedInstanceState: Bundle?
     ): View {
         _binding = bindingInflater.invoke(layoutInflater)
-        isInternetOn = requireContext().isNetworkOn()
         observeInternetConnectionChanges()
         return binding.root
     }
@@ -57,7 +55,7 @@ abstract class BaseFragment<VB : ViewBinding>(
         sheetBehavior?.isHideable = false
         sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         this.coordinatorLayout = coordinatorLayout
-        isInternetOn = requireContext().isNetworkOn()
+        observeInternetConnectionChanges()
         return coordinatorLayout
     }
 
@@ -67,19 +65,6 @@ abstract class BaseFragment<VB : ViewBinding>(
             requireActivity().internetCapabilitiesCallback().flowWithLifecycle(lifecycle).collectLatest {
                 isInternetOn = context?.isNetworkOn() ?: it
                 networkState.emit(isInternetOn)
-            }
-        }
-    }
-
-    protected fun handleErrorState(ex: Throwable) {
-        when (ex) {
-            is ApplicationException -> {
-                val message = ex.resource?.getValue(requireContext())
-                if (message != null)
-                    context.showToastShort(message)
-            }
-            else -> {
-                Log.e("ERROR", ex.message.toString())
             }
         }
     }

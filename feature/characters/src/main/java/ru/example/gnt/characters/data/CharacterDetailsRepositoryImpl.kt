@@ -1,8 +1,6 @@
 package ru.example.gnt.characters.data
 
-import android.util.Log
 import io.reactivex.rxjava3.core.Observable
-import kotlinx.coroutines.delay
 import ru.example.gnt.characters.data.mapper.CharacterEntityUiDetailsMapper
 import ru.example.gnt.characters.data.mapper.CharacterResponseUiDetailsMapper
 import ru.example.gnt.characters.domain.repository.CharacterDetailsRepository
@@ -22,8 +20,6 @@ import ru.example.gnt.data.mapper.*
 import ru.example.gnt.data.remote.service.CharacterService
 import ru.example.gnt.data.remote.service.EpisodeService
 import ru.example.gnt.data.remote.service.LocationService
-import java.io.IOException
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CharacterDetailsRepositoryImpl @Inject constructor(
@@ -65,16 +61,24 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
                     )
                 )
             } catch (ex: Exception) {
-                if (characterLocal != null) emitter.onError(
-                    ApplicationException.LocalDataException(
-                        data = characterLocal,
-                        cause = ex
-                    )
-                )
-                else throw ApplicationException.DataAccessException(
-                    ex,
-                    Resource.String(ru.example.gnt.ui.R.string.data_access_error)
-                )
+                when (ex) {
+                    is ApplicationException -> emitter.onError(ex)
+                    else -> if (characterLocal != null) {
+                        emitter.onError(
+                            ApplicationException.LocalDataException(
+                                data = characterLocal,
+                                cause = ex
+                            )
+                        )
+                    } else {
+                        emitter.onError(
+                            ApplicationException.DataAccessException(
+                                ex,
+                                Resource.String(ru.example.gnt.ui.R.string.data_access_error)
+                            )
+                        )
+                    }
+                }
             }
         }
     }

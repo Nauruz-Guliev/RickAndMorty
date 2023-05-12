@@ -1,6 +1,8 @@
 package ru.example.gnt.characters.presentation.detials;
 
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -45,6 +47,9 @@ public class CharacterDetailsViewModel extends ViewModel {
     public void loadData() {
         disposable = getCharacterById.invoke(characterId)
                 .subscribeOn(scheduler)
+                .doOnSubscribe( model -> {
+                    state.setValue(UiState.Loading.INSTANCE);
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(characterDetailsModel -> {
                     state.setValue(new UiState.SuccessRemote<>(characterDetailsModel));

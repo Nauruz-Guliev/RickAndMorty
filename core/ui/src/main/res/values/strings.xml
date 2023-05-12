@@ -75,4 +75,5 @@
     <string name="alert_dialog_general_error">Error occurred</string>
 
     <string name="no_internet_data_might_be_outdated">No internet. Some data might be missing or out of date.</string>
+    <string name="error">Error</string>
 </resources>

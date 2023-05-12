@@ -87,8 +87,8 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         binding.toolbar.outlineProvider = null
         with(binding.btnFilter) {
             setOnClickListener {
+                registerFragments(mainRouter.getActiveFragment())
                 (searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView).callOnClick()
-
                 when (toggleFragment?.toggle()) {
                     BottomSheetBehavior.STATE_EXPANDED -> setFragmentCollapsed()
                     else -> setFragmentExpanded()
@@ -118,6 +118,7 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         if (mainRouter.getActiveFragment() !is SearchFragment) return false
+        else registerFragments(mainRouter.getActiveFragment())
         val inflater = menuInflater
         inflater.inflate(ru.example.gnt.ui.R.menu.app_bar_menu, menu)
         val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -180,7 +181,6 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         hideKeyboard(binding.root)
         val fragment = mainRouter.getActiveFragment()
         unregisterFragments()
-        registerFragments(fragment)
         if (fragment != null) {
             when (fragment) {
                 is CharacterListFragment -> {

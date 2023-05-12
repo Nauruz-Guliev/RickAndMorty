@@ -26,6 +26,7 @@ import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.interfaces.ToggleActivity
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
+import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.utils.CustomLoadStateAdapter
 import ru.example.gnt.common.utils.TryAgainAction
 import ru.example.gnt.common.utils.extensions.hideKeyboard
@@ -67,6 +68,7 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setRefreshing()
         initRecyclerView()
         initFilterButtons()
         initSwipeRefreshLayout()
@@ -98,6 +100,9 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         binding.swipeRefresh.setOnRefreshListener {
             locationsViewModel.applyFilter()
             adapter?.refresh()
+            if(!isInternetOn) {
+                binding.root.context.showToastShort(getString(ru.example.gnt.ui.R.string.no_internet_connection))
+            }
         }
     }
 
@@ -126,7 +131,7 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
                 ?.collectLatest { state ->
                     binding.swipeRefresh.isRefreshing = state.refresh is LoadState.Loading
                     val isEmpty = (adapter?.snapshot()?.items?.size ?: 0) <= 0
-                    binding.loadingStateLayout.tryAgainButton.setOnClickListener(::handleFilterReset)
+                    binding.loadingStateLayout.btnTryAgain.setOnClickListener(::handleFilterReset)
                     when (val res = state.source.refresh) {
                         is LoadState.Error -> {
                             binding.swipeRefresh.isRefreshing = false
@@ -144,14 +149,36 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         }
     }
 
+    private fun handleErrorState(ex: Throwable) {
+        with(binding) {
+            when (ex) {
+                is ApplicationException -> {
+                    val message =
+                        ex.resource?.getValue(root.context) ?: ex.cause?.message
+                        ?: ex.message
+                        ?: getString(ru.example.gnt.ui.R.string.unknown_data_access_error)
+                    mainLayout.isVisible = false
+                    with(loadingStateLayout) {
+                        root.isVisible = true
+                        btnTryAgain.isVisible = false
+                        tvMessage.text = message
+                    }
+                }
+                else -> {
+                    root.context.showToastShort(ex.message ?: ex.cause?.message)
+                }
+            }
+        }
+    }
+
     private fun handleNotLoadingState(isEmpty: Boolean) {
         with(binding) {
             with(loadingStateLayout) {
-                messageTextView.apply {
+                tvMessage.apply {
                     isVisible = isEmpty
                     text =  getString(ru.example.gnt.ui.R.string.no_filter_results)
                 }
-                tryAgainButton.apply {
+                btnTryAgain.apply {
                     isVisible = isEmpty && !locationsViewModel.isFilterOff()
                     text = getString(ru.example.gnt.ui.R.string.clear_filter)
                 }
@@ -236,6 +263,10 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
                 type = etType.text.toString()
             )
         }
+    }
+
+    private fun setRefreshing() {
+        binding.swipeRefresh.isRefreshing = true
     }
 
 

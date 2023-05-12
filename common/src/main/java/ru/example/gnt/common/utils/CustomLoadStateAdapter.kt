@@ -45,13 +45,13 @@ class CustomLoadStateAdapter(
     ) : ViewHolder(binding.root) {
 
         init {
-            binding.tryAgainButton.setOnClickListener { tryAgainAction?.invoke() }
+            binding.btnTryAgain.setOnClickListener { tryAgainAction?.invoke() }
         }
 
         fun bind(loadState: LoadState) = with(binding) {
             val isInternetOn = root.context.isNetworkOn()
-            messageTextView.isVisible = loadState is LoadState.Error && isInternetOn
-            tryAgainButton.isVisible = loadState is LoadState.Error && isInternetOn
+            tvMessage.isVisible = loadState is LoadState.Error && isInternetOn
+            btnTryAgain.isVisible = loadState is LoadState.Error && isInternetOn
             progressBar.isVisible = loadState is LoadState.Loading && isInternetOn
         }
     }
