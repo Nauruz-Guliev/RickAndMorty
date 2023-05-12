@@ -45,42 +45,50 @@ class LocationDetailsRepositoryImpl @Inject constructor(
 ) : LocationDetailsRepository {
     override fun getLocationDetailsItemById(id: Int): Observable<LocationDetailsModel> {
         return Observable.create { emitter ->
-            val location = locationService.getLocation(id).execute().body()
-            if (location != null && location.residents?.isNotEmpty() == false) {
-                emitter.onNext(locationResponseUiDetailsMapper.mapTo(location))
-                emitter.onComplete()
-            }else {
-                val locationExtended = loadMissingValues(
-                    ids = location?.residents?.map(urlIdExtractor::extract),
-                    mapper = locationResponseUiDetailsMapper,
-                    location = location
-                )
-                if (locationExtended != null) emitter.onNext(locationExtended)
-                emitter.onComplete()
-            }
-        }.onErrorReturn { exception ->
-            return@onErrorReturn when (exception) {
-
-                is IOException, is RuntimeException -> {
-                    val location = locationsDao.getLocationById(id).blockingGet()
-                    try {
-                        loadMissingValues(
-                            ids = location.residents,
-                            location = location,
-                            locationEntityUiDetailsMapper
-                        ) as LocationDetailsModel
-                    } catch (ex: Exception) {
-                        locationEntityUiDetailsMapper.mapTo(location)
-                    }
-                }
-                is ApplicationException -> throw exception
-                else -> {
-                    throw ApplicationException.DataAccessException(
-                        exception,
-                        Resource.String(ru.example.gnt.ui.R.string.data_access_error)
+            val locationLocal = loadLocal(id)
+            if (locationLocal != null) emitter.onNext(locationLocal)
+            try {
+                val locationRemote = locationService.getLocation(id).execute().body()
+                if(locationRemote !=null) locationsDao.save(locationEntityResponseMapper.mapTo(locationRemote))
+                if (locationRemote != null && locationRemote.residents?.isEmpty() == false) {
+                    val locationRemoteUpdated = loadMissingValues(
+                        ids = locationRemote.residents?.map(urlIdExtractor::extract),
+                        mapper = locationResponseUiDetailsMapper,
+                        location = locationRemote
+                    )
+                    if (locationRemoteUpdated != null) emitter.onNext(locationRemoteUpdated)
+                } else {
+                    if (locationRemote != null) emitter.onNext(
+                        locationResponseUiDetailsMapper.mapTo(
+                            locationRemote
+                        )
                     )
                 }
+            } catch (ex: Exception) {
+                if (locationLocal != null) emitter.onError(
+                    ApplicationException.LocalDataException(
+                        data = locationLocal,
+                        cause = ex
+                    )
+                ) else throw ApplicationException.DataAccessException(
+                    ex,
+                    Resource.String(ru.example.gnt.ui.R.string.data_access_error)
+                )
+
             }
+        }
+    }
+
+    private fun loadLocal(id: Int): LocationDetailsModel? {
+        val location = locationsDao.getLocationById(id).blockingGet() ?: return null
+        return try {
+            loadMissingValues(
+                ids = location.residents,
+                mapper = locationEntityUiDetailsMapper,
+                location = location
+            )
+        } catch (ex: Exception) {
+            locationEntityUiDetailsMapper.mapTo(location)
         }
     }
 
@@ -114,8 +122,9 @@ class LocationDetailsRepositoryImpl @Inject constructor(
                         .execute().body()?.map(characterResponseUiListItemMapper::mapTo)
                 }
             }
-        } catch (ex: IOException) {
-            characterDao.getCharacters(ids).subscribeOn(scheduler).blockingGet()?.map(characterEntityUiListItemMapper::mapTo)
+        } catch (ex: Exception) {
+            characterDao.getCharacters(ids).subscribeOn(scheduler).blockingGet()
+                ?.map(characterEntityUiListItemMapper::mapTo)
         }
     }
 }

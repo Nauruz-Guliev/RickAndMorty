@@ -2,6 +2,7 @@ package ru.example.gnt.characters.data
 
 import android.util.Log
 import io.reactivex.rxjava3.core.Observable
+import kotlinx.coroutines.delay
 import ru.example.gnt.characters.data.mapper.CharacterEntityUiDetailsMapper
 import ru.example.gnt.characters.data.mapper.CharacterResponseUiDetailsMapper
 import ru.example.gnt.characters.domain.repository.CharacterDetailsRepository
@@ -17,10 +18,7 @@ import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorRegular
 import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.data.local.dao.EpisodesDao
 import ru.example.gnt.data.local.dao.LocationsDao
-import ru.example.gnt.data.mapper.EpisodeEntityUiListMapper
-import ru.example.gnt.data.mapper.EpisodeResponseUiListItemMapper
-import ru.example.gnt.data.mapper.LocationEntityUiListMapper
-import ru.example.gnt.data.mapper.LocationResponseUiListItemMapper
+import ru.example.gnt.data.mapper.*
 import ru.example.gnt.data.remote.service.CharacterService
 import ru.example.gnt.data.remote.service.EpisodeService
 import ru.example.gnt.data.remote.service.LocationService
@@ -44,46 +42,41 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
     private val characterEntityUiDetailsMapper: CharacterEntityUiDetailsMapper,
     private val locationResponseUiListItemMapper: LocationResponseUiListItemMapper,
     private val locationEntityUiListMapper: LocationEntityUiListMapper,
+    private val characterEntityResponseMapper: CharacterEntityResponseMapper,
     //utility
     private val urlIdExtractor: UrlIdExtractor,
     private val apiListQueryGenerator: ApiListQueryGenerator,
 ) : CharacterDetailsRepository {
 
     override fun getCharacterById(id: Int): Observable<CharacterDetailsModel> {
-        return Observable.create<CharacterDetailsModel> { emitter ->
+        return Observable.create { emitter ->
             val characterLocal = loadLocal(id)
-            Log.d("CHARACTER_LOCAL", "LOCAL" + characterLocal)
             if (characterLocal != null) emitter.onNext(characterLocal)
-
-            val characterRemote = characterService.getCharacterById(id).blockingGet()
-            loadMissingValues(
-                ids = characterRemote.episode?.map(urlIdExtractor::extract),
-                character = characterRemote,
-                locationId = urlIdExtractor.extract(characterRemote.location?.url),
-                originId = urlIdExtractor.extract(characterRemote.origin?.url),
-                mapper = characterResponseUiDetailsMapper
-            )
-
-        }.delay(100, TimeUnit.MILLISECONDS)
-            .onErrorReturn { exception ->
-                Log.e(
-                    "CHARACTER_LOCAL",
-                    exception.message.toString() + exception.javaClass.name.toString()
+            try {
+                val characterRemote = characterService.getCharacterById(id).blockingGet()
+                charactersDao.save(characterEntityResponseMapper.mapTo(characterRemote))
+                emitter.onNext(
+                    loadMissingValues(
+                        ids = characterRemote.episode?.map(urlIdExtractor::extract),
+                        character = characterRemote,
+                        locationId = urlIdExtractor.extract(characterRemote.location?.url),
+                        originId = urlIdExtractor.extract(characterRemote.origin?.url),
+                        mapper = characterResponseUiDetailsMapper
+                    )
                 )
-                when (exception) {
-                    is IOException, is RuntimeException -> {
-                        Log.e("CHARACTER_LOCAL_NEW", loadLocal(id).toString())
-                        throw ApplicationException.LocalDataException(resource = Resource.String(ru.example.gnt.ui.R.string.local_data_warning))
-                    }
-                    is ApplicationException -> throw exception
-                    else -> {
-                        throw ApplicationException.DataAccessException(
-                            exception,
-                            Resource.String(ru.example.gnt.ui.R.string.data_access_error)
-                        )
-                    }
-                }
+            } catch (ex: Exception) {
+                if (characterLocal != null) emitter.onError(
+                    ApplicationException.LocalDataException(
+                        data = characterLocal,
+                        cause = ex
+                    )
+                )
+                else throw ApplicationException.DataAccessException(
+                    ex,
+                    Resource.String(ru.example.gnt.ui.R.string.data_access_error)
+                )
             }
+        }
     }
 
 
@@ -94,8 +87,8 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
                 loadMissingValues(
                     ids = episode,
                     character = character,
-                    locationId = character.locationId,
-                    originId = character.originId,
+                    locationId = locationId,
+                    originId = originId,
                     mapper = characterEntityUiDetailsMapper
                 )
             }

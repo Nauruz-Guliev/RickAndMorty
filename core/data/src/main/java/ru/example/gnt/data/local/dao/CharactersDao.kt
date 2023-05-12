@@ -102,7 +102,6 @@ interface CharactersDao {
     ): Flow<List<CharacterEntity>>
 
 
-    suspend fun save(character: CharacterEntity) {
-        saveCharacters(listOf(character))
-    }
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun save(character: CharacterEntity)
 }

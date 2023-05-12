@@ -99,22 +99,24 @@ class EpisodeDetailsFragment : BaseFragment<
         lifecycleScope.launch {
             viewModel?.state?.flowWithLifecycle(lifecycle)?.distinctUntilChanged()
                 ?.collectLatest { state ->
-                    with(binding) {
-                        when (state) {
-                            is UiState.Success -> {
-                                setRefreshing(false)
-                                initViews(state.data)
-                            }
-                            is UiState.Loading -> {
-                                setRefreshing(true)
-                            }
-                            is UiState.Error -> {
-                                setRefreshing(false)
-                                handleErrorState(state.error)
-                            }
-                            is UiState.Empty -> {
-                                setRefreshing(false)
-                            }
+                    when (state) {
+                        is UiState.SuccessRemote -> {
+                            setRefreshing(false)
+                            initViews(state.data)
+                        }
+                        is UiState.Loading -> {
+                            setRefreshing(true)
+                        }
+                        is UiState.Error -> {
+                            setRefreshing(false)
+                            handleErrorState(state.error)
+                        }
+                        is UiState.Empty -> {
+                            setRefreshing(false)
+                        }
+                        is UiState.SuccessCached -> {
+                            setRefreshing(false)
+                            initViews(state.data)
                         }
                     }
                 }

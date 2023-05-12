@@ -11,6 +11,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.exceptions.CompositeException;
+import ru.example.gnt.common.exceptions.ApplicationException;
 import ru.example.gnt.common.model.UiState;
 import ru.example.gnt.data.di.qualifiers.RxIOSchedulerQualifier;
 import ru.example.gnt.locations.LocationsRouter;
@@ -44,19 +45,21 @@ public class LocationDetailsViewModel extends ViewModel {
         disposable = locationDetailsUseCase.invoke(locationID)
                 .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> disposable.dispose())
+                .doOnNext(locationDetailsModel -> {
+                    state.setValue(new UiState.SuccessRemote<>(locationDetailsModel));
+                })
                 .subscribe(
                         locationDetailsModel -> {
-                            Log.d("RESPONSE_MODEL", locationDetailsModel.toString());
-                            state.setValue(new UiState.Success<>(locationDetailsModel));
+                            state.setValue(new UiState.SuccessRemote<>(locationDetailsModel));
                         },
-                        throwable -> {// onError
-                            if (throwable instanceof CompositeException) {
-                                ((CompositeException) throwable).getExceptions().forEach((error) -> {
-                                    Log.e("ERROR", "onCompositeError: " + error.getLocalizedMessage() + " " + error.getClass());
-                                });
+                        throwable -> {
+                            Log.e("ONERROR_LOCATION", throwable.getLocalizedMessage(), throwable);
+                            if(throwable instanceof ApplicationException.LocalDataException) {
+                                state.setValue(new UiState.SuccessCached<>(((ApplicationException.LocalDataException) throwable).getData()));
+                            } else  {
+                                state.setValue(new UiState.Error(throwable));
                             }
-                            Log.e("ERROR", "onError: " + throwable.getLocalizedMessage() + " " + throwable);
-                            state.setValue(new UiState.Error(throwable));
                         }
                 )
         ;

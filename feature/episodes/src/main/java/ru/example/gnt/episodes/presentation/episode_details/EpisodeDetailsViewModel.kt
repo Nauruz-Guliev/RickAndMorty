@@ -34,7 +34,7 @@ class EpisodeDetailsViewModel @AssistedInject constructor(
             if (id != null) {
                 getEpisodeItemByIdUseCase(id).collectLatest { result ->
                     result.onFailure { _state.value = UiState.Error(it) }
-                        .onSuccess { _state.value = UiState.Success(it) }
+                        .onSuccess { _state.value = UiState.SuccessRemote(it) }
                 }
             } else {
                 UiState.Empty

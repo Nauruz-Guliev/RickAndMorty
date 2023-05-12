@@ -85,10 +85,16 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         final Observer<UiState<?>> observer = (Observer<UiState<?>>) value -> {
             if (value instanceof UiState.Loading) {
                 binding.swipeRefresh.setRefreshing(true);
-            } else if (value instanceof UiState.Success) {
+                binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.no_internet_data_might_be_outdated));
+            } else if (value instanceof UiState.SuccessRemote) {
                 showMainLayout();
                 binding.swipeRefresh.setRefreshing(false);
-                setValues(((UiState.Success<LocationDetailsModel>) value).getData());
+                setValues(((UiState.SuccessRemote<LocationDetailsModel>) value).getData());
+            } else if (value instanceof UiState.SuccessCached) {
+                showMainLayout();
+                binding.swipeRefresh.setRefreshing(false);
+                setValues(((UiState.SuccessCached<LocationDetailsModel>) value).getData());
+                binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.local_data_warning));
             } else if (value instanceof UiState.Empty) {
                 binding.swipeRefresh.setRefreshing(false);
             } else if (value instanceof UiState.Error) {
@@ -96,7 +102,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
             }
         };
 
-        viewModel.getState().observe(getViewLifecycleOwner(),  observer);
+        viewModel.getState().observe(getViewLifecycleOwner(), observer);
     }
 
     private void showMainLayout() {
@@ -123,7 +129,7 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
         } else {
             binding.tvCreated.setVisibility(View.GONE);
         }
-        if(item.getResidents() != null && !item.getResidents().isEmpty()) {
+        if (item.getResidents() != null && !item.getResidents().isEmpty()) {
             binding.tvRv.setVisibility(View.VISIBLE);
         } else {
             binding.tvRv.setVisibility(View.GONE);
@@ -177,7 +183,8 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
                 new Handler(Looper.getMainLooper()).post(() -> {
                     try {
                         binding.tvNetwork.tvNetwork.setVisibility(View.VISIBLE);
-                    } catch (Exception ex) {}
+                    } catch (Exception ex) {
+                    }
 
                 });
             }
@@ -188,10 +195,13 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
                 new Handler(Looper.getMainLooper()).post(() -> {
                     try {
                         binding.tvNetwork.tvNetwork.setVisibility(View.GONE);
-                    } catch (Exception ex) {}
+                    } catch (Exception ex) {
+                    }
 
                 });
-            };
+            }
+
+            ;
         });
     }
 

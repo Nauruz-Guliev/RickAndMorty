@@ -17,7 +17,7 @@ interface LocationsDao {
     fun saveLocationBlocking(locations: List<LocationEntity>)
 
     @Query("SELECT * FROM location WHERE id= :id")
-    fun getLocationById(id: Int): Single<LocationEntity>
+    fun getLocationById(id: Int): Maybe<LocationEntity>
 
     @Query("DELETE FROM location WHERE id=:id")
     suspend fun deleteLocationById(id: Int): Int
@@ -92,7 +92,6 @@ interface LocationsDao {
     ): List<LocationEntity>
 
 
-    suspend fun save(location: LocationEntity) {
-        saveLocations(listOf(location))
-    }
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun save(location: LocationEntity)
 }

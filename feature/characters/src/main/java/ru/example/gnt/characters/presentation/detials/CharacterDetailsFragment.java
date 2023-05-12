@@ -157,17 +157,23 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
         final Observer<UiState<?>> observer = value -> {
             if (value instanceof UiState.Loading) {
                 binding.swipeRefresh.setRefreshing(true);
-
-            } else if (value instanceof UiState.Success) {
+                binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.no_internet_connection_error));
+            } else if (value instanceof UiState.SuccessRemote) {
                 showMainLayout();
                 binding.swipeRefresh.setRefreshing(false);
-                setValues(((UiState.Success<CharacterDetailsModel>) value).getData());
-
+                setValues(((UiState.SuccessRemote<CharacterDetailsModel>) value).getData());
+                binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.no_internet_connection_error));
+            } else if(value instanceof UiState.SuccessCached) {
+                showMainLayout();
+                binding.swipeRefresh.setRefreshing(false);
+                setValues(((UiState.SuccessCached<CharacterDetailsModel>) value).getData());
+                binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.local_data_warning));
             } else if (value instanceof UiState.Empty) {
                 binding.swipeRefresh.setRefreshing(false);
-
+                binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.no_internet_connection_error));
             } else if (value instanceof UiState.Error) {
                 handleErrors(((UiState.Error) value).getError());
+                binding.tvNetwork.tvNetwork.setText(getString(ru.example.gnt.ui.R.string.no_internet_connection_error));
                 binding.swipeRefresh.setRefreshing(false);
             }
         };
@@ -175,13 +181,7 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
     }
 
     private void handleErrors(Throwable ex) {
-        if (ex instanceof ApplicationException.LocalDataException) {
-            try {
-                Toast.makeText(requireContext(), ex.getMessage() + " not empty", Toast.LENGTH_SHORT).show();
-                binding.tvNetwork.tvNetwork.setText(((ApplicationException.LocalDataException) ex).getResource().getValue(requireContext()));
-            } catch (Exception ignored) {
-            }
-        } else if (ex instanceof ApplicationException) {
+       if (ex instanceof ApplicationException) {
             Resource.String resource = ((ApplicationException) ex).getResource();
             if (resource != null) {
                 showToastShort(requireContext(), resource.getValue(requireContext()));
