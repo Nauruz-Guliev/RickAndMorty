@@ -183,7 +183,6 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
                     text = getString(ru.example.gnt.ui.R.string.clear_filter)
                 }
             }
-            swipeRefresh.isVisible = !isEmpty
             swipeRefresh.isEnabled = !isEmpty
         }
     }
@@ -218,9 +217,8 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
 
 
     override fun doSearch(searchQuery: String?) {
-        binding.swipeRefresh.isEnabled = false
         this.searchQuery = searchQuery
-        locationsViewModel.applyFilter()
+        locationsViewModel.applyFilter(name = searchQuery)
         adapter?.refresh()
     }
 
