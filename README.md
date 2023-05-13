@@ -391,14 +391,14 @@ List<EpisodeEntity> - список эпизодов
 Фиче модули получают зависимости из app-модуля с помощью интерфейсов.
 
 <p align="left">
-  <img src="../master/docs/dagger_dependencies.png" width="350"/>
+  <img src="../master/docs/dagger_dependencies.png" width="600"/>
 </p>
 
 #### Структура проекта
 
 
 <p align="left">
-  <img src="../master/docs/structure.png" width="600"/>
+  <img src="../master/docs/structure.png" width="320"/>
 </p>
 
 ### Техническая спецификация
