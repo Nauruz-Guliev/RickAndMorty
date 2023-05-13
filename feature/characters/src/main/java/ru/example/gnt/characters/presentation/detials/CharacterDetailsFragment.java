@@ -73,34 +73,38 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
     private void checkConnectivity() {
         ConnectivityManager connectivityManager = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkRequest networkRequest = new NetworkRequest.Builder().build();
-        connectivityManager.registerNetworkCallback(networkRequest, new ConnectivityManager.NetworkCallback() {
-            @Override
-            public void onLost(Network network) {
-                super.onLost(network);
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    try {
-                        binding.tvNetwork.tvNetwork.setVisibility(View.VISIBLE);
-                    } catch (Exception ex) {
-                    }
-                });
-            }
+        try {
+            connectivityManager.registerNetworkCallback(networkRequest, new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onLost(Network network) {
+                    super.onLost(network);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        try {
+                            binding.tvNetwork.tvNetwork.setVisibility(View.VISIBLE);
+                        } catch (Exception ex) {
+                        }
+                    });
+                }
 
-            ;
+                ;
 
-            @Override
-            public void onAvailable(Network network) {
-                super.onAvailable(network);
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    try {
-                        binding.tvNetwork.tvNetwork.setVisibility(View.GONE);
-                    } catch (Exception ex) {
-                    }
+                @Override
+                public void onAvailable(Network network) {
+                    super.onAvailable(network);
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        try {
+                            binding.tvNetwork.tvNetwork.setVisibility(View.GONE);
+                        } catch (Exception ex) {
+                        }
 
-                });
-            }
+                    });
+                }
 
-            ;
-        });
+                ;
+            });
+        } catch (Exception exception) {
+            showToastShort(binding.getRoot().getContext(), exception.getLocalizedMessage());
+        }
     }
 
     @Override

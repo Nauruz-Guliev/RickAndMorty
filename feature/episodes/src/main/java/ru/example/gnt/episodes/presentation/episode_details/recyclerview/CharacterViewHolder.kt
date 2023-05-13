@@ -12,7 +12,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import ru.example.gnt.common.model.characters.CharacterListItem
-import ru.example.gnt.episodes.databinding.CharacterItemBinding
+import ru.example.gnt.ui.databinding.CharacterItemBinding
 
 class CharacterViewHolder(
     private val binding: CharacterItemBinding,

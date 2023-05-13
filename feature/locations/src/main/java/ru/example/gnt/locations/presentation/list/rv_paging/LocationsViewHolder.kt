@@ -7,6 +7,7 @@ import com.google.android.material.card.MaterialCardView
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.locations.LocationListItem
 import ru.example.gnt.common.utils.extensions.divideTwoTabsEqually
+import ru.example.gnt.locations.R
 import ru.example.gnt.locations.databinding.LocationItemBinding
 
 class EpisodeListViewHolder(
@@ -19,8 +20,8 @@ class EpisodeListViewHolder(
         (itemView.rootView as? MaterialCardView)?.strokeWidth = 4
     }
     fun bind(item: LocationListItem?) = with(binding) {
-        tvDimension.text = item?.dimension
-        tvType.text = item?.type
+        tvDimension.text = root.context.getString(ru.example.gnt.ui.R.string.dimension, item?.dimension)
+        tvType.text = root.context.getString(ru.example.gnt.ui.R.string.type, item?.type)
         tvName.text = item?.name
         root.setOnClickListener {
             onItemClicked.invoke(item!!.id)

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.episodes.EpisodeListItem
+import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.databinding.EpisodeItemBinding
 
 
@@ -17,9 +18,9 @@ class EpisodeListViewHolder(
 ) {
 
     fun bind(item: EpisodeListItem?) = with(binding) {
-        tvEpisode.text = item?.episode
+        tvEpisode.text = root.context.getString(ru.example.gnt.ui.R.string.episode, item?.episode.toString())
         tvName.text = item?.name
-        tvAirDate.text = item?.airDate
+        tvAirDate.text = root.context.getString(ru.example.gnt.ui.R.string.air_date, item?.airDate.toString())
 
         root.setOnClickListener {
             onItemClicked.invoke(item?.id)

@@ -55,6 +55,7 @@
 
                 <TextView
                     android:id="@+id/tv_status"
+                    android:textColor="@color/white"
                     style="@style/TextViewDetailsStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

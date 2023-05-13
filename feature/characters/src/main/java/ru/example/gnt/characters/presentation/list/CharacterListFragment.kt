@@ -14,9 +14,12 @@ import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -123,6 +126,8 @@ class CharacterListFragment : BaseFragment<CharacterListFragmentBinding>(
         val loadStateAdapter = adapter?.withLoadStateFooter(footerAdapter)
         lifecycleScope.launch {
             binding.rvCharacters.apply {
+                addItemDecoration(DividerItemDecoration(context, MaterialDividerItemDecoration.HORIZONTAL))
+                addItemDecoration(DividerItemDecoration(context, MaterialDividerItemDecoration.VERTICAL))
                 adapter = loadStateAdapter
                 (itemAnimator as? DefaultItemAnimator)?.supportsChangeAnimations = false
             }

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 
 import ru.example.gnt.common.model.characters.CharacterListItem;
-import ru.example.gnt.locations.databinding.CharacterItemBinding;
+import ru.example.gnt.ui.databinding.CharacterItemBinding;
 
 public class CharacterViewHolder extends RecyclerView.ViewHolder {
 

@@ -3,19 +3,19 @@
     <style name="TextViewTitle" parent="@android:style/TextAppearance.Widget.TextView">
         <item name="android:textColor">@color/black_100</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textSize">@dimen/text_size_4</item>
+        <item name="android:textSize">@dimen/text_size_3</item>
     </style>
     <style name="TextViewSecondaryText" parent="@android:style/TextAppearance.Widget.TextView">
         <item name="android:textColor">@color/black_70</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textSize">@dimen/text_size_3</item>
+        <item name="android:textSize">@dimen/text_size_2</item>
     </style>
 
     <style name="TextViewDetailsStyle" parent="@android:style/TextAppearance.Widget.TextView">
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@color/white</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textSize">@dimen/text_size_3</item>
+        <item name="android:textSize">@dimen/text_size_2</item>
         <item name="android:paddingRight">@dimen/padding_4</item>
         <item name="android:paddingTop">@dimen/padding_4</item>
         <item name="android:paddingBottom">@dimen/padding_4</item>

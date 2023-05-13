@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.bumptech.glide.RequestManager;
 
 import ru.example.gnt.common.model.characters.CharacterListItem;
-import ru.example.gnt.locations.databinding.CharacterItemBinding;
+import ru.example.gnt.ui.databinding.CharacterItemBinding;
 
 public class CharacterListAdapter extends ListAdapter<CharacterListItem, CharacterViewHolder> {
 

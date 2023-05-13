@@ -84,14 +84,18 @@ fun <T : Enum<*>> ChipGroup.createChip(enum: T): Chip {
             is CharacterStatusEnum -> {
                 text = enum.value
                 setChipBackgroundColorResource(enum.color.id)
+                setTextColor(
+                    AppCompatResources.getColorStateList(
+                        context, ru.example.gnt.ui.R.color.blue_rm_main
+                    ).defaultColor
+                )
             }
             is CharacterGenderEnum -> {
                 text = enum.value
                 setChipBackgroundColorResource(ru.example.gnt.ui.R.color.blue_rm_secondary)
                 setTextColor(
                     AppCompatResources.getColorStateList(
-                        context,
-                        ru.example.gnt.ui.R.color.blue_rm
+                        context, ru.example.gnt.ui.R.color.blue_rm
                     ).defaultColor
                 )
             }
