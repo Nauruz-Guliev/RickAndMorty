@@ -380,6 +380,11 @@ List<EpisodeEntity> - список эпизодов
 
 ### Архитектура. 
 
+#### Зависимость модулей
+
+<p align="left">
+  <img src="../master/docs/modules.png" width="600"/>
+</p>
 
 
 
