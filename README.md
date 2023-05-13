@@ -362,8 +362,10 @@ List<EpisodeEntity> - список эпизодов
 
 Детали о локации можно найти здесь.
 
+<p align="left">
+  <img src="../master/docs/locations/location_details.png" width="200"/>
+</p>
 
-    
 **Навигация**
 
 Навигация также строится с помощью интерфейса, который реализуется главным роутером.
@@ -373,7 +375,7 @@ List<EpisodeEntity> - список эпизодов
 Помимо деталей локации, присутсвует список из персонажей, которые встречались в локации. Раскрыть список можно аналогичным жестом, как и на экране с деталями о персонаже. 
     
 <p align="left">
-  <img src="../master/docs/locations/location_details.png" width="200"/>
+  <img src="../master/docs/locations/location_characters.png" width="200"/>
 </p>
 
 ### Архитектура. 
