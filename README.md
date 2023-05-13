@@ -1,11 +1,3 @@
-<p align="right">
-  <a href="../master/README.ru-RU.md">
-    <img src="../master/docs/icons/russian.png" width="100"/>
-  </a>
-  <a href="../master/README.md">
-    <img src="../master/docs/icons/english.png" width="100"/>
-  </a>
-</p>
 
 # Мобильное приложение "Rick and Morty" 
 
