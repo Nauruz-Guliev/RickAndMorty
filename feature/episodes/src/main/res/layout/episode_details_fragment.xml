@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/swipe_refresh"
+    android:animateLayoutChanges="true"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/error_layout"
+            layout="@layout/error_layout"/>
+
+        <androidx.constraintlayout.motion.widget.MotionLayout
+            tools:visibility="gone"
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/blue_rm_main"
+            android:orientation="vertical"
+            app:layoutDescription="@xml/episode_details_fragment_xml_constraintlayout_scene">
+
+
+            <LinearLayout
+                android:id="@+id/main_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <include
+                    android:id="@+id/tv_network"
+                    layout="@layout/no_internet_connection_text_view"/>
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    style="@style/TextViewDetailsStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/details_item_height"
+                    android:layout_marginVertical="@dimen/margin_2"
+                    android:background="@color/material_dynamic_primary100"
+                    android:visibility="gone"
+                    tools:text="@string/episode" />
+
+                <TextView
+                    android:id="@+id/tv_air_date"
+                    style="@style/TextViewDetailsStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/details_item_height"
+                    android:layout_marginBottom="@dimen/margin_2"
+                    android:background="@color/material_dynamic_primary100"
+                    android:visibility="gone"
+                    tools:text="@string/episode" />
+
+
+                <TextView
+                    android:id="@+id/tv_episode_code"
+                    style="@style/TextViewDetailsStyle"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="@dimen/details_item_height"
+                    android:layout_marginBottom="@dimen/margin_2"
+                    android:background="@color/material_dynamic_primary100"
+                    android:visibility="gone"
+                    tools:text="@string/episode" />
+
+
+                <TextView
+                    android:id="@+id/tv_created"
+                    style="@style/TextViewDetailsStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/details_item_height"
+                    android:layout_marginBottom="@dimen/margin_2"
+                    android:background="@color/material_dynamic_primary100"
+                    android:visibility="gone"
+                    tools:text="@string/episode" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="64dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_layout">
+
+
+                <TextView
+                    android:id="@+id/tv_rv"
+                    style="@style/TextViewTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_2"
+                    android:paddingVertical="@dimen/padding_4"
+                    android:text="@string/characters"
+                    android:textColor="@color/blue_rm"
+                    android:visibility="gone" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_characters"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                    app:spanCount="2"
+                    tools:listitem="@layout/character_item" />
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.motion.widget.MotionLayout>
+    </FrameLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

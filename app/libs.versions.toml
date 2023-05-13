@@ -21,7 +21,7 @@ retrofit = "2.9.0"
 
 
 # ** plugins ** #
-androidGradlePlugin = "7.4.0"
+androidGradlePlugin = "7.4.2"
 kotlin = "1.8.0"
 kotlinDsl = "4.0.10"
 

@@ -1,6 +1,8 @@
 plugins {
     id(libs.plugins.android.library.get().pluginId).apply(true)
     id(libs.plugins.kotlin.android.get().pluginId).apply(true)
+
+    id(libs.plugins.kotlin.kapt.get().pluginId).apply(true)
 }
 
 android {
@@ -16,7 +18,7 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -25,13 +27,17 @@ android {
         }
     }
     val compileJavaVersion = rootProject.extra["CompileJavaVersion"] as JavaVersion
-
     compileOptions {
         sourceCompatibility = compileJavaVersion
-        sourceCompatibility = compileJavaVersion
+        targetCompatibility = compileJavaVersion
     }
     kotlinOptions {
         jvmTarget = rootProject.extra["JavaVersion"] as String
+    }
+
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
     }
 }
 
@@ -41,7 +47,39 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
 
+    kaptAndroidTest(libs.androidx.databinding.compiler)
+
+
+    //libraries
+    implementation(libs.bundles.retrofit)
+
+    implementation(libs.bundles.dagger.impl)
+    kapt(libs.bundles.dagger.kapt)
+
+    implementation(libs.bundles.lifecycle)
+    implementation(libs.bundles.androidx.lifecycle.livedata)
+    implementation(libs.glide)
+    implementation(libs.bundles.android.java.rx)
+
+    implementation(libs.room.rxjava)
+
+
+    implementation(libs.androidx.paging)
+    implementation(libs.androidx.swiperefresh)
+
+    implementation(libs.androidx.splash)
+
+
+    implementation(libs.bundles.okHttp)
+
+    //tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso)
+
+    implementation(project(":core:ui"))
+    implementation(project(":core:data"))
+    implementation(project(":common"))
+
+
 }

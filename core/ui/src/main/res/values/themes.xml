@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextViewTitle" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textColor">@color/black_100</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/text_size_3</item>
+    </style>
+    <style name="TextViewSecondaryText" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/text_size_2</item>
+    </style>
+
+    <style name="TextViewDetailsStyle" parent="@android:style/TextAppearance.Widget.TextView">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/text_size_2</item>
+        <item name="android:paddingRight">@dimen/padding_4</item>
+        <item name="android:paddingTop">@dimen/padding_4</item>
+        <item name="android:paddingBottom">@dimen/padding_4</item>
+        <item name="android:paddingLeft">@dimen/padding_4</item>
+
+        <item name="android:textColor">@color/black_100</item>
+    </style>
+
+
+    <style name="roundedImageViewRounded">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="ChipCustomStyle" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_background_color</item>
+        <item name="android:textColor">@color/chip_text_color</item>
+        <item name="chipCornerRadius">5dp</item>
+        <item name="CustomChipChoiceStyle">@style/ChipCustomStyle</item>
+    </style>
+
+    <style name="FilterTextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColor">@color/blue_rm</item>
+        <item name="android:background">@color/blue_rm_secondary</item>
+        <item name="singleLine">true</item>
+        <item name="colorAccent">@color/blue_rm</item>
+    </style>
+
+    <style name="FilterInputEditTextLayout" parent="ThemeOverlay.Material3.TextInputEditText.OutlinedBox">
+        <item name="maxLines">1</item>
+        <item name="singleLine">true</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:inputType">text</item>
+        <item name="android:textColor">@color/blue_rm</item>
+        <item name="android:background">@color/blue_rm_secondary</item>
+        <item name="colorAccent">@color/blue_rm</item>
+        <item name="android:imeOptions">actionDone</item>
+    </style>
+
+
+</resources>
