@@ -293,12 +293,14 @@ interface CharactersRouter {
     fun navigateToEpisodeDetails(id: Int)
 }
 ```
-Реализует этот интерфейс [главный роутер](../master/app/src/main/java/ru/example/gnt/rickandmorty/navigation/MainRouter.kt) приложения и с помощью Dagger эту реализацию предоставляет. В нем настраиваются транзакции: добавление фрагментов в backstack, создание и передача bundle и сам переход. То есть при переходе из экрана с персонажами на другой экран вызывается метод в главном роутере. Этот метод при помощи fragment manager совершает транзакцию, передав ID. Новый фрагмент (детали локации или эпизода) получает ID из bundle и передаёт дальше посредством Assisted Inject во view model. 
+Реализует этот интерфейс [главный роутер](../master/app/src/main/java/ru/example/gnt/rickandmorty/navigation/MainRouter.kt) приложения и с помощью Dagger эту реализацию предоставляет. В нем настраиваются транзакции: добавление фрагментов в backstack, создание и передача bundle и сам переход. 
+
+При переходе из экрана с персонажами на другой экран, вызывается метод в главном роутере. Этот метод при помощи fragment manager совершает транзакцию, передав ID. Новый фрагмент (детали локации или эпизода) получает ID из bundle и передаёт дальше посредством Assisted Inject во view model. 
 
 Экран с эпизодами представляет из себя вертикальный список с одним столбцом. 
 
 <p align="left">
-  <img src="../master/docs/characters/character_details_list.png width="200"/>
+  <img src="../master/docs/characters/character_details_list.png" width="200"/>
 </p>
 
 Раскрывается он свайпом снизу верх. Был использован Motion Layout. 
@@ -314,8 +316,7 @@ interface CharactersRouter {
 https://rickandmortyapi.com/api/episode/1,2,3,4,12,15    //последние цифры - id
 ```
 
-
-Для 
+Все полученные данные собираются в одну [сущность](../master/feature/characters/src/main/java/ru/example/gnt/characters/presentation/detials/CharacterDetailsModel.kt) и передаются дальше в view model. 
     
 5) **Детальный экран - Эпизод.**
 
