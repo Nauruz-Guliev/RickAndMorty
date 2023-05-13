@@ -385,7 +385,14 @@ List<EpisodeEntity> - список эпизодов
 <p align="left">
   <img src="../master/docs/modules.png" width="600"/>
 </p>
+    
+#### Dagger 2 зависимости
 
+Фиче модули получают зависимости из app-модуля с помощью интерфейсов.
+
+<p align="left">
+  <img src="../master/docs/dagger_dependencies.png" width="600"/>
+</p>
 
 
 ### Техническая спецификация
