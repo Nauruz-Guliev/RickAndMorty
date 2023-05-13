@@ -394,6 +394,12 @@ List<EpisodeEntity> - список эпизодов
   <img src="../master/docs/dagger_dependencies.png" width="600"/>
 </p>
 
+#### Структура проекта
+
+
+<p align="left">
+  <img src="../master/docs/structure.png" width="600"/>
+</p>
 
 ### Техническая спецификация
 
