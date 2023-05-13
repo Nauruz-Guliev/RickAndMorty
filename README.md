@@ -307,7 +307,7 @@ interface CharactersRouter {
 
  **Загрузка данных**
  
-Загрузка данных, а именно эпизодов и локаций происходит посредством использования id, полученных из API. Эти id достаются из ссылок с помощью утилитного класса [UrlIdExtractor](../master/common/src/main/java/ru/example/gnt/common/utils/UrlIdExtractor.kt), который сначала проверяет, пришла ли вообще ссылка, затем отдаёт id, полученный из ссылки, либо пустую строку, если не удалось извлечь id.
+Загрузка данных, а именно эпизодов и локаций происходит посредством использования id, полученных из API. Эти id достаются из ссылок с помощью утилитного класса [UrlIdExtractor](../master/common/src/main/java/ru/example/gnt/common/utils/UrlIdExtractor.kt), который сначала проверяет, пришла ли вообще ссылка, затем отдаёт id полученный из ссылки, либо пустую строку, если не удалось извлечь id.
 
 Для получения списка эпизодов используется другой утилитный класс [ApiQueryGenerator](../master/common/src/main/java/ru/example/gnt/common/utils/ApiQueryGenerator.kt), который 
 превращает список из id, в одну строку из всех id, разделенных запятыми. Это необходимо для создания похожего эндпоинта:
@@ -315,6 +315,20 @@ interface CharactersRouter {
 ```Kotlin
 https://rickandmortyapi.com/api/episode/1,2,3,4,12,15    //последние цифры - id
 ```
+
+Для получениях эпизодов из базы данных используется сам список из id, а не конкатенация из id. Метод выглядит так:
+
+```Kotlin
+  @Query("SELECT * FROM episode WHERE id IN (:ids)")
+  fun getEpisodes(ids: List<String>?): Maybe<List<EpisodeEntity>>
+```
+* ids - список из id
+
+Maybe - особый вид Obsrvable в rxJava, который может вернуть null. Это его отличие от Single. С этой целью он и использован, результат будет получен единожды и он может быть null. 
+
+"SELECT * FROM episode WHERE id IN (:ids)" с помощью этого запроса получаются все эпизоды, у которых id входит в список переданных id. 
+
+List<EpisodeEntity> - список эпизодов
 
 Все полученные данные собираются в одну [сущность](../master/feature/characters/src/main/java/ru/example/gnt/characters/presentation/detials/CharacterDetailsModel.kt) и передаются дальше в view model. 
     
