@@ -26,6 +26,7 @@ rxJava = "3.1.5"
 okHttp = "4.10.0"
 androidxDataBinding = "8.0.1"
 splash = "1.0.0"
+mockk = "1.12.4"
 
 [libraries]
 android-material = { module = "com.google.android.material:material", version.ref = "androidMaterial" }
@@ -62,6 +63,8 @@ okHttp-logging = {module = "com.squareup.okhttp3:logging-interceptor", version.r
 room-rxjava = {module = "androidx.room:room-rxjava3", version.ref="room"}
 androidx-databinding-compiler = {module = "androidx.databinding:databinding-compiler", version.ref="androidxDataBinding"}
 androidx-splash = {module = "androidx.core:core-splashscreen", version.ref="splash"}
+
+mockk = {module ="io.mockk:mockk", version.ref="mockk"}
 
 
 [bundles]

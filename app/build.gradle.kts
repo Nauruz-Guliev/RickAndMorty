@@ -16,6 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig = signingConfigs.getByName("debug")
     }
 
     buildTypes {
@@ -54,6 +55,8 @@ dependencies {
 
     implementation(libs.bundles.retrofit)
     implementation(libs.bundles.okHttp)
+
+    implementation(libs.mockk)
 
 
     implementation(libs.bundles.dagger.impl)

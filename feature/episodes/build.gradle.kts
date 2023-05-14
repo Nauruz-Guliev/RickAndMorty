@@ -63,6 +63,8 @@ dependencies {
 
     implementation(libs.androidx.splash)
 
+    testImplementation(libs.mockk)
+
 
     implementation(libs.androidx.paging)
     implementation(libs.androidx.swiperefresh)

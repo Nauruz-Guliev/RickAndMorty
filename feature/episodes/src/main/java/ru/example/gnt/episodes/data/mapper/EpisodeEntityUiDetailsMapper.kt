@@ -7,6 +7,10 @@ import javax.inject.Inject
 
 class EpisodeEntityUiDetailsMapper
 @Inject constructor() : BaseMapper<EpisodeEntity, EpisodeDetailsItem> {
+
+    /**
+     * @return Вместо списка персонажей возвращает null.
+     */
     override fun mapTo(model: EpisodeEntity): EpisodeDetailsItem =
         with(model) {
             return@with EpisodeDetailsItem(

@@ -6,7 +6,7 @@ data class EpisodesResponseModel(
     @Json(name = "info")
     val info: Info? = null,
     @Json(name = "results")
-    val results: List<Result>
+    var results: List<Result>
 )  {
     data class Info(
         @Json(name = "count")
