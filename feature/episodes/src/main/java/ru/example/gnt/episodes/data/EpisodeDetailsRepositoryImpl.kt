@@ -57,11 +57,13 @@ class EpisodeDetailsRepositoryImpl @Inject constructor(
                 }
             ).map { result ->
                 result.map { episodeEntity ->
-                    if (episodeEntity == null) throw ApplicationException.EmptyResultException(
-                        resource = Resource.String(
-                            ru.example.gnt.ui.R.string.no_data_available_error
+                    if (episodeEntity == null) {
+                        throw ApplicationException.EmptyResultException(
+                            resource = Resource.String(
+                                ru.example.gnt.ui.R.string.no_data_available_error
+                            )
                         )
-                    )
+                    }
                     entityUiDetailsMapper.mapTo(episodeEntity).apply {
                         characters = getCharacters(episodeEntity.characters)
                     }

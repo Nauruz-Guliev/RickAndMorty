@@ -188,8 +188,8 @@ class EpisodeListFragment : BaseFragment<EpisodeListFragmentBinding>(
             with(loadingStateLayout) {
                 tvMessage.apply {
                     isVisible = isEmpty
-                    text =
-                        getString(ru.example.gnt.ui.R.string.no_filter_results)
+                    text = if(!episodesViewModel.isFilterOff()) getString(ru.example.gnt.ui.R.string.no_filter_results)
+                    else getString(ru.example.gnt.ui.R.string.no_data_available_error)
                 }
                 btnTryAgain.apply {
                     isVisible = isEmpty && !episodesViewModel.isFilterOff()
