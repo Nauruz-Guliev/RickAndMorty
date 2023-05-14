@@ -60,6 +60,7 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
                         mapper = characterResponseUiDetailsMapper
                     )
                 )
+                emitter.onComplete()
             } catch (ex: Exception) {
                 when (ex) {
                     is ApplicationException -> emitter.onError(ex)
@@ -79,6 +80,7 @@ class CharacterDetailsRepositoryImpl @Inject constructor(
                         )
                     }
                 }
+                emitter.onComplete()
             }
         }
     }

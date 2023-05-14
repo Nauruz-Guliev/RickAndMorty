@@ -1,6 +1,5 @@
 package ru.example.gnt.locations.data.repository
 
-import android.util.Log
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Scheduler
 import ru.example.gnt.common.base.BaseMapper
@@ -22,7 +21,6 @@ import ru.example.gnt.locations.data.mapper.LocationEntityUiDetailsMapper
 import ru.example.gnt.locations.data.mapper.LocationResponseUiDetailsMapper
 import ru.example.gnt.locations.domain.repository.LocationDetailsRepository
 import ru.example.gnt.locations.presentation.details.LocationDetailsModel
-import java.io.IOException
 import javax.inject.Inject
 
 class LocationDetailsRepositoryImpl @Inject constructor(
@@ -64,17 +62,20 @@ class LocationDetailsRepositoryImpl @Inject constructor(
                         )
                     )
                 }
+                emitter.onComplete()
             } catch (ex: Exception) {
                 if (locationLocal != null) emitter.onError(
                     ApplicationException.LocalDataException(
                         data = locationLocal,
                         cause = ex
                     )
-                ) else throw ApplicationException.DataAccessException(
-                    ex,
-                    Resource.String(ru.example.gnt.ui.R.string.data_access_error)
+                ) else emitter.onError(
+                    ApplicationException.DataAccessException(
+                        ex,
+                        Resource.String(ru.example.gnt.ui.R.string.data_access_error)
+                    )
                 )
-
+                emitter.onComplete()
             }
         }
     }
