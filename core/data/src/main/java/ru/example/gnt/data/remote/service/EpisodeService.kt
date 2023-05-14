@@ -14,11 +14,11 @@ import ru.example.gnt.data.remote.model.EpisodesResponseModel
 interface EpisodeService {
 
     @GET(EPISODE_END_POINT)
-    fun getEpisodesByPageFiltered(
+    suspend fun getEpisodesByPageFiltered(
         @Query("page") page: String,
         @Query("name") name: String? = null,
         @Query("episode") episode: String? = null,
-    ): Call<EpisodesResponseModel>
+    ): EpisodesResponseModel
 
     @GET("${EPISODE_END_POINT}/{id}")
     fun getEpisodeById(@Path("id") id: Int): Call<EpisodesResponseModel.Result>

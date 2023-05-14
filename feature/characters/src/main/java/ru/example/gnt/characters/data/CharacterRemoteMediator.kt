@@ -11,9 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.*
 import ru.example.gnt.characters.presentation.list.model.CharactersFilterModel
-import ru.example.gnt.common.R
 import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
+import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorSuspending
 import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.data.local.entity.CharacterEntity
 import ru.example.gnt.data.mapper.CharacterEntityResponseMapper
@@ -43,7 +43,7 @@ class CharacterRemoteMediator @AssistedInject constructor(
         offset = pageIndex * limit
 
         return@withContext try {
-            val networkResult =
+            val networkResult = wrapRetrofitErrorSuspending {
                 service.getCharactersByPageFiltered(
                     page = pageIndex.toString(),
                     name = filterModel?.name,
@@ -51,36 +51,38 @@ class CharacterRemoteMediator @AssistedInject constructor(
                     type = filterModel?.type,
                     status = filterModel?.status?.value,
                     gender = filterModel?.gender?.value
-                ).awaitResponse()
-            val characters = networkResult.body()?.results
-            if (networkResult.isSuccessful && characters != null) {
-                if (loadType == LoadType.REFRESH) {
-                    with(filterModel) {
-                        charactersDao.refresh(
-                            name = this?.name,
-                            species = this?.species,
-                            type = this?.type,
-                            status = this?.status?.value,
-                            gender = this?.gender?.value,
-                            characters = characters.map(characterMapper::mapTo)
-                        )
-                    }
-                } else {
-                    charactersDao.saveCharacters(
-                        characters.map(
-                            characterMapper::mapTo
-                        )
+                )
+            }
+            val characters = networkResult.results
+            if (loadType == LoadType.REFRESH) {
+                with(filterModel) {
+                    charactersDao.refresh(
+                        name = this?.name,
+                        species = this?.species,
+                        type = this?.type,
+                        status = this?.status?.value,
+                        gender = this?.gender?.value,
+                        characters = characters?.map(characterMapper::mapTo) ?: listOf()
                     )
                 }
-                MediatorResult.Success(
-                    endOfPaginationReached = ((networkResult.body())?.results?.size
-                        ?: 0) < limit
-                )
             } else {
-                MediatorResult.Success(endOfPaginationReached = true)
+                charactersDao.saveCharacters(
+                    characters?.map(
+                        characterMapper::mapTo
+                    ) ?: listOf()
+                )
             }
-        } catch (ex: ApplicationException.ConnectionException) {
-            MediatorResult.Success(endOfPaginationReached = true)
+            MediatorResult.Success(
+                endOfPaginationReached = (networkResult.results?.size ?: 0) < limit
+            )
+        } catch (ex: ApplicationException.BackendException) {
+            if (ex.code == 404) {
+                MediatorResult.Success(endOfPaginationReached = true)
+            } else {
+                MediatorResult.Error(ex)
+            }
+        } catch (ex: ApplicationException) {
+            MediatorResult.Error(ex)
         } catch (ex: Exception) {
             MediatorResult.Error(
                 ApplicationException.DataAccessException(

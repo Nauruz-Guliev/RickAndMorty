@@ -12,12 +12,12 @@ import ru.example.gnt.data.remote.model.LocationsResponseModel
 interface LocationService {
 
     @GET(LOCATION_END_POINT)
-    fun getLocationsByPageFiltered(
+    suspend fun getLocationsByPageFiltered(
         @Query("page") page: String,
         @Query("name") name: String? = null,
         @Query("type") type: String? = null,
         @Query("dimension") dimension: String? = null,
-    ): Call<LocationsResponseModel>
+    ): LocationsResponseModel
 
     @GET("${LOCATION_END_POINT}/{id}")
     fun getLocationById(@Path("id") id: Int): Single<LocationsResponseModel.Result>

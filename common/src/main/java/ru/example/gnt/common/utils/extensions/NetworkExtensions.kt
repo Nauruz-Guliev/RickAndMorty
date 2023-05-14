@@ -43,6 +43,11 @@ inline fun <ResultType, RequestType> networkBoundResource(
                     )
                 )
             )
+        } catch (e: NullPointerException) {
+            flowOf(Result.failure(ApplicationException.EmptyResultException(
+                e,
+                resource = Resource.String(ru.example.gnt.ui.R.string.no_data_available_error)
+            )))
         } catch (e: JsonDataException) {
             flowOf(
                 Result.failure(
@@ -105,6 +110,11 @@ suspend fun <T> wrapRetrofitErrorSuspending(block:suspend () -> T): T {
             e,
             resource = Resource.String(ru.example.gnt.ui.R.string.unable_to_parse_error)
         )
+    } catch (e: NullPointerException) {
+        throw ApplicationException.EmptyResultException(
+            e,
+            resource = Resource.String(ru.example.gnt.ui.R.string.no_data_available_error)
+        )
     } catch (e: HttpException) {
         throw ApplicationException.BackendException(
             code = e.code(),
@@ -124,7 +134,6 @@ suspend fun <T> wrapRetrofitErrorSuspending(block:suspend () -> T): T {
             resource = Resource.String(ru.example.gnt.ui.R.string.connection_error)
         )
     } catch (e: Exception) {
-        Log.d("ERROR_MESSAGE_SUSPEND", e.message.toString() + " " + e.javaClass.name.toString())
         throw ApplicationException.DataAccessException(
             cause = e,
             resource = Resource.String(ru.example.gnt.ui.R.string.data_access_error)
@@ -137,7 +146,14 @@ fun <T> wrapRetrofitErrorRegular(block:() -> T): T {
         block()
     } catch (e: ApplicationException) {
         throw e
-    } catch (e: JsonDataException) {
+    } catch (e: NullPointerException) {
+        throw ApplicationException.EmptyResultException(
+            e,
+            resource = Resource.String(ru.example.gnt.ui.R.string.no_data_available_error)
+        )
+    }
+
+    catch (e: JsonDataException) {
         throw ApplicationException.ParseException(
             e,
             resource = Resource.String(ru.example.gnt.ui.R.string.unable_to_parse_error)
@@ -166,7 +182,6 @@ fun <T> wrapRetrofitErrorRegular(block:() -> T): T {
             resource = Resource.String(ru.example.gnt.ui.R.string.connection_error)
         )
     } catch (e: Exception) {
-        Log.d("ERROR_MESSAGE", e.message.toString() + " " + e.javaClass.name.toString())
         throw ApplicationException.DataAccessException(
             cause = e,
             resource = Resource.String(ru.example.gnt.ui.R.string.data_access_error)

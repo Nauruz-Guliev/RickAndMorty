@@ -7,10 +7,11 @@ import androidx.paging.RemoteMediator
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import retrofit2.awaitResponse
+import ru.example.gnt.common.di.qualifiers.IoDispatcher
 import ru.example.gnt.common.exceptions.ApplicationException
+import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorSuspending
 import ru.example.gnt.data.local.dao.LocationsDao
 import ru.example.gnt.data.local.entity.LocationEntity
 import ru.example.gnt.data.remote.service.LocationService
@@ -23,51 +24,59 @@ class LocationsRemoteMediator @AssistedInject constructor(
     private val service: LocationService,
     @Assisted
     private val filterModel: LocationListFilterModel,
-    private val responseInfoEntityMapper: LocationResponseEntityMapper
+    private val responseInfoEntityMapper: LocationResponseEntityMapper,
+
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) :
     RemoteMediator<Int, LocationEntity>() {
 
     private var limit = 0
-        private set
     private var offset = 0
-        private set
     private var pageIndex = 0
 
 
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, LocationEntity>
-    ): MediatorResult = withContext(Dispatchers.IO) {
+    ): MediatorResult = withContext(ioDispatcher) {
         pageIndex =
-            getPageIndex(loadType) ?: return@withContext MediatorResult.Success(endOfPaginationReached = true)
+            getPageIndex(loadType) ?: return@withContext MediatorResult.Success(
+                endOfPaginationReached = true
+            )
         limit = state.config.pageSize
         offset = pageIndex * limit
         return@withContext try {
-            val networkResult = with(filterModel) {
-                service.getLocationsByPageFiltered(
-                    page = pageIndex.toString(),
-                    name = name,
-                    type = type,
-                    dimension = dimension
-                )
-            }.awaitResponse()
-            if (networkResult.isSuccessful) {
-                if (loadType == LoadType.REFRESH) {
-                    with(filterModel) {
-                        locationsDao.refresh(
-                           locations = responseInfoEntityMapper.mapTo(networkResult.body()!!),
-                            name = name,
-                            type = type,
-                            dimension = dimension
-                        )
-                    }
-                } else {
-                    locationsDao.saveLocations(responseInfoEntityMapper.mapTo(networkResult.body()!!))
+            val networkResult = wrapRetrofitErrorSuspending {
+                with(filterModel) {
+                    service.getLocationsByPageFiltered(
+                        page = pageIndex.toString(),
+                        name = name,
+                        type = type,
+                        dimension = dimension
+                    )
                 }
-                MediatorResult.Success(endOfPaginationReached = (networkResult.body())!!.results.size < limit)
-            } else {
-                MediatorResult.Success(endOfPaginationReached = true)
             }
+            if (loadType == LoadType.REFRESH) {
+                with(filterModel) {
+                    locationsDao.refresh(
+                        locations = responseInfoEntityMapper.mapTo(networkResult),
+                        name = name,
+                        type = type,
+                        dimension = dimension
+                    )
+                }
+            } else {
+                locationsDao.saveLocations(responseInfoEntityMapper.mapTo(networkResult))
+            }
+            MediatorResult.Success(endOfPaginationReached = networkResult.results.size < limit)
+        } catch (ex: ApplicationException.BackendException) {
+            if (ex.code == 404) {
+                MediatorResult.Success(true)
+            } else {
+                MediatorResult.Error(ex)
+            }
+        } catch (ex: ApplicationException) {
+            MediatorResult.Error(ex)
         } catch (ex: Exception) {
             MediatorResult.Error(ApplicationException.DataAccessException())
         }

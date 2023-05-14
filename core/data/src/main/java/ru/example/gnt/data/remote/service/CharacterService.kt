@@ -11,14 +11,14 @@ import ru.example.gnt.data.remote.model.CharactersResponseModel
 
 interface CharacterService {
     @GET(CHARACTER_END_POINT)
-    fun getCharactersByPageFiltered(
+    suspend fun getCharactersByPageFiltered(
         @Query("page") page: String,
         @Query("name") name: String? = null,
         @Query("species") species: String? = null,
         @Query("type") type: String? = null,
         @Query("status") status: String? = null,
         @Query("gender") gender: String? = null,
-        ): Call<CharactersResponseModel>
+        ): CharactersResponseModel
 
     @GET("$CHARACTER_END_POINT/{id}")
     fun getCharacterById(@Path("id") id: Int): Single<CharactersResponseModel.Result>
