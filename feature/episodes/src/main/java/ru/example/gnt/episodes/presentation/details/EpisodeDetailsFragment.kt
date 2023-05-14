@@ -179,12 +179,16 @@ class EpisodeDetailsFragment : BaseFragment<
     private fun initViews(episodeDetailsItem: EpisodeDetailsItem) {
         with(binding) {
             tvAirDate.isVisible = true
-            tvAirDate.text = episodeDetailsItem.airDate
+            tvAirDate.text =
+                getString(ru.example.gnt.ui.R.string.air_date, episodeDetailsItem.airDate)
 
-            tvCreated.text = episodeDetailsItem.created
+            tvCreated.text = getString(
+                ru.example.gnt.ui.R.string.created, episodeDetailsItem.created)
             tvCreated.isVisible = true
 
-            tvEpisodeCode.text = episodeDetailsItem.episode
+            tvEpisodeCode.text = getString(
+                ru.example.gnt.ui.R.string.episode, episodeDetailsItem.episode)
+
             tvEpisodeCode.isVisible = true
 
             tvName.text = episodeDetailsItem.name

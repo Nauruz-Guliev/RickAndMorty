@@ -122,17 +122,15 @@ class MainActivity : AppCompatActivity(), SearchActivity, OnBackStackChangedList
         val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchItem = menu?.findItem(ru.example.gnt.ui.R.id.search)
         searchView = searchItem?.actionView as SearchView
-
         searchView?.setSearchableInfo(manager.getSearchableInfo(componentName))
-        searchCloseButton =
-            searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
-
+        searchCloseButton = searchView?.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
         searchCloseButton?.setOnClickListener {
-            searchView?.setQuery(null, false)
+            searchView?.apply {
+                setQuery(null, false)
+                onActionViewCollapsed()
+            }
             searchFragment?.doSearch(null)
-            searchView?.onActionViewCollapsed()
         }
-
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 searchFragment?.doSearch(newText)

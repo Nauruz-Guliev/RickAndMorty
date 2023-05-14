@@ -32,20 +32,36 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
-
-    implementation(libs.bundles.lifecycle)
-
+    implementation(libs.moshi)
     implementation(libs.androidx.paging)
+
     implementation(libs.bundles.retrofit)
 
-    implementation(libs.gson)
-    implementation(libs.bundles.okHttp)
-    implementation(libs.androidx.splash)
+    implementation(libs.androidx.test.core)
+
+
+    implementation(libs.bundles.dagger.impl)
+    kapt(libs.bundles.dagger.kapt)
+
 
     implementation(libs.androidx.splash)
 
 
-    //libraries
+    testImplementation(libs.kotlin.coroutines.test)
+
+
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+
+
+
+    //tests
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.junit.ext)
+    androidTestImplementation(libs.espresso)
+
+
+
     implementation(libs.bundles.dagger.impl)
     kapt(libs.bundles.dagger.kapt)
 

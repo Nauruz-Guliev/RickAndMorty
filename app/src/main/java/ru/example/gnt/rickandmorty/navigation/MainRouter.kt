@@ -22,10 +22,8 @@ import javax.inject.Inject
 class MainRouter @Inject constructor(
     private val fragmentManager: FragmentManager,
     @IdRes private val mainContainerId: Int,
-    private val context: Context
 ) : CharactersRouter, EpisodesRouter, LocationsRouter {
 
-    var currentActiveTag: String? = null
     private var currentActiveFragment: Fragment? = null
 
     fun openCharactersScreen() {
@@ -87,7 +85,6 @@ class MainRouter @Inject constructor(
         tag: String?,
         addToBackStack: Boolean = true,
     ) {
-        this.currentActiveTag = tag
         this.currentActiveFragment = fragment
         if(fragment is RootFragment && fragmentManager.findFragmentByTag(tag) != null) {
             popBackStack(tag)
