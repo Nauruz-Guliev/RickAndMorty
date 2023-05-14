@@ -12,10 +12,7 @@ import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.characters.CharacterListItem
 import ru.example.gnt.common.utils.ApiListQueryGenerator
-import ru.example.gnt.common.utils.UrlIdExtractor
 import ru.example.gnt.common.utils.extensions.networkBoundResource
-import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorRegular
-import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorSuspending
 import ru.example.gnt.data.di.qualifiers.RxIOSchedulerQualifier
 import ru.example.gnt.data.local.dao.CharactersDao
 import ru.example.gnt.data.local.dao.EpisodesDao
@@ -27,7 +24,6 @@ import ru.example.gnt.data.remote.service.EpisodeService
 import ru.example.gnt.episodes.data.mapper.EpisodeEntityUiDetailsMapper
 import ru.example.gnt.episodes.domain.model.EpisodeDetailsItem
 import ru.example.gnt.episodes.domain.repository.EpisodeDetailsRepository
-import java.io.IOException
 import javax.inject.Inject
 
 class EpisodeDetailsRepositoryImpl @Inject constructor(
@@ -43,7 +39,6 @@ class EpisodeDetailsRepositoryImpl @Inject constructor(
     private val characterResponseUiListItemMapper: CharacterResponseUiListItemMapper,
     private val characterEntityUiListItemMapper: CharacterEntityUiListItemMapper,
     //utility
-    private val urlIdExtractor: UrlIdExtractor,
     private val queryGenerator: ApiListQueryGenerator,
     @IoDispatcher private val coroutineDispatcher: CoroutineDispatcher,
     @RxIOSchedulerQualifier private val scheduler: Scheduler
@@ -74,32 +69,27 @@ class EpisodeDetailsRepositoryImpl @Inject constructor(
             }
         }
 
+    // так как нам не так важно получили ли мы персонажей, то исключения из этого метода пользователю
+    // не показываются
+    // Основное здесь - эпизоды
     private suspend fun getCharacters(ids: List<String>?): List<CharacterListItem>? {
         return try {
             if (ids == null) return null
             if (ids.size == 1) {
                 listOf(
-                    wrapRetrofitErrorRegular {
-                        characterResponseUiListItemMapper.mapTo(
-                            characterService.getCharacterById(
-                                Integer.valueOf(ids[0])
-                            ).blockingGet()
-                        )
-                    }
+                    characterResponseUiListItemMapper.mapTo(
+                        characterService.getCharacterById(
+                            Integer.valueOf(ids[0])
+                        ).blockingGet()
+                    )
                 )
             } else {
-                wrapRetrofitErrorSuspending {
-                    characterService.getCharactersInRange(queryGenerator.generate(ids))
-                        .awaitResponse().body()?.map(characterResponseUiListItemMapper::mapTo)
-                }
+                characterService.getCharactersInRange(queryGenerator.generate(ids))
+                    .awaitResponse().body()?.map(characterResponseUiListItemMapper::mapTo)
             }
-        } catch (ex: IOException) {
-            characterDao.getCharacters(ids).subscribeOn(scheduler).blockingGet()?.map(characterEntityUiListItemMapper::mapTo)
         } catch (ex: Exception) {
-            throw ApplicationException.DataAccessException(
-                cause = ex,
-                resource = Resource.String(ru.example.gnt.ui.R.string.unknown_data_access_error)
-            )
+            characterDao.getCharacters(ids).subscribeOn(scheduler).blockingGet()
+                ?.map(characterEntityUiListItemMapper::mapTo)
         }
     }
 }
