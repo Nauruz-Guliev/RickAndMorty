@@ -442,7 +442,7 @@ List<EpisodeEntity> - список эпизодов
 | Constraint Layout | Верстка.  | 2.1.4 |
 | Gradle | Сборка проекта.  | 7.4.2 |
 
-
+Некоторые наброски делались в [фигме](https://www.figma.com/file/fx80mpaezO2npXJcODxDlM/RickAndMorty?type=design&node-id=0-1&t=WGKjCh4VlQ2MlLx5-0).
 
 
 
