@@ -407,6 +407,21 @@ List<EpisodeEntity> - список эпизодов
   <img src="../master/docs/navigation.png" width="500"/>
 </p>
 
+
+#### Обработка исключений
+
+505 в данном случае своя имитированная ошибка, которую приложение обработало. 
+2 скриншота с экрана о персонажах, так как внезапное отсутствие интернета и загрузка локальных данных - 2 разных случаях
+<details>
+  <summary> Развернуть скриншоты </summary>
+<p align="middle">
+  <img src="../master/docs/errors/local_data.png" width="230"/>
+  <img src="../master/docs/errors/no_internet.png" width="230"/>
+  <img src="../master/docs/errors/no_result_filter.png" width="230"/>
+  <img src="../master/docs/errors/server_error.png" width="230"/>
+</p>
+</details>
+
 ### Техническая спецификация
 
 | Технология  | Использование | Версия |
