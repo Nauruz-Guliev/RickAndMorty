@@ -415,10 +415,11 @@ List<EpisodeEntity> - список эпизодов
 <details>
   <summary> Развернуть скриншоты </summary>
 <p align="middle">
-  <img src="../master/docs/errors/local_data.png" width="230"/>
-  <img src="../master/docs/errors/no_internet.png" width="230"/>
-  <img src="../master/docs/errors/no_result_filter.png" width="230"/>
-  <img src="../master/docs/errors/server_error.png" width="230"/>
+  <img src="../master/docs/errors/local_data.png" width="200"/>
+  <img src="../master/docs/errors/no_internet.png" width="200"/>
+  <img src="../master/docs/errors/no_result_filter.png" width="200"/>
+  <img src="../master/docs/errors/server_error.png" width="200"/>
+  <img src="../master/docs/try_again.png" width="200"/>
 </p>
 </details>
 
