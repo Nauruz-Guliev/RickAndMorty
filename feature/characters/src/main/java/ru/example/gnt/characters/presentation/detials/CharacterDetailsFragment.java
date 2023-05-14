@@ -174,8 +174,8 @@ public class CharacterDetailsFragment extends Fragment implements DetailsFragmen
             } else if (value instanceof UiState.Empty) {
                 binding.swipeRefresh.setRefreshing(false);
             } else if (value instanceof UiState.Error) {
-                handleErrors(((UiState.Error) value).getError());
                 binding.swipeRefresh.setRefreshing(false);
+                handleErrors(((UiState.Error) value).getError());
             }
         };
         viewModel.getState().observe(getViewLifecycleOwner(), observer);

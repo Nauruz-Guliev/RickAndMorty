@@ -34,6 +34,9 @@
     <string name="location">Location: %1s</string>
 
 
+    <string name="internal_error">Server error</string>
+
+
     <string name="species">Species: %1s</string>
     <string name="species_empty">Species</string>
     <string name="name">Name: %1s</string>

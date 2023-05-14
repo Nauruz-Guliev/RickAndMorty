@@ -139,10 +139,13 @@ class EpisodeDetailsFragment : BaseFragment<
                         ex.resource?.getValue(root.context) ?: ex.cause?.message
                         ?: ex.message
                         ?: getString(ru.example.gnt.ui.R.string.unknown_data_access_error)
-                    mainLayout.isVisible = false
+                    constraintLayout.isVisible = false
+                    errorLayout.root.isVisible = true
+
                     with(errorLayout) {
                         tvErrorMessage.text = message
                         if (ex is ApplicationException.BackendException) {
+                            context.showToastShort(ex.code)
                             tvErrorCode.isVisible = true
                             tvErrorCode.text = ex.code.toString()
                         } else {

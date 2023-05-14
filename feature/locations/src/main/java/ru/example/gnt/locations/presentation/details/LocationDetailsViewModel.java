@@ -10,7 +10,6 @@ import dagger.assisted.AssistedInject;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.exceptions.CompositeException;
 import ru.example.gnt.common.exceptions.ApplicationException;
 import ru.example.gnt.common.model.UiState;
 import ru.example.gnt.data.di.qualifiers.RxIOSchedulerQualifier;
@@ -46,6 +45,9 @@ public class LocationDetailsViewModel extends ViewModel {
                 .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnComplete(() -> disposable.dispose())
+                .doOnError(throwable -> {
+                    state.setValue(new UiState.Error(throwable));
+                })
                 .doOnNext(locationDetailsModel -> {
                     state.setValue(new UiState.SuccessRemote<>(locationDetailsModel));
                 })

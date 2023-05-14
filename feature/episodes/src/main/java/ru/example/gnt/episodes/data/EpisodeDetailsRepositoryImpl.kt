@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import retrofit2.awaitResponse
 import ru.example.gnt.common.di.qualifiers.IoDispatcher
 import ru.example.gnt.common.exceptions.ApplicationException
@@ -21,6 +22,7 @@ import ru.example.gnt.data.mapper.CharacterResponseUiListItemMapper
 import ru.example.gnt.data.mapper.EpisodeEntityResponseMapper
 import ru.example.gnt.data.remote.service.CharacterService
 import ru.example.gnt.data.remote.service.EpisodeService
+import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.data.mapper.EpisodeEntityUiDetailsMapper
 import ru.example.gnt.episodes.domain.model.EpisodeDetailsItem
 import ru.example.gnt.episodes.domain.repository.EpisodeDetailsRepository

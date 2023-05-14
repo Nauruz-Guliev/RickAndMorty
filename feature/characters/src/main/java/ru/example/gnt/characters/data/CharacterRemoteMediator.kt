@@ -7,10 +7,12 @@ import androidx.paging.RemoteMediator
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.*
 import ru.example.gnt.characters.presentation.list.model.CharactersFilterModel
+import ru.example.gnt.common.di.qualifiers.IoDispatcher
 import ru.example.gnt.common.exceptions.ApplicationException
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.utils.extensions.wrapRetrofitErrorSuspending
@@ -25,7 +27,9 @@ class CharacterRemoteMediator @AssistedInject constructor(
     private val service: CharacterService,
     @Assisted
     private val filterModel: CharactersFilterModel?,
-    private val characterMapper: CharacterEntityResponseMapper
+    private val characterMapper: CharacterEntityResponseMapper,
+
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : RemoteMediator<Int, CharacterEntity>() {
 
     private var pageIndex = 0
@@ -35,7 +39,7 @@ class CharacterRemoteMediator @AssistedInject constructor(
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, CharacterEntity>
-    ): MediatorResult = withContext(Dispatchers.IO) {
+    ): MediatorResult = withContext(dispatcher) {
         pageIndex = getPageIndex(loadType)
             ?: return@withContext MediatorResult.Success(endOfPaginationReached = true)
 

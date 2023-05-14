@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.episodes.EpisodeListItem
+import ru.example.gnt.common.utils.extensions.divideTwoTabsEqually
 import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.databinding.EpisodeItemBinding
 
@@ -46,20 +47,14 @@ class EpisodeListViewHolder(
             parent: ViewGroup,
             onItemClicked: (id: Int?) -> Unit
         ): EpisodeListViewHolder {
-            val holder = EpisodeListViewHolder(
+            return EpisodeListViewHolder(
                 binding = EpisodeItemBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 ),
                 onItemClicked = onItemClicked
-            )
-            (holder.binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
-                width = parent.context.resources.displayMetrics.widthPixels / 2
-            }.also {
-                holder.binding.root.layoutParams = it
-            }
-            return holder
+            ).divideTwoTabsEqually()
         }
     }
 }

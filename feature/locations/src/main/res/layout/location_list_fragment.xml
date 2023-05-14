@@ -2,7 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinator_layout"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:animateLayoutChanges="true"
     android:layout_height="match_parent">
@@ -20,7 +20,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/content_layout"
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -37,7 +37,7 @@
 
 
             <TextView
-                android:id="@+id/tv_informational"
+                android:id="@+id/tv_info"
                 android:layout_marginTop="@dimen/margin_4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -45,11 +45,10 @@
                 android:textSize="@dimen/text_size_3"
                 style="@style/TextViewSecondaryText"
                 android:layout_marginHorizontal="@dimen/margin_5"
-                android:text="@string/episodes_welcome_message" />
+                android:text="@string/characters_welcome_message" />
 
 
         </LinearLayout>
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_layout"
@@ -90,14 +89,17 @@
                     android:layout_height="match_parent"
                     app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                     app:spanCount="2"
-                    tools:listitem="@layout/location_item" />
+                    tools:listitem="@layout/character_item" />
 
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+        <!--The content's body goes here-->
     </LinearLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+

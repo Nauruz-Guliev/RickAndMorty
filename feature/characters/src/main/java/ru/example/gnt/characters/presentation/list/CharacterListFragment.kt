@@ -184,7 +184,7 @@ class CharacterListFragment : BaseFragment<CharacterListFragmentBinding>(
 
     private fun handleFilterReset(it: View) {
         (requireActivity() as? SearchActivity)?.closeSearchInterface()
-        binding.loadingStateLayout.root.children.forEach { it.isVisible = false }
+        binding.loadingStateLayout.root.children.forEach { child -> child.isVisible = false }
         viewModel.clearAllFilters()
         resetAllUiFilters()
         adapter?.refresh()

@@ -28,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.inject.Inject;
 
 import ru.example.gnt.common.base.interfaces.DetailsFragment;
+import ru.example.gnt.common.exceptions.ApplicationException;
+import ru.example.gnt.common.model.Resource;
 import ru.example.gnt.common.model.UiState;
 import ru.example.gnt.locations.R;
 import ru.example.gnt.locations.databinding.LocationDetailsFragmentBinding;
@@ -99,10 +101,39 @@ public class LocationDetailsFragment extends Fragment implements DetailsFragment
                 binding.swipeRefresh.setRefreshing(false);
             } else if (value instanceof UiState.Error) {
                 binding.swipeRefresh.setRefreshing(false);
+                handleErrors(((UiState.Error) value).getError());
             }
         };
 
         viewModel.getState().observe(getViewLifecycleOwner(), observer);
+    }
+
+    private void handleErrors(Throwable ex) {
+        if (ex instanceof ApplicationException) {
+            Resource.String resource = ((ApplicationException) ex).getResource();
+            String message;
+            if (resource != null) {
+                message = resource.getValue(requireContext());
+            } else {
+                if (ex.getCause() != null) {
+                    message = ex.getCause().getMessage();
+                } else {
+                    message = getString(ru.example.gnt.ui.R.string.unknown_data_access_error);
+                }
+            }
+            binding.motionLayout.setVisibility(View.GONE);
+            binding.errorLayout.getRoot().setVisibility(View.VISIBLE);
+            if (ex instanceof ApplicationException.BackendException) {
+                binding.errorLayout.tvErrorCode.setText(((ApplicationException.BackendException) ex).getCode());
+                binding.errorLayout.tvErrorCode.setVisibility(View.VISIBLE);
+            } else {
+                binding.errorLayout.tvErrorCode.setVisibility(View.GONE);
+            }
+            binding.errorLayout.tvErrorMessage.setText(message);
+
+        } else {
+            showToastShort(requireContext(), ex.getMessage());
+        }
     }
 
     private void showMainLayout() {

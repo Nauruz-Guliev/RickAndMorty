@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.core.os.bundleOf
 import androidx.core.view.children
 import androidx.core.view.isVisible
@@ -19,6 +20,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import ru.example.gnt.common.base.BaseFragment
 import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
@@ -56,13 +58,14 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         savedInstanceState: Bundle?
     ): View {
         _binding = LocationListFragmentBinding.inflate(layoutInflater)
-        setUpCoordinatorLayout(R.id.content_layout, binding.coordinatorLayout)
+        setUpCoordinatorLayout(R.id.contentLayout, binding.coordinatorLayout)
         return binding.coordinatorLayout
     }
 
     override fun onResume() {
         super.onResume()
         searchQuery?.let { (requireActivity() as? SearchActivity)?.setSearchText(it) }
+        setExpanded()
     }
 
 
@@ -73,8 +76,15 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         initFilterButtons()
         initSwipeRefreshLayout()
         observePaginationStates()
+        initCoordinatorLayout()
         observeInternetState()
     }
+
+    private fun initCoordinatorLayout() {
+        coordinatorLayout = binding.coordinatorLayout
+        coordinatorContentId = R.id.contentLayout
+    }
+
 
 
     private fun initFilterButtons() {
@@ -85,12 +95,12 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
                 adapter?.refresh()
             }
             btnClear.setOnClickListener {
-                resetFilters()
                 if(locationsViewModel.isFilterOff()) {
                     requireContext().showToastShort(getString(ru.example.gnt.ui.R.string.empty_filters_message))
                 } else {
                     locationsViewModel.clearAllFilters()
                 }
+                resetFilters()
                 adapter?.refresh()
                 setExpanded()
             }
@@ -127,7 +137,7 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
     @OptIn(FlowPreview::class)
     private fun observePaginationStates() {
         lifecycleScope.launch {
-            adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)?.debounce(400)
+            adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)?.distinctUntilChanged()?.debounce(400)
                 ?.collectLatest { state ->
                     binding.swipeRefresh.isRefreshing = state.refresh is LoadState.Loading
                     val isEmpty = (adapter?.snapshot()?.items?.size ?: 0) <= 0
@@ -159,9 +169,11 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
                         ?: getString(ru.example.gnt.ui.R.string.unknown_data_access_error)
                     mainLayout.isVisible = false
                     with(loadingStateLayout) {
-                        root.isVisible = true
-                        btnTryAgain.isVisible = false
-                        tvMessage.text = message
+                        if (ex is ApplicationException.BackendException) {
+                            tvMessage.text = ex.code.toString() + "\n" + message
+                        } else {
+                            tvMessage.text = message
+                        }
                     }
                 }
                 else -> {
@@ -184,6 +196,7 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
                     text = getString(ru.example.gnt.ui.R.string.clear_filter)
                 }
             }
+            swipeRefresh.isVisible = !isEmpty
             swipeRefresh.isEnabled = !isEmpty
         }
     }
@@ -211,13 +224,14 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
     }
 
     private fun setUpInfoTextView() {
-        binding.tvInformational.text =
+        binding.tvInfo.text =
             if (isInternetOn) getString(ru.example.gnt.ui.R.string.characters_welcome_message)
             else getString(ru.example.gnt.ui.R.string.not_connected_ui_message)
     }
 
 
     override fun doSearch(searchQuery: String?) {
+        binding.swipeRefresh.isEnabled = false
         this.searchQuery = searchQuery
         locationsViewModel.applyFilter(name = searchQuery)
         adapter?.refresh()
@@ -237,7 +251,7 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
         if (sheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior?.state = BottomSheetBehavior.STATE_HALF_EXPANDED
             (requireActivity() as? ToggleActivity)?.setFragmentCollapsed()
-              binding.rvLocations.alpha = 0.3F
+            binding.rvLocations.alpha = 0.3F
 
         } else {
             sheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
@@ -271,6 +285,10 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
 
     companion object {
         const val LOCATION_LIST_FRAGMENT_TAG = "LOCATION_LIST_FRAGMENT_TAG"
+
+
+        @IdRes
+        var coordinatorContentId: Int? = null
         fun createInstance(): LocationListFragment = LocationListFragment().apply {
             arguments = bundleOf()
         }

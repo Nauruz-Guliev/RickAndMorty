@@ -13,6 +13,10 @@
     <string name="characters_welcome_message"> Знакомься с персонажами из Рик и Морти!</string>
     <string name="episodes_welcome_message"> Исследуй мир Рик и Морти!</string>
 
+
+    <string name="internal_error">Server error</string>
+
+
     <string name="information">Информация</string>
     <string name="gender">Пол : %1s</string>
     <string name="origin">Происхождение: %1s</string>
