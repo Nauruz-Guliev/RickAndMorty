@@ -412,17 +412,19 @@ List<EpisodeEntity> - список эпизодов
 
 505 в данном случае своя имитированная ошибка, которую приложение обработало. 
 2 скриншота с экрана о персонажах, так как внезапное отсутствие интернета и загрузка локальных данных - 2 разных случаях
+Есть обработка случая, когда при использовании пагинации не удалось загрузить данные. Можно попробовать загрузить их заново. Текст в данном случае на русском, так как скриншот делался на физическом девайсе, вместо эмулятора. Отличие в локализации. И да, приложение поддерживает русскую и английскую локаль. 
 <details>
   <summary> Развернуть скриншоты </summary>
 <p align="middle">
-  <img src="../master/docs/errors/local_data.png" width="230"/>
-  <img src="../master/docs/errors/no_internet.png" width="230"/>
-  <img src="../master/docs/errors/no_result_filter.png" width="230"/>
-  <img src="../master/docs/errors/server_error.png" width="230"/>
+  <img src="../master/docs/errors/local_data.png" width="200"/>
+  <img src="../master/docs/errors/no_internet.png" width="200"/>
+  <img src="../master/docs/errors/no_result_filter.png" width="200"/>
+  <img src="../master/docs/errors/server_error.png" width="200"/>
+  <img src="../master/docs/try_again.jpg" width="200"/>
 </p>
 </details>
 
-### Техническая спецификация
+### Использованные библиотеки и технологии
 
 | Технология  | Использование | Версия |
 | ------------- | ------------- | ------------- |
@@ -434,3 +436,13 @@ List<EpisodeEntity> - список эпизодов
 | Dagger 2 | Внедрение зависимостей.  | 2.45 |
 | OkHttp | Перехватчики запросов.  | 4.10.0 |
 | Moshi | Сериализация данных.  | 1.14.0 |
+| Paging 3 |  Пагинация.  | 3.1.1 |
+| Splash Screen Api | Начальный экран.  | 1.0.0 |
+| Gson | Сериализация данных.  | 2.10.1 |
+| Constraint Layout | Верстка.  | 2.1.4 |
+| Gradle | Сборка проекта.  | 7.4.2 |
+
+Некоторые наброски делались в [фигме](https://www.figma.com/file/fx80mpaezO2npXJcODxDlM/RickAndMorty?type=design&node-id=0-1&t=WGKjCh4VlQ2MlLx5-0).
+
+
+
