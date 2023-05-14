@@ -1,13 +1,11 @@
-package ru.example.gnt.episodes.presentation.episode_list.paging_rv
+package ru.example.gnt.episodes.presentation.list.paging_rv
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import ru.example.gnt.common.model.Resource
 import ru.example.gnt.common.model.episodes.EpisodeListItem
 import ru.example.gnt.common.utils.extensions.divideTwoTabsEqually
-import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.databinding.EpisodeItemBinding
 
 

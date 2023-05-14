@@ -6,7 +6,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import ru.example.gnt.common.di.viewmodel.ViewModelFactory
 import ru.example.gnt.common.di.viewmodel.ViewModelKey
-import ru.example.gnt.episodes.presentation.episode_list.EpisodeListViewModel
+import ru.example.gnt.episodes.presentation.list.EpisodeListViewModel
 
 @Module
 internal abstract class ViewModelModule {

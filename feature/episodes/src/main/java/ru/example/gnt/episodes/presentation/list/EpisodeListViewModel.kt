@@ -1,4 +1,4 @@
-package ru.example.gnt.episodes.presentation.episode_list
+package ru.example.gnt.episodes.presentation.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import ru.example.gnt.episodes.EpisodesRouter
 import ru.example.gnt.episodes.domain.usecases.GetEpisodeFilteredListUseCase
-import ru.example.gnt.episodes.presentation.episode_list.model.EpisodesState
+import ru.example.gnt.episodes.presentation.list.model.EpisodesState
 import javax.inject.Inject
 
 internal class EpisodeListViewModel @Inject constructor(

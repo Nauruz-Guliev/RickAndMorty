@@ -1,4 +1,4 @@
-package ru.example.gnt.episodes.presentation.episode_details
+package ru.example.gnt.episodes.presentation.details
 
 import android.content.Context
 import android.os.Bundle
@@ -24,7 +24,7 @@ import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.databinding.EpisodeDetailsFragmentBinding
 import ru.example.gnt.episodes.di.deps.EpisodesComponentViewModel
 import ru.example.gnt.episodes.domain.model.EpisodeDetailsItem
-import ru.example.gnt.episodes.presentation.episode_details.recyclerview.CharacterListAdapter
+import ru.example.gnt.episodes.presentation.details.recyclerview.CharacterListAdapter
 import javax.inject.Inject
 
 class EpisodeDetailsFragment : BaseFragment<
@@ -47,6 +47,9 @@ class EpisodeDetailsFragment : BaseFragment<
         val id = arguments?.getInt(EPISODE_ID_ARG)
         if (id != null) {
             viewModel = viewModelFactory.create(id)
+            lifecycleScope.launch {
+                viewModel?.loadEpisode()
+            }
         }
     }
 

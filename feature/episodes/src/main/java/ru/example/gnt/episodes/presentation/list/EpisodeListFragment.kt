@@ -1,4 +1,4 @@
-package ru.example.gnt.episodes.presentation.episode_list
+package ru.example.gnt.episodes.presentation.list
 
 import android.content.Context
 import android.os.Bundle
@@ -34,7 +34,7 @@ import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.R
 import ru.example.gnt.episodes.databinding.EpisodeListFragmentBinding
 import ru.example.gnt.episodes.di.deps.EpisodesComponentViewModel
-import ru.example.gnt.episodes.presentation.episode_list.paging_rv.EpisodeListAdapter
+import ru.example.gnt.episodes.presentation.list.paging_rv.EpisodeListAdapter
 import javax.inject.Inject
 
 class EpisodeListFragment : BaseFragment<EpisodeListFragmentBinding>(

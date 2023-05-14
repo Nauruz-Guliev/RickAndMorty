@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.androidx.constraint)
 
+
     //libraries
     implementation(libs.bundles.retrofit)
 
@@ -65,6 +66,7 @@ dependencies {
 
     implementation(libs.androidx.splash)
 
+    testImplementation(libs.kotlin.coroutines.test)
 
     //paging
     implementation(libs.room.paging)

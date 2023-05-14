@@ -1,4 +1,4 @@
-package ru.example.gnt.episodes.data
+package ru.example.gnt.episodes.data.mapper
 
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
@@ -8,7 +8,6 @@ import ru.example.gnt.common.enums.CharacterStatusEnum
 import ru.example.gnt.common.model.characters.CharacterListItem
 import ru.example.gnt.common.utils.UrlIdExtractor
 import ru.example.gnt.data.remote.model.EpisodesResponseModel
-import ru.example.gnt.episodes.data.mapper.EpisodeResponseUiDetailsMapper
 import ru.example.gnt.episodes.domain.model.EpisodeDetailsItem
 
 class EpisodeResponseUiDetailsMapperTest {
@@ -108,15 +107,6 @@ class EpisodeResponseUiDetailsMapperTest {
                 status = FAKE_STATUS,
                 image = FAKE_IMAGE_URL_2,
             )
-        )
-    }
-
-    private fun createFakeEpisodeResponseInfoModel(): EpisodesResponseModel.Info {
-        return EpisodesResponseModel.Info(
-            count = FAKE_EPISODE_LIST_SIZE,
-            next = FAKE_EPISODE_NEXT,
-            prev = FAKE_EPISODE_PREV,
-            pages = FAKE_PAGES_COUNT
         )
     }
 

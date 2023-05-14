@@ -12,6 +12,7 @@ daggerTwo = "2.45"
 espresso = "3.5.1"
 glide = "4.15.1"
 junit = "4.13.2"
+androidxTestCore = "1.5.0"
 junitExt = "1.1.5"
 kotlin = "1.8.20"
 gson = "2.10.1"
@@ -27,6 +28,9 @@ okHttp = "4.10.0"
 androidxDataBinding = "8.0.1"
 splash = "1.0.0"
 mockk = "1.12.4"
+junitJupiter = "5.8.1"
+
+kotlinTestVersion = "1.7.1"
 
 [libraries]
 android-material = { module = "com.google.android.material:material", version.ref = "androidMaterial" }
@@ -66,6 +70,10 @@ androidx-splash = {module = "androidx.core:core-splashscreen", version.ref="spla
 
 mockk = {module ="io.mockk:mockk", version.ref="mockk"}
 
+junit-jupiter-api = {module ="org.junit.jupiter:junit-jupiter-api", version.ref="junitJupiter"}
+junit-jupiter-engine = {module ="org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiter"}
+kotlin-coroutines-test = {module="org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref ="kotlinTestVersion"}
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 
 [bundles]
 dagger-impl = [

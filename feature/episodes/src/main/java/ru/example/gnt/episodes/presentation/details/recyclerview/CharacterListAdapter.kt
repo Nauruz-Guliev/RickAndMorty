@@ -1,4 +1,4 @@
-package ru.example.gnt.episodes.presentation.episode_details.recyclerview
+package ru.example.gnt.episodes.presentation.details.recyclerview
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil

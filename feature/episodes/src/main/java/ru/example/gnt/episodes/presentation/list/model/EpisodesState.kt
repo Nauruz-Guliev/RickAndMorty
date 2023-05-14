@@ -1,4 +1,4 @@
-package ru.example.gnt.episodes.presentation.episode_list.model
+package ru.example.gnt.episodes.presentation.list.model
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow

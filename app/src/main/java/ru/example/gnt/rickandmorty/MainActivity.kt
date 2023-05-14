@@ -15,15 +15,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import ru.example.gnt.characters.di.provider.CharactersDepsStore
 import ru.example.gnt.characters.presentation.list.CharacterListFragment
 import ru.example.gnt.common.base.interfaces.LayoutBackDropManager
-import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.base.interfaces.ToggleActivity
 import ru.example.gnt.common.base.search.SearchActivity
 import ru.example.gnt.common.base.search.SearchFragment
 import ru.example.gnt.common.utils.extensions.hideKeyboard
 import ru.example.gnt.common.utils.extensions.setImageDrawable
-import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.di.deps.EpisodesDepsStore
-import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
+import ru.example.gnt.episodes.presentation.list.EpisodeListFragment
 import ru.example.gnt.locations.di.LocationDependencyStore
 import ru.example.gnt.locations.presentation.list.LocationListFragment
 import ru.example.gnt.rickandmorty.databinding.ActivityMainBinding

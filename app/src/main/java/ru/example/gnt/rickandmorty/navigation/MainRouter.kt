@@ -9,10 +9,9 @@ import ru.example.gnt.characters.presentation.detials.CharacterDetailsFragment
 import ru.example.gnt.characters.presentation.list.CharacterListFragment
 import ru.example.gnt.common.base.interfaces.RootFragment
 import ru.example.gnt.common.di.scope.ScreenScope
-import ru.example.gnt.common.utils.extensions.showToastShort
 import ru.example.gnt.episodes.EpisodesRouter
-import ru.example.gnt.episodes.presentation.episode_details.EpisodeDetailsFragment
-import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
+import ru.example.gnt.episodes.presentation.details.EpisodeDetailsFragment
+import ru.example.gnt.episodes.presentation.list.EpisodeListFragment
 import ru.example.gnt.locations.LocationsRouter
 import ru.example.gnt.locations.presentation.details.LocationDetailsFragment
 import ru.example.gnt.locations.presentation.list.LocationListFragment

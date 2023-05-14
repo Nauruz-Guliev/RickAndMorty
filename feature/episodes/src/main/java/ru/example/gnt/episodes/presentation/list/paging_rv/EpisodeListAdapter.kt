@@ -1,4 +1,4 @@
-package ru.example.gnt.episodes.presentation.episode_list.paging_rv
+package ru.example.gnt.episodes.presentation.list.paging_rv
 
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter

@@ -7,8 +7,8 @@ import ru.example.gnt.episodes.di.deps.EpisodesRouterDependency
 import ru.example.gnt.episodes.di.modules.RepositoryModule
 import ru.example.gnt.episodes.di.modules.UtilityModule
 import ru.example.gnt.episodes.di.modules.ViewModelModule
-import ru.example.gnt.episodes.presentation.episode_details.EpisodeDetailsFragment
-import ru.example.gnt.episodes.presentation.episode_list.EpisodeListFragment
+import ru.example.gnt.episodes.presentation.details.EpisodeDetailsFragment
+import ru.example.gnt.episodes.presentation.list.EpisodeListFragment
 
 @Component(
     modules = [

@@ -1,15 +1,12 @@
-package ru.example.gnt.episodes.data
+package ru.example.gnt.episodes.data.mapper
 
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
-import ru.example.gnt.common.enums.CharacterGenderEnum
-import ru.example.gnt.common.enums.CharacterStatusEnum
 import ru.example.gnt.common.utils.UrlIdExtractor
 import ru.example.gnt.data.local.entity.EpisodeEntity
 import ru.example.gnt.data.mapper.EpisodeEntityResponseMapper
 import ru.example.gnt.data.remote.model.EpisodesResponseModel
-import ru.example.gnt.episodes.data.mapper.EpisodeResponseInfoEntityMapper
 
 class EpisodeResponseInfoEntityMapperTest {
 

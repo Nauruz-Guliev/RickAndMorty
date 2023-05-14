@@ -1,4 +1,4 @@
-package ru.example.gnt.episodes.presentation.episode_details
+package ru.example.gnt.episodes.presentation.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,9 +24,6 @@ class EpisodeDetailsViewModel @AssistedInject constructor(
         MutableStateFlow(UiState.Empty)
     val state = _state.asStateFlow()
 
-    init {
-        loadEpisode()
-    }
 
     fun loadEpisode() {
         _state.value = UiState.Loading

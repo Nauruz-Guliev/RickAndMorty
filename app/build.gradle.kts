@@ -58,6 +58,7 @@ dependencies {
 
     implementation(libs.mockk)
 
+    testImplementation(libs.kotlin.coroutines.test)
 
     implementation(libs.bundles.dagger.impl)
     kapt(libs.bundles.dagger.kapt)

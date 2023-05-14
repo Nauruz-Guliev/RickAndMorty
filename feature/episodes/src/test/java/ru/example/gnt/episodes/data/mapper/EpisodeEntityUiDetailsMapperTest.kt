@@ -1,16 +1,12 @@
-package ru.example.gnt.episodes.data
+package ru.example.gnt.episodes.data.mapper
 
-import io.mockk.junit4.MockKRule
 import junit.framework.Assert.assertEquals
-import org.junit.Assert
 import org.junit.Assert.assertTrue
-import org.junit.Rule
 import org.junit.Test
 import ru.example.gnt.common.enums.CharacterGenderEnum
 import ru.example.gnt.common.enums.CharacterStatusEnum
 import ru.example.gnt.common.model.characters.CharacterListItem
 import ru.example.gnt.data.local.entity.EpisodeEntity
-import ru.example.gnt.episodes.data.mapper.EpisodeEntityUiDetailsMapper
 import ru.example.gnt.episodes.domain.model.EpisodeDetailsItem
 
 class EpisodeEntityUiDetailsMapperTest {

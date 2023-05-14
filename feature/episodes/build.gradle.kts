@@ -50,6 +50,8 @@ dependencies {
     kaptAndroidTest(libs.androidx.databinding.compiler)
 
 
+    implementation(libs.androidx.test.core)
+
     //libraries
     implementation(libs.bundles.retrofit)
 
@@ -65,6 +67,11 @@ dependencies {
 
     testImplementation(libs.mockk)
 
+    testImplementation(libs.kotlin.coroutines.test)
+
+
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
 
     implementation(libs.androidx.paging)
     implementation(libs.androidx.swiperefresh)
