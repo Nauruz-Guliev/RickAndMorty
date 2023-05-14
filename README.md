@@ -401,6 +401,12 @@ List<EpisodeEntity> - список эпизодов
   <img src="../master/docs/structure.png" width="320"/>
 </p>
 
+#### Навигация
+
+<p align="left">
+  <img src="../master/docs/navigation.png" width="500"/>
+</p>
+
 ### Техническая спецификация
 
 | Технология  | Использование | Версия |
