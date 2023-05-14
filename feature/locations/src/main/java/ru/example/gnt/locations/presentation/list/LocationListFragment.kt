@@ -137,7 +137,7 @@ class LocationListFragment : BaseFragment<LocationListFragmentBinding>(
     @OptIn(FlowPreview::class)
     private fun observePaginationStates() {
         lifecycleScope.launch {
-            adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)?.distinctUntilChanged()?.debounce(400)
+            adapter?.loadStateFlow?.flowWithLifecycle(lifecycle)?.distinctUntilChanged()?.debounce(1000)
                 ?.collectLatest { state ->
                     binding.swipeRefresh.isRefreshing = state.refresh is LoadState.Loading
                     val isEmpty = (adapter?.snapshot()?.items?.size ?: 0) <= 0
